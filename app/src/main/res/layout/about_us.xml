@@ -16,11 +16,12 @@
             android:layout_gravity="center_horizontal"
             android:text="@string/about_us"
             android:textColor="@color/white"
-            android:textSize="18sp"/>
+            android:textSize="16sp"/>
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/back"/>
+            android:src="@mipmap/back"
+            android:id="@+id/back"/>
     </android.support.v7.widget.Toolbar>
     <ImageView
         app:layout_widthPercent="20%"

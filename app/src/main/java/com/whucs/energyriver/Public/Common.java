@@ -3,6 +3,10 @@ package com.whucs.energyriver.Public;
 import android.content.Context;
 import android.content.SharedPreferences;
 import com.whucs.energyriver.Bean.User;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -49,6 +53,12 @@ public class Common {
                 .remove("username")
                 .remove("score")
                 .apply();
+    }
+
+    public static String getPhotoFileName() {
+        Date date = new Date(System.currentTimeMillis());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("'IMG'_yyyyMMdd_HHmmss");
+        return dateFormat.format(date) + ".png";
     }
 
 }

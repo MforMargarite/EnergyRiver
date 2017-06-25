@@ -16,17 +16,19 @@
             android:layout_gravity="center_horizontal"
             android:text="@string/self_info"
             android:textColor="@color/white"
-            android:textSize="18sp"/>
+            android:textSize="16sp"/>
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/back"/>
+            android:src="@mipmap/back"
+            android:id="@+id/back"/>
     </android.support.v7.widget.Toolbar>
     <android.support.percent.PercentRelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/toolbar"
         android:id="@+id/avatar_panel"
+        android:clickable="true"
         android:background="@color/colorPrimary"
         app:layout_marginTopPercent="5%">
         <TextView android:layout_width="wrap_content"
@@ -35,7 +37,7 @@
             android:layout_centerVertical="true"
             app:layout_marginLeftPercent="7%"
             android:text="@string/avatar"
-            android:textSize="16sp"/>
+            android:textSize="14sp"/>
         <ImageView
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -62,6 +64,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/avatar_panel"
         android:id="@+id/name_panel"
+        android:clickable="true"
         android:background="@color/colorPrimary">
         <TextView android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -69,7 +72,7 @@
             app:layout_marginLeftPercent="7%"
             android:text="@string/username"
             android:textColor="@color/white"
-            android:textSize="16sp"
+            android:textSize="14sp"
             app:layout_marginBottomPercent="5%"/>
         <TextView
             android:layout_width="wrap_content"
