@@ -1,0 +1,105 @@
+package com.whucs.energyriver;
+
+import android.graphics.drawable.Drawable;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageView;
+
+import com.whucs.energyriver.Adapter.MainPagerAdapter;
+import com.whucs.energyriver.Public.Layout;
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener,ViewPager.OnPageChangeListener{
+    private ViewPager viewPager;
+    private ImageView inquiry,control,user,cur_tab;//底部导航
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        initWidget();
+    }
+
+    private void initWidget(){
+        viewPager = (ViewPager) findViewById(R.id.container);
+        inquiry = (ImageView) findViewById(R.id.inquiry);
+        control = (ImageView) findViewById(R.id.control);
+        user = (ImageView) findViewById(R.id.user);
+        inquiry.setOnClickListener(this);
+        control.setOnClickListener(this);
+        user.setOnClickListener(this);
+        viewPager.addOnPageChangeListener(this);
+        viewPager.setAdapter(new MainPagerAdapter(getSupportFragmentManager()));
+        setCurrentTab(0);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.inquiry:
+                viewPager.setCurrentItem(0,true);
+                break;
+            case R.id.control:
+                viewPager.setCurrentItem(1,true);
+                break;
+            case R.id.user:
+                viewPager.setCurrentItem(2,true);
+                break;
+        }
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        setCurrentTab(position);
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
+    }
+
+    private void setCurrentTab(int position){
+        switch (position){
+            case 0:
+                if(cur_tab == null)
+                    cur_tab = inquiry;
+                else {
+                    if (cur_tab != inquiry) {
+                        clearAllTab();
+                        cur_tab = inquiry;
+                        //    cur_tab.setImageDrawable(Layout.getSelectedMenu(this)[position]);
+                    }
+                }
+                break;
+            case 1:
+                if (cur_tab != control) {
+                    clearAllTab();
+                    cur_tab = control;
+                    //    cur_tab.setImageDrawable(Layout.getSelectedMenu(this)[position]);
+                }
+                break;
+            case 2:
+                if (cur_tab != user) {
+                    clearAllTab();
+                    cur_tab = user;
+                    //    cur_tab.setImageDrawable(Layout.getSelectedMenu(this)[position]);
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void clearAllTab(){
+        Drawable[] origin_menu = Layout.getOriginMenu(this);
+        inquiry.setImageDrawable(origin_menu[0]);
+        control.setImageDrawable(origin_menu[1]);
+        user.setImageDrawable(origin_menu[2]);
+    }
+}

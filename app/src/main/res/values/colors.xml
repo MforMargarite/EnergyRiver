@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#002038</color>
+    <color name="baseColor">#03172D</color>
+    <color name="toolbarColor">#002543</color>
+    <color name="bottomColor">#071C35</color>
+    <color name="gradient_end">#0A2F5F</color>
+    <color name="white">#FFF</color>
+    <color name="login_btn">#254B76</color>
+    <color name="transparent">#00000000</color>
+    <color name="light_grey">#ddd</color>
+    <color name="submit_blue">#254A76</color>
+    <color name="slide_tab_blue">#002038</color>
+    <color name="dark_base_color">#030D19</color>
+</resources>

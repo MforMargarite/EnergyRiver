@@ -1,0 +1,25 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/baseColor</item>
+        <item name="colorPrimaryDark">@color/baseColor</item>
+        <item name="colorAccent">@color/baseColor</item>
+
+    </style>
+
+    <style name="StyleProgressBarMini" parent="Widget.AppCompat.ProgressBar">
+        <item name="android:maxHeight">16dp</item>
+        <item name="android:minHeight">16dp</item>
+        <item name="android:maxWidth">16dp</item>
+        <item name="android:minWidth">16dp</item>
+        <item name="android:indeterminateOnly">true</item>
+        <item name="android:indeterminateDrawable">@drawable/shape_progressbar_mini</item>
+    </style>
+
+    <style name="MyToggleButton" parent="@android:style/Widget.CompoundButton">
+        <item name="android:button">@drawable/toggle_style</item>
+    </style>
+
+</resources>
