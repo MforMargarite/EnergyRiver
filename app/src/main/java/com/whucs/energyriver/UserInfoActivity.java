@@ -1,6 +1,8 @@
 package com.whucs.energyriver;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -18,6 +20,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.whucs.energyriver.Public.Common;
+import com.whucs.energyriver.Widget.MyCircleCrop;
 
 import java.io.File;
 
@@ -29,8 +32,8 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
     private Intent intent;
     private File tempFile;
     private PopupWindow popupWindow;
-    private static final int PHOTO_REQUEST_SHOOT = 0;
-    private static final int PHOTO_REQUEST_PHOTOGRAPH = 1;
+    private static final int PHOTO_REQUEST_SHOOT = 1;
+    private static final int PHOTO_REQUEST_PHOTOGRAPH = 2;
     private static final String ROOT = "EnergyRiver";
     private static final String AVATAR = "avatar";
 
@@ -50,6 +53,8 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
         avatar_panel.setOnClickListener(this);
         name_panel.setOnClickListener(this);
         back.setOnClickListener(this);
+        if(Common.hasAvatar())
+            avatar.setImageBitmap(Common.getAvatar());
     }
 
     @Override
@@ -62,6 +67,8 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
                 showPopupWindow(view);
                 break;
             case R.id.name_panel:
+                intent = new Intent(UserInfoActivity.this,ChangeNameActivity.class);
+                startActivity(intent);
                 break;
             case R.id.fromCamera:
                 intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -81,7 +88,49 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-    private void showPopupWindow(View view) {
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case 1:
+                if (resultCode == RESULT_OK) {
+                    final Uri imgUrl = Uri.fromFile(tempFile);
+                    intent = new Intent(this, MyCircleCrop.class);
+                    intent.putExtra("data", imgUrl);
+                    startActivityForResult(intent, 3);
+                }
+                break;
+            case 2:
+                if (data != null) {
+                    //判断mode是否为-1 -1表示未选择返回
+                    if (data.getIntExtra("mode", 0) != -1) {
+                        final Uri photoUrl = data.getData();
+                        intent = new Intent(this, MyCircleCrop.class);
+                        intent.putExtra("data", photoUrl);
+                        startActivityForResult(intent, 3);
+                        break;
+                    }
+                }
+                break;
+            case 3:
+                if (data != null) {
+                    if (data.getIntExtra("mode", 0) != -1) {
+                        try {
+                            byte[] avatar_byte = data.getByteArrayExtra("crop_pic");
+                            //post 更新至服务器 若成功
+                            Bitmap bmp = BitmapFactory.decodeByteArray(avatar_byte,0,avatar_byte.length);
+                            avatar.setImageBitmap(bmp);
+                            Common.setAvatar(bmp);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                break;
+        }
+    }
+
+        private void showPopupWindow(View view) {
         // 一个自定义的布局，作为显示的内容
         View contentView = LayoutInflater.from(this).inflate(
                 R.layout.pop_window, null);

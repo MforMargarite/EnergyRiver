@@ -2,6 +2,8 @@ package com.whucs.energyriver.Public;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+
 import com.whucs.energyriver.Bean.User;
 
 import java.text.SimpleDateFormat;
@@ -13,6 +15,20 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Common {
     private static int id = -1;
+    private static Bitmap avatar = null;
+
+    public static Bitmap getAvatar() {
+        return avatar;
+    }
+
+    public static boolean hasAvatar(){
+        return avatar != null;
+    }
+
+    public static void setAvatar(Bitmap avatar) {
+        Common.avatar = avatar;
+    }
+
     private static SharedPreferences sharedPreferences;
     private static Retrofit retrofit;
 

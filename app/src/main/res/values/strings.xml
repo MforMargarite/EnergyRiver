@@ -9,6 +9,12 @@
     <string name="user_center">个人中心</string>
     <!--个人中心-->
     <string name="sub_manage">管理子用户</string>
+        <string name="edit_sub">编辑子用户</string>
+        <string name="add_sub">新增子用户</string>
+        <string name="sub_username">子用户名</string>
+        <string name="input_sub_username">请输入子用户名</string>
+        <string name="work_num">工位数</string>
+        <string name="input_work_num">请输入工位数</string>
     <string name="bill">能耗账单</string>
     <string name="notification">事件通知</string>
     <string name="change_pwd">修改密码</string>
@@ -25,7 +31,11 @@
         <string name="ori_pwd">原密码</string>
         <string name="new_pwd">新密码</string>
         <string name="ensure_new_pwd">确认新密码</string>
+        <string name="input_username">请输入用户名</string>
+        <string name="change_name">修改用户名</string>
     <string name="submit">提交</string>
+    <string name="shoot">拍照</string>
+    <string name="photograph">相册</string>
     <!--能耗查询-->
     <string name="consume_rank_monthly">本月能耗排名</string>
     <array name="tab_name">
@@ -42,8 +52,10 @@
     <string name="save">保存</string>
     <string name="edit_scene">编辑场景</string>
     <string name="add_scene">新增场景</string>
+    <string name="choose_room">选择房间</string>
     <string name="scene_name">场景名称</string>
     <string name="choose_device">请选择要打开的设备</string>
+    <string name="input_scene">请输入场景名称</string>
     <string name="light">照明</string>
     <string name="air_condition">空调</string>
     <string name="socket">插座</string>

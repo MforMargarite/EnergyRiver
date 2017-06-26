@@ -33,9 +33,10 @@
         android:layout_below="@id/toolbar"
         app:layout_marginLeftPercent="5%"
         app:layout_marginRightPercent="5%"
-        app:layout_marginTopPercent="1%"
-        app:layout_marginBottomPercent="1%"
-        android:id="@+id/room_info">
+        app:layout_marginTopPercent="1.5%"
+        app:layout_marginBottomPercent="1.5%"
+        android:id="@+id/room_info"
+        android:clickable="true">
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -44,12 +45,15 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:id="@+id/room"
             android:layout_marginLeft="8dp"/>
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@mipmap/add"
-            android:layout_marginLeft="8dp"/>
+            android:id="@+id/add_scene"
+            android:clickable="true"
+            android:paddingLeft="16dp"/>
     </LinearLayout>
     <TextView
         android:layout_width="match_parent"

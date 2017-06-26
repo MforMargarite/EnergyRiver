@@ -9,6 +9,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.whucs.energyriver.Public.Common;
@@ -22,6 +24,8 @@ public class UserFragment extends Fragment implements View.OnClickListener{
     PercentRelativeLayout change_pwd;//修改密码
     PercentRelativeLayout log_out;//退出登录
     PercentRelativeLayout about_us;//关于我们
+    ImageView avatar;
+    TextView username;
     Activity activity;
     @Nullable
     @Override
@@ -33,6 +37,8 @@ public class UserFragment extends Fragment implements View.OnClickListener{
     private void initWidget(View view){
         activity = getActivity();
 
+        avatar = (ImageView) view.findViewById(R.id.avatar);
+        username = (TextView) view.findViewById(R.id.username);
         user_panel = (PercentRelativeLayout) view.findViewById(R.id.user_panel);
         sub_manage = (PercentRelativeLayout) view.findViewById(R.id.sub_manage);
         bill = (PercentRelativeLayout) view.findViewById(R.id.bill);
@@ -48,6 +54,15 @@ public class UserFragment extends Fragment implements View.OnClickListener{
         change_pwd.setOnClickListener(this);
         log_out.setOnClickListener(this);
         about_us.setOnClickListener(this);
+        if(Common.hasAvatar())
+            avatar.setImageBitmap(Common.getAvatar());
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(Common.hasAvatar())
+            avatar.setImageBitmap(Common.getAvatar());
     }
 
     @Override

@@ -10,7 +10,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="拍照"
+        android:text="@string/shoot"
         android:gravity="center_horizontal"
         android:paddingTop="12dp"
         android:paddingBottom="12dp"
@@ -25,7 +25,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="相册"
+        android:text="@string/photograph"
         android:gravity="center_horizontal"
         android:paddingTop="12dp"
         android:paddingBottom="12dp"

@@ -1,42 +1,46 @@
 package com.whucs.energyriver;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
-
-public class SubManageActivity extends AppCompatActivity implements View.OnClickListener {
+public class EditSceneActivity extends AppCompatActivity implements View.OnClickListener{
+    ListView loops;
     ImageView back;
-    ImageView add;//添加子用户
-    ListView subs;//子用户列表
+    TextView save,title;
+    EditText scene_name_value;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.sub_manage);
+        setContentView(R.layout.edit_scene);
         initWidget();
     }
 
     private void initWidget(){
         back = (ImageView) findViewById(R.id.back);
-        subs = (ListView) findViewById(R.id.subs);
-        add = (ImageView) findViewById(R.id.add);
+        save = (TextView) findViewById(R.id.save);
+        loops = (ListView) findViewById(R.id.loops);
+        title = (TextView) findViewById(R.id.title);
+        scene_name_value = (EditText) findViewById(R.id.scene_name_value);
+
         back.setOnClickListener(this);
-        add.setOnClickListener(this);
+        save.setOnClickListener(this);
     }
+
 
     @Override
     public void onClick(View view) {
         switch(view.getId()){
             case R.id.back:
-                SubManageActivity.this.finish();
+                EditSceneActivity.this.finish();
                 break;
-            case R.id.add:
-                Intent intent = new Intent(SubManageActivity.this,AddSubActivity.class);
-                startActivity(intent);
+            case R.id.submit:
                 break;
             default:
                 break;

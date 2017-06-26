@@ -25,6 +25,14 @@
         <activity android:name=".NotificationActivity"/>
         <activity android:name=".AboutUs"/>
         <activity android:name=".ChangePwdActivity"/>
+        <activity android:name=".AddSceneActivity"/>
+        <activity android:name=".EditSceneActivity"/>
+        <activity android:name=".SceneActivity"/>
+        <activity android:name=".ChooseRoomActivity"/>
+        <activity android:name=".Widget.MyCircleCrop"/>
+        <activity android:name=".ChangeNameActivity"/>
+        <activity android:name=".EditSubActivity"/>
+        <activity android:name=".AddSubActivity"/>
     </application>
 
 </manifest>
