@@ -19,13 +19,13 @@ public class Splash extends Activity {
             @Override
             public void run() {
                 Intent intent;
-                if(Common.getID(Splash.this) == -1)
+                if(Common.getID(Splash.this) == -1L)
                     intent = new Intent(Splash.this, LogActivity.class);
                 else
                     intent = new Intent(Splash.this,MainActivity.class);
                 startActivity(intent);
             }
-        },1500);
+        },1000);
     }
 
 

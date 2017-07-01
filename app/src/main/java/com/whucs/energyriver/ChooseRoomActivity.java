@@ -7,6 +7,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
 
+import com.whucs.energyriver.Bean.Building;
+
+import java.util.List;
+
 /*选择房间*/
 public class ChooseRoomActivity extends AppCompatActivity implements View.OnClickListener{
     ImageView back;

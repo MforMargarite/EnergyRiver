@@ -3,20 +3,26 @@
 <LinearLayout android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="12dp"
-    android:background="@drawable/bottom_line"
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <TextView
-        android:layout_width="0dp"
-        android:layout_weight="1"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/cate_name"
-        android:gravity="center_horizontal"/>
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/toggle"
-        android:layout_marginRight="16dp"
-        android:layout_marginLeft="16dp"
-        android:src='@mipmap/air_control'/>
+        android:layout_marginLeft="24dp"
+        android:padding="12dp"
+        android:background="@drawable/bottom_line"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:id="@+id/cate_name"
+            android:textColor="@color/white"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/toggle"
+            android:layout_marginRight="16dp"
+            android:layout_marginLeft="16dp"
+            android:src='@mipmap/air_control'/>
+    </LinearLayout>
 </LinearLayout>

@@ -3,6 +3,7 @@ package com.whucs.energyriver;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.percent.PercentRelativeLayout;
 import android.support.v4.app.Fragment;
@@ -34,6 +35,14 @@ public class UserFragment extends Fragment implements View.OnClickListener{
         initWidget(view);
         return view;
     }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if(getUserVisibleHint()) {
+        }
+    }
+
     private void initWidget(View view){
         activity = getActivity();
 
@@ -102,7 +111,14 @@ public class UserFragment extends Fragment implements View.OnClickListener{
     }
 
     private void logOut(){
-        Common.unlogUser(activity);
+        Common.unLogUser(activity);
         Toast.makeText(activity,activity.getResources().getText(R.string.log_out_success),Toast.LENGTH_SHORT).show();
-    }
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Intent intent = new Intent(activity,LogActivity.class);
+                startActivity(intent);
+            }
+        },1000);
+        }
 }

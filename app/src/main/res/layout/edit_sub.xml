@@ -68,7 +68,7 @@
         android:layout_below="@id/sub_username"
         android:id="@+id/work_num"
         android:background="@color/colorPrimary"
-        app:layout_marginTopPercent="2%">
+        app:layout_marginTopPercent="1%">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -86,7 +86,7 @@
             android:src="@mipmap/arrow"
             android:textSize="14sp"
             android:hint="@string/input_work_num"
-            android:textColorHint="@color/white"
+            android:textColorHint="@color/light_grey"
             android:id="@+id/work_num_value"
             android:background="@null"/>
     </android.support.percent.PercentRelativeLayout>
@@ -101,7 +101,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_marginPercent="4%"
+            app:layout_marginPercent="3%"
             android:textSize="14sp"
             android:text="@string/choose_room"
             android:textColor="@color/white"/>

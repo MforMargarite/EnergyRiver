@@ -1,6 +1,8 @@
 package com.whucs.energyriver.Biz;
 
 
+import android.content.Context;
+
 import com.whucs.energyriver.Bean.DeptRank;
 import com.whucs.energyriver.Bean.HttpResult;
 import com.whucs.energyriver.Bean.RoomRank;
@@ -25,7 +27,7 @@ public class RankBiz {
         Observable<HttpResult<List<DeptRank>>> getDeptRank(@Query("username") String username, @Query("password") String password);
     }
 
-    public Observable<HttpResult<List<RoomRank>>> getRoomRank(){
-        return Common.getRetrofit().create(RankService.class).getRoomRank();
+    public Observable<HttpResult<List<RoomRank>>> getRoomRank(Context context){
+        return Common.getRetrofit(context).create(RankService.class).getRoomRank();
     }
 }

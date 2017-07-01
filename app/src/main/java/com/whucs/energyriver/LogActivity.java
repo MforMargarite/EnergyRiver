@@ -3,11 +3,13 @@ package com.whucs.energyriver;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.percent.PercentRelativeLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.whucs.energyriver.Bean.User;
 import com.whucs.energyriver.Presenter.LogPresenter;
@@ -17,7 +19,7 @@ import com.whucs.energyriver.View.LogView;
 
 public class LogActivity extends AppCompatActivity implements View.OnClickListener,LogView{
     private EditText username,password;
-    private TextView submit;
+    private PercentRelativeLayout submit;
     private ProgressBar progressBar;
     private LogPresenter logPresenter;
 
@@ -32,7 +34,7 @@ public class LogActivity extends AppCompatActivity implements View.OnClickListen
         Layout.setTranslucent(this);
         username = (EditText) findViewById(R.id.username);
         password = (EditText) findViewById(R.id.password);
-        submit = (TextView) findViewById(R.id.submit);
+        submit = (PercentRelativeLayout) findViewById(R.id.submit);
         progressBar = (ProgressBar) findViewById(R.id.progressbar);
         submit.setOnClickListener(this);
 
@@ -43,7 +45,7 @@ public class LogActivity extends AppCompatActivity implements View.OnClickListen
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.submit:
-                logPresenter.login();
+                logPresenter.login(LogActivity.this);
                 break;
             default:
                 break;
@@ -77,10 +79,11 @@ public class LogActivity extends AppCompatActivity implements View.OnClickListen
         //跳转至主界面
         Intent intent = new Intent(LogActivity.this,MainActivity.class);
         startActivity(intent);
+        Toast.makeText(LogActivity.this, "登陆成功", Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void loginError() {
-
+    public void loginError(String msg) {
+        Toast.makeText(LogActivity.this, msg, Toast.LENGTH_SHORT).show();
     }
 }

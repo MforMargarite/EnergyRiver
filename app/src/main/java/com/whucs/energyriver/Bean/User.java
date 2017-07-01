@@ -2,16 +2,16 @@ package com.whucs.energyriver.Bean;
 
 
 public class User {
-    private int id;
+    private Long userID;
     private String username;
     private int score;
 
-    public int getId() {
-        return id;
+    public Long getUserID() {
+        return userID;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setUserID(Long userID) {
+        this.userID = userID;
     }
 
     public String getUsername() {
@@ -28,5 +28,14 @@ public class User {
 
     public void setScore(int score) {
         this.score = score;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userID=" + userID +
+                ", username='" + username + '\'' +
+                ", score=" + score +
+                '}';
     }
 }

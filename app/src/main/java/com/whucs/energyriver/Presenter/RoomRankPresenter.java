@@ -1,6 +1,8 @@
 package com.whucs.energyriver.Presenter;
 
 
+import android.content.Context;
+
 import com.whucs.energyriver.Bean.HttpResult;
 import com.whucs.energyriver.Bean.RoomRank;
 import com.whucs.energyriver.Bean.User;
@@ -27,8 +29,8 @@ public class RoomRankPresenter {
         this.rankBiz = new RankBiz();
     }
 
-    public void getRoomRank(){
-        rankBiz.getRoomRank()
+    public void getRoomRank(Context context){
+        rankBiz.getRoomRank(context)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())

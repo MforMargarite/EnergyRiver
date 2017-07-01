@@ -11,5 +11,5 @@ public interface LogView {
     String getPassword();
 
     void setUser(User user);
-    void loginError();
+    void loginError(String msg);
 }
