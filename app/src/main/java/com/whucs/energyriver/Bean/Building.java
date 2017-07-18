@@ -22,15 +22,6 @@ public class Building {
     private Float lng;            //地图坐标的经度
     private Float lat;             //地图坐标的纬度
     private Boolean isRoom;//是否是房间
-    private Integer layer;//第几层子建筑
-
-    public Integer getLayer() {
-        return layer;
-    }
-
-    public void setLayer(Integer layer) {
-        this.layer = layer;
-    }
 
     public Boolean getIsRoom() {
         return isRoom;
@@ -186,7 +177,6 @@ public class Building {
                 ", lng=" + lng +
                 ", lat=" + lat +
                 ", isRoom=" + isRoom +
-                ", layer=" + layer +
                 '}';
     }
 

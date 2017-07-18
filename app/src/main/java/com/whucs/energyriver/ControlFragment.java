@@ -21,8 +21,12 @@ import com.whucs.energyriver.Adapter.LoopAdapter;
 import com.whucs.energyriver.Bean.Building;
 import com.whucs.energyriver.Bean.Loop;
 import com.whucs.energyriver.Presenter.ControlPresenter;
+import com.whucs.energyriver.Public.Common;
 import com.whucs.energyriver.View.ControlView;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 
 public class ControlFragment extends Fragment implements View.OnClickListener,ControlView {
@@ -39,7 +43,7 @@ public class ControlFragment extends Fragment implements View.OnClickListener,Co
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.control,container);
+        View view = inflater.inflate(R.layout.control,null);
         initWidget(view);
         return view;
     }
@@ -90,13 +94,14 @@ public class ControlFragment extends Fragment implements View.OnClickListener,Co
     @Override
     public void showWaiting() {
         dialog = ProgressDialog
-                .show(activity, "提示", "加载中...", false);
+                .show(activity, null, "加载中...", false);
         dialog.show();
     }
 
     @Override
     public void hideWaiting() {
-        dialog.dismiss();
+        if(dialog.isShowing())
+            dialog.dismiss();
     }
 
     @Override
@@ -106,13 +111,13 @@ public class ControlFragment extends Fragment implements View.OnClickListener,Co
 
     @Override
     public void setLoopList(List<Loop> loops) {
-        LoopAdapter loopAdapter = new LoopAdapter(activity,loops);
+        LoopAdapter loopAdapter = new LoopAdapter(activity, loops);
         loopListView.setAdapter(loopAdapter);
+        loopAdapter.notifyDataSetInvalidated();
     }
 
     @Override
     public void setBuildingUnit(Building building) {
-        Log.e("what","set Building unit");
         buildingID = building.getBuildingID();
         room.setText(building.getBuildingName());
         controlPresenter.getLoopInfoByBuildID(activity);

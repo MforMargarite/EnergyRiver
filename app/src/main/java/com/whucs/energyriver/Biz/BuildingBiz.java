@@ -18,10 +18,10 @@ import rx.Observable;
 public class BuildingBiz {
     public interface BuildingService {
         @POST("/build/getBuildingInfo")
-        Observable<HttpResult<List<Building>>> getBuildingInfo(@Query("userID") Long userID);
+        Observable<HttpResult<List<Building>>> getBuildingInfo();
     }
 
-    public Observable<HttpResult<List<Building>>> getBuildingInfo(Context context, Long userID){
-        return Common.getRetrofit(context).create(BuildingService.class).getBuildingInfo(userID);
+    public Observable<HttpResult<List<Building>>> getBuildingInfo(Context context){
+        return Common.getRetrofit(context).create(BuildingService.class).getBuildingInfo();
     }
 }

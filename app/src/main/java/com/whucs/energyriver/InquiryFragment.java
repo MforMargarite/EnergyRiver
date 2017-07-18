@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.ImageView;
 
-import com.whucs.energyriver.Presenter.ControlPresenter;
 import com.whucs.energyriver.Public.Common;
 
 

@@ -3,6 +3,7 @@ package com.whucs.energyriver.Public;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,12 +20,11 @@ public class HttpUtil {
         return map;
     }
 
-    public boolean saveCookieAndToken(Context context,HashSet<String>cookieSet){
+    public boolean saveToken(Context context,HashSet<String>cookieSet){
         HashMap<String,String>cookieMap = convertToCookieMap(cookieSet);
-        SharedPreferences.Editor editor = Common.getSharedPreference(context).edit();
-        editor.putStringSet("cookies",cookieSet).apply();
         if(cookieMap.containsKey("tokenNo")){
-            editor.putString("token",cookieMap.get("token")).apply();
+            Log.e("what","tokenNo:"+cookieMap.get("tokenNo"));
+            Common.getSharedPreference(context).edit().putString("token",cookieMap.get("token")).apply();
             return true;
         }
         return false;

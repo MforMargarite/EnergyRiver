@@ -6,10 +6,12 @@ import android.graphics.Bitmap;
 
 import com.whucs.energyriver.Bean.User;
 import com.whucs.energyriver.Interceptor.AddCookieInterceptor;
-import com.whucs.energyriver.Interceptor.ReceiveCookieInterceptor;
+import com.whucs.energyriver.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -22,6 +24,8 @@ public class Common {
     private static Bitmap avatar = null;
     public static final String ROOT = "http://192.168.137.1:8008/";
     public static final String Inquiry = "view/energyInfo/index.html";
+    public static final String[] types = {"照明","空调","插座"};
+    public static int[] cate_icon = {R.mipmap.light,R.mipmap.air_condition,R.mipmap.socket};
 
     public static Bitmap getAvatar() {
         return avatar;
@@ -51,7 +55,6 @@ public class Common {
         if(retrofit == null) {
             OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder();
             httpClientBuilder.connectTimeout(5, TimeUnit.SECONDS);
-            httpClientBuilder.addInterceptor(new ReceiveCookieInterceptor(context));
             httpClientBuilder.addInterceptor(new AddCookieInterceptor(context));
             retrofit = new Retrofit.Builder()
                     .client(httpClientBuilder.build())
@@ -67,9 +70,13 @@ public class Common {
     public static void setUser(Context context,User user){
         if(sharedPreferences == null)
             sharedPreferences = context.getSharedPreferences("data",0);
+        Set<String> cookieSet =  new HashSet<>();
+        cookieSet.add("tokenNo="+user.getTokenNo()+";");
+        cookieSet.add("userID="+user.getUserID());
         sharedPreferences.edit().putLong("id",user.getUserID())
                 .putString("username",user.getUsername())
                 .putInt("score",user.getScore())
+                .putStringSet("cookies",cookieSet)
                 .apply();
     }
 

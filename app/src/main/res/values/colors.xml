@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="standard_blue">#7880FF</color>
     <color name="colorPrimary">#002038</color>
     <color name="baseColor">#03172D</color>
     <color name="toolbarColor">#002543</color>

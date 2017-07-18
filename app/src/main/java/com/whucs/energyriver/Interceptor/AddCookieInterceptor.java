@@ -22,15 +22,9 @@ public class AddCookieInterceptor implements Interceptor{
         Set<String> cookieSet = Common.getSharedPreference(context).getStringSet("cookies",null);
         if(cookieSet!=null) {
             StringBuilder stringBuilder = new StringBuilder();
-            int index = 0;
             for (String cookie : cookieSet) {
-                if(index != cookieSet.size()-1)
-                    stringBuilder.append(cookie+";");
-                else
-                    stringBuilder.append(cookie);
-                index++;
+                stringBuilder.append(cookie);
             }
-            Log.e("what",stringBuilder.toString());
             builder.addHeader("Cookie", stringBuilder.toString());
         }
         return chain.proceed(builder.build());

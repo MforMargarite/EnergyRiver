@@ -77,9 +77,9 @@ public class LogActivity extends AppCompatActivity implements View.OnClickListen
         //将用户信息保存至SharedPreference中
         Common.setUser(this,user);
         //跳转至主界面
+        Toast.makeText(LogActivity.this, "登陆成功", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(LogActivity.this,MainActivity.class);
         startActivity(intent);
-        Toast.makeText(LogActivity.this, "登陆成功", Toast.LENGTH_SHORT).show();
     }
 
     @Override

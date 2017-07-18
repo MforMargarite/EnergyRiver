@@ -4,7 +4,16 @@ package com.whucs.energyriver.Bean;
 public class User {
     private Long userID;
     private String username;
+    private String tokenNo;
     private int score;
+
+    public String getTokenNo() {
+        return tokenNo;
+    }
+
+    public void setTokenNo(String tokenNo) {
+        this.tokenNo = tokenNo;
+    }
 
     public Long getUserID() {
         return userID;
@@ -35,6 +44,7 @@ public class User {
         return "User{" +
                 "userID=" + userID +
                 ", username='" + username + '\'' +
+                ", tokenNo='" + tokenNo + '\'' +
                 ", score=" + score +
                 '}';
     }

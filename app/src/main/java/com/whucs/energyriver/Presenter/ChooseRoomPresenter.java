@@ -4,8 +4,9 @@ import android.content.Context;
 import com.whucs.energyriver.Bean.Building;
 import com.whucs.energyriver.Bean.HttpResult;
 import com.whucs.energyriver.Biz.BuildingBiz;
-import com.whucs.energyriver.Public.Common;
+import com.whucs.energyriver.Public.TreeUtil;
 import com.whucs.energyriver.View.ChooseRoomView;
+import java.util.ArrayList;
 import java.util.List;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
@@ -25,32 +26,33 @@ public class ChooseRoomPresenter {
 
     public void getBuildingInfo(Context context){
         chooseRoomView.showWaiting();
-        buildingBiz.getBuildingInfo(context,Common.getID(context))
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
+        buildingBiz.getBuildingInfo(context)
                 .map(new Func1<HttpResult<List<Building>>, List<Building>>() {
                     @Override
-                    public List<Building> call(HttpResult<List<Building>> listHttpResult) {
-                        return listHttpResult.getData();
+                    public List<Building> call(HttpResult<List<Building>> listHttpResult){
+                        List<Building>buildings = listHttpResult.getData();
+                        return buildings;
                     }
-                }).subscribe(new Observer<List<Building>>() {
-            @Override
-            public void onCompleted() {
-                chooseRoomView.hideWaiting();
-            }
+                }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<List<Building>>() {
+                    @Override
+                    public void onCompleted() {
 
-            @Override
-            public void onError(Throwable e) {
-                chooseRoomView.execError();
-                chooseRoomView.hideWaiting();
-            }
+                    }
 
-            @Override
-            public void onNext(List<Building> buildings) {
-                chooseRoomView.setBuildingInfo(buildings);
-            }
-        });
+                    @Override
+                    public void onError(Throwable e) {
+                        chooseRoomView.execError();
+                        chooseRoomView.hideWaiting();
+                    }
+
+                    @Override
+                    public void onNext(List<Building> buildings) {
+                        chooseRoomView.setBuildingInfo(buildings);
+                        chooseRoomView.hideWaiting();
+                    }
+            });
     }
 
 }

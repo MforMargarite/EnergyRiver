@@ -9,12 +9,15 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.whucs.energyriver.Bean.Loop;
 import com.whucs.energyriver.Bean.RoomRank;
+import com.whucs.energyriver.Public.Common;
 import com.whucs.energyriver.R;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -24,13 +27,29 @@ import java.util.List;
 public class LoopAdapter extends BaseAdapter {
     private Context context;
     private List<Loop>list;
-    private final String[] types = {"照明","空调","插座"};
-    private final int[] cate_icon = {R.mipmap.light,R.mipmap.air_condition,R.mipmap.socket};
     private Resources res;
     public LoopAdapter(Context context, List<Loop>list){
         this.context = context;
-        this.list = convertList(list);
         this.res = context.getResources();
+        if (list == null) {
+            list = new ArrayList<>();
+            long index = 1L;
+            for (String cate:Common.types) {
+                //回路类型
+                Loop type = new Loop();
+                type.setLoopID(0L);
+                type.setLoopName(cate);
+                type.setLoopTypeID(index++);
+                //暂无回路 提示
+                Loop nullMsg = new Loop();
+                nullMsg.setLoopID(-1L);
+                list.add(type);
+                list.add(nullMsg);
+            }
+            this.list = list;
+            Toast.makeText(context,res.getText(R.string.no_control_loop),Toast.LENGTH_SHORT).show();
+        }else
+            this.list = convertList(list);
     }
 
     @Override
@@ -51,12 +70,16 @@ public class LoopAdapter extends BaseAdapter {
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
         Loop loop = list.get(i);
-        if(loop.getLoopID() == 0L) {
+        if(loop.getLoopID() == -1L){
+            view = LayoutInflater.from(context).inflate(R.layout.textview_item, null);
+            TextView content = (TextView) view.findViewById(R.id.content);
+            content.setText(res.getText(R.string.no_loop_item));
+        }else if(loop.getLoopID() == 0L) {
             view = LayoutInflater.from(context).inflate(R.layout.cate_control_item, null);
             TextView cate_name = (TextView) view.findViewById(R.id.cate_name);
             ImageView cate_img = (ImageView)view.findViewById(R.id.cate_img);
             cate_name.setText(loop.getLoopName());
-            cate_img.setImageDrawable(res.getDrawable(cate_icon[Integer.parseInt(loop.getLoopTypeID().toString()) - 1]));
+            cate_img.setImageDrawable(res.getDrawable(Common.cate_icon[Integer.parseInt(loop.getLoopTypeID().toString()) - 1]));
         }else if(loop.getLoopTypeID() == 2L){
             view = LayoutInflater.from(context).inflate(R.layout.air_detail_control_item, null);
             TextView cate_name = (TextView) view.findViewById(R.id.cate_name);
@@ -78,17 +101,18 @@ public class LoopAdapter extends BaseAdapter {
         int listSize = list.size();
         for (int i=0;i<listSize;i++) {
             Loop item = list.get(i);
-            if (!item.getLoopTypeID().equals(loopType)) {
+            if (item.getLoopID()!=0L && !item.getLoopTypeID().equals(loopType)) {
+                //如果item不是回路类型且其回路类型是新的
                 loopType = item.getLoopTypeID();
                 Loop type = new Loop();
                 type.setLoopID(0L);
-                type.setLoopName(types[Integer.parseInt(loopType.toString()) - 1]);
+                type.setLoopName(Common.types[Integer.parseInt(loopType.toString()) - 1]);
                 type.setLoopTypeID(loopType);
                 list.add(i, type);
                 listSize = list.size();
             }
-        }
-        Log.e("what",list.toString());
+        }/*
+        Log.e("what",list.toString());*/
         return list;
     }
 }

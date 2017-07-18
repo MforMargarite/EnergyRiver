@@ -1,8 +1,6 @@
 package com.whucs.energyriver.Bean;
 
 
-import android.util.Log;
-
 public class HttpResult<T> {
     private int code;
     private int total;
