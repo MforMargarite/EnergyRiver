@@ -44,13 +44,11 @@ public class ChooseRoomPresenter {
                     @Override
                     public void onError(Throwable e) {
                         chooseRoomView.execError();
-                        chooseRoomView.hideWaiting();
                     }
 
                     @Override
                     public void onNext(List<Building> buildings) {
                         chooseRoomView.setBuildingInfo(buildings);
-                        chooseRoomView.hideWaiting();
                     }
             });
     }

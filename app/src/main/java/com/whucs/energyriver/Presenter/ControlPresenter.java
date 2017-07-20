@@ -1,19 +1,14 @@
 package com.whucs.energyriver.Presenter;
 
 import android.content.Context;
-import android.util.Log;
-
 import com.whucs.energyriver.Bean.Building;
 import com.whucs.energyriver.Bean.HttpResult;
 import com.whucs.energyriver.Bean.Loop;
 import com.whucs.energyriver.Biz.BuildingBiz;
 import com.whucs.energyriver.Biz.LoopBiz;
-import com.whucs.energyriver.Public.Common;
 import com.whucs.energyriver.Public.TreeUtil;
 import com.whucs.energyriver.View.ControlView;
 import java.util.List;
-import java.util.Set;
-
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
@@ -55,12 +50,10 @@ public class ControlPresenter {
                     public void onError(Throwable e) {
                         e.printStackTrace();
                         controlView.execError(e.getMessage());
-                        controlView.hideWaiting();
                     }
 
                     @Override
                     public void onNext(List<Loop> loops) {
-                        controlView.hideWaiting();
                         controlView.setLoopList(loops);
                     }
                 });
@@ -85,12 +78,10 @@ public class ControlPresenter {
                 @Override
                 public void onError(Throwable e) {
                     controlView.execError(e.getMessage());
-                    controlView.hideWaiting();
                 }
 
                 @Override
                 public void onNext(List<Building> buildings) {
-                    controlView.hideWaiting();
                     Building building = TreeUtil.getFirstChildID(buildings);
                     controlView.setBuildingUnit(building);
                 }

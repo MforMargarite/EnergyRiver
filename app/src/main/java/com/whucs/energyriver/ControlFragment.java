@@ -23,28 +23,30 @@ import com.whucs.energyriver.Bean.Loop;
 import com.whucs.energyriver.Presenter.ControlPresenter;
 import com.whucs.energyriver.Public.Common;
 import com.whucs.energyriver.View.ControlView;
+import com.whucs.energyriver.Widget.StateSwitchFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 
-public class ControlFragment extends Fragment implements View.OnClickListener,ControlView {
+public class ControlFragment extends StateSwitchFragment implements View.OnClickListener,ControlView {
     ImageView menu,add_scene;
     LinearLayout room_info;
     GridView scene_info;
     ListView loopListView;
     TextView room;
     Activity activity;
-    ProgressDialog dialog;
+  //  ProgressDialog dialog;
     Long buildingID = 79L;
     ControlPresenter controlPresenter;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.control,null);
-        initWidget(view);
+        View view = super.onCreateView(inflater,container,savedInstanceState);
+        View content = inflater.inflate(R.layout.control,null);
+        initWidget(content);
         return view;
     }
 
@@ -56,7 +58,14 @@ public class ControlFragment extends Fragment implements View.OnClickListener,Co
             controlPresenter.getFirstBuildUnit(activity);
         }
     }
+
+    @Override
+    public void reload(){
+        controlPresenter.getFirstBuildUnit(activity);
+    }
+
     private void initWidget(View view){
+        iniAdapter(view);
         activity = getActivity();
         menu = (ImageView) view.findViewById(R.id.menu);
         room = (TextView) view.findViewById(R.id.room);
@@ -93,16 +102,9 @@ public class ControlFragment extends Fragment implements View.OnClickListener,Co
 
     @Override
     public void showWaiting() {
-        dialog = ProgressDialog
-                .show(activity, null, "加载中...", false);
-        dialog.show();
+        showLoading();
     }
 
-    @Override
-    public void hideWaiting() {
-        if(dialog.isShowing())
-            dialog.dismiss();
-    }
 
     @Override
     public Long getBuildingID() {
@@ -114,6 +116,7 @@ public class ControlFragment extends Fragment implements View.OnClickListener,Co
         LoopAdapter loopAdapter = new LoopAdapter(activity, loops);
         loopListView.setAdapter(loopAdapter);
         loopAdapter.notifyDataSetInvalidated();
+        showContent();
     }
 
     @Override
@@ -121,10 +124,12 @@ public class ControlFragment extends Fragment implements View.OnClickListener,Co
         buildingID = building.getBuildingID();
         room.setText(building.getBuildingName());
         controlPresenter.getLoopInfoByBuildID(activity);
+        showContent();
     }
 
     @Override
     public void execError(String msg) {
+        showError();
         Toast.makeText(activity,msg,Toast.LENGTH_SHORT).show();
     }
 }

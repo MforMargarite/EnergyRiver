@@ -1,24 +1,16 @@
 package com.whucs.energyriver;
 
-import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-
 import com.whucs.energyriver.Adapter.TabFragmentAdapter;
-import com.whucs.energyriver.Bean.User;
-import com.whucs.energyriver.Presenter.LogPresenter;
-import com.whucs.energyriver.Public.Common;
 import com.whucs.energyriver.Public.Layout;
-import com.whucs.energyriver.View.LogView;
 import com.whucs.energyriver.Widget.SlidingTabLayout;
+
 
 public class RankActivity extends AppCompatActivity{
     private SlidingTabLayout slidingTab;

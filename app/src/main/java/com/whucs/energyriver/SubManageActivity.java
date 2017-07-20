@@ -4,28 +4,38 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
 
+import com.whucs.energyriver.Widget.StateSwitchActivity;
 
-public class SubManageActivity extends AppCompatActivity implements View.OnClickListener {
+
+public class SubManageActivity extends StateSwitchActivity implements View.OnClickListener {
     ImageView back;
     ImageView add;//添加子用户
     ListView subs;//子用户列表
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.sub_manage);
-        initWidget();
+        View view = LayoutInflater.from(this).inflate(R.layout.sub_manage,null);
+        initWidget(view);
     }
 
-    private void initWidget(){
-        back = (ImageView) findViewById(R.id.back);
-        subs = (ListView) findViewById(R.id.subs);
-        add = (ImageView) findViewById(R.id.add);
+    private void initWidget(View view){
+        iniAdapter(view);
+        back = (ImageView) view.findViewById(R.id.back);
+        subs = (ListView) view.findViewById(R.id.subs);
+        add = (ImageView) view.findViewById(R.id.add);
         back.setOnClickListener(this);
         add.setOnClickListener(this);
+    }
+
+    @Override
+    public void reload(){
+        //present方法
     }
 
     @Override

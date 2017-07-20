@@ -26,6 +26,10 @@ public class Common {
     public static final String Inquiry = "view/energyInfo/index.html";
     public static final String[] types = {"照明","空调","插座"};
     public static int[] cate_icon = {R.mipmap.light,R.mipmap.air_condition,R.mipmap.socket};
+    public static final int LOADING = 0;
+    public static final int CONTENT = 1;
+    public static final int ERROR = 2;
+
 
     public static Bitmap getAvatar() {
         return avatar;

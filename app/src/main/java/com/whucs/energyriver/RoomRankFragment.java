@@ -12,22 +12,26 @@ import android.widget.ListView;
 import com.whucs.energyriver.Adapter.RoomRankAdapter;
 import com.whucs.energyriver.Bean.RoomRank;
 import com.whucs.energyriver.View.RoomRankView;
+import com.whucs.energyriver.Widget.StateSwitchFragment;
+
 import java.util.List;
 
 
-public class RoomRankFragment extends Fragment implements RoomRankView {
+public class RoomRankFragment extends StateSwitchFragment implements RoomRankView {
     private ListView listView;
     private Activity activity;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.room_rank,null);
-        initWidget(view);
+        View view = super.onCreateView(inflater,container,savedInstanceState);
+        View content = inflater.inflate(R.layout.room_rank,null);
+        initWidget(content);
         return view;
     }
 
     private void initWidget(View view){
+        iniAdapter(view);
         activity = getActivity();
         listView = (ListView) view.findViewById(R.id.listView);
     }

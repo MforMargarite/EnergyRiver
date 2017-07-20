@@ -1,13 +1,24 @@
 package com.whucs.energyriver.Bean;
 
 
+import java.util.List;
+
 public class TreeNode<T> {
     T data;
     TreeNode parent;//父节点
+    List<TreeNode> children;//子节点
     boolean isChild;//是叶子节点
     boolean isExpand;//是否展开
     boolean isVisible;//是否可见
     int layer;//层数
+
+    public List<TreeNode> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<TreeNode> children) {
+        this.children = children;
+    }
 
     public void setChild(boolean child) {
         isChild = child;
@@ -62,6 +73,7 @@ public class TreeNode<T> {
         return "TreeNode{" +
                 "data=" + data +
                 ", parent=" + parent +
+                ", children=" + children.toString() +
                 ", isChild=" + isChild +
                 ", isExpand=" + isExpand +
                 ", isVisible=" + isVisible +

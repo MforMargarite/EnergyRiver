@@ -1,56 +1,135 @@
 package com.whucs.energyriver.Bean;
 
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Tree {
-    List<TreeNode>tree;
+    List<TreeNode>tree;//序列化的树
+    TreeNode root;
+    TreeNode<Building> parentNode;
+    boolean isContains;
 
-    //构造建筑的树形列表
+    //n叉树
     public Tree(List<Building> list){
         tree = new ArrayList<>();
+        root = null;
+        parentNode = null;
         for (int i=0;i<list.size();i++) {
             TreeNode<Building> node = new TreeNode<>();
             node.setData(list.get(i));
-            node.setLayer(0);
+            node.setChild(true);
             node.setVisible(false);
-            int pos = -1;
-            for (int index=0;index<tree.size();index++) {
-                TreeNode<Building> parent = tree.get(index);
-                if (node.getData().getUpperBuildingID() == parent.getData().getBuildingID()) {
-                    node.setParent(parent);
-                    node.setChild(true);
-                    node.setLayer(parent.getLayer()+1);
-                    updateLayer(node);
-                    parent.setChild(false);
-                    tree.set(index,parent);
-                    pos = index;
-                    break;
-                }
-            }
-            tree.add((pos+1),node);
+            findParentInTree(node,list);
         }
-        sort();
+        depthTravel(root,0);
         setExpandDepth(2);
     }
 
-    private void sort(){
-        for(int each=0;each<tree.size();each++){
-            TreeNode<Building> node = tree.get(each);
-            if(node.getParent()==null)
-                for (int index = 0; index < tree.size(); index++) {
-                    TreeNode<Building> parent = tree.get(index);
-                    if (node.getData().getUpperBuildingID() == parent.getData().getBuildingID()) {
-                        node.setParent(parent);
-                        node.setLayer(parent.getLayer() + 1);
-                        tree.set(each,node);
-                        updateLayer(node);
+    //深度优先遍历n叉树 将树变为一序列存至List中
+    private void depthTravel(TreeNode<Building> node,int level){
+        node.setLayer(level);
+        tree.add(node);
+        int new_level = level+1;
+        if(!node.isChild()){
+            List<TreeNode>children = node.getChildren();
+            for (TreeNode item:children)
+                depthTravel(item,new_level);
+        }
+    }
+
+    //递归寻找node的父节点
+    private void findParentInTree(TreeNode<Building> node,List<Building> list){
+        if(node.getData().getUpperBuildingID() == null && root == null) {
+            node.setChild(false);
+            node.setVisible(true);
+            root = node;
+        }else {
+            isContains = false;
+            if(root!=null)
+                containsNode(node,root);
+            if(!isContains) {
+                for (Building build : list) {
+                    if (build.getBuildingID() == node.getData().getUpperBuildingID()) {
+                        if(root!=null)
+                            findParentNodeByBuild(root, build);
+                        if (parentNode == null) {
+                            parentNode = new TreeNode<>();
+                            parentNode.setData(build);
+                            parentNode.setVisible(false);
+                            parentNode.setChild(false);
+                            findParentInTree(parentNode, list);
+                            parentNode = null;
+                            findParentNodeByBuild(root, build);
+                        }
+                        List<TreeNode> childList = parentNode.getChildren();
+                        if (childList == null)
+                            childList = new ArrayList<>();
+                        node.setParent(parentNode);
+                        childList.add(node);
+                        parentNode.setChildren(childList);
+                        parentNode.setChild(false);
+                        if (parentNode != root)
+                            saveParent(parentNode, parentNode.getParent());
                         break;
                     }
                 }
+            }//不存在该节点
+        }//else
+    }
+
+    private void saveParent(TreeNode node,TreeNode parent){
+        //递归更新
+        List<TreeNode> childList = parent.getChildren();
+        if (childList == null)
+            childList = new ArrayList<>();
+        int index = childList.indexOf(node);
+        node.setParent(parent);
+        if(index == -1)
+            childList.add(node);
+        else
+            childList.set(index,node);
+        parent.setChildren(childList);
+        parent.setChild(false);
+        if(parent != root){
+            saveParent(parent,parent.getParent());
+        }
+    }
+
+    private void findParentNodeByBuild(TreeNode<Building> begin,Building build){
+        if(begin.getData().getBuildingID() == build.getBuildingID()){
+            parentNode = begin;
+        }else {
+            List<TreeNode>list =  begin.getChildren();
+            if(list!=null) {
+                for (TreeNode item : list) {
+                    findParentNodeByBuild(item, build);
+                }
             }
         }
+    }
+
+    private void containsNode(TreeNode<Building> node,TreeNode<Building> root){
+        if(root.getChildren()!=null) {
+            for (TreeNode<Building> item : root.getChildren()) {
+                if (item.getData().getBuildingID() == node.getData().getBuildingID()) {
+                    isContains = true;
+                    break;
+                }
+            }
+        }
+        if(!isContains) {
+            List<TreeNode>list = root.getChildren();
+            if(list!=null) {
+                for (TreeNode<Building> item : list) {
+                    containsNode(node, item);
+                }
+            }
+        }
+    }
+
 
     private void setExpandDepth(int level){
         for (TreeNode node:tree) {
@@ -58,17 +137,6 @@ public class Tree {
                 node.setVisible(true);
                 if (node.getLayer() != level-1)
                     node.setExpand(true);
-            }
-        }
-    }
-
-    private void updateLayer(TreeNode node){
-        for (int i=0;i<tree.size();i++) {
-            TreeNode sub = tree.get(i);
-            if(sub.getParent() == node){
-                sub.setLayer(node.getLayer()+1);
-                tree.set(i,sub);
-                updateLayer(sub);
             }
         }
     }

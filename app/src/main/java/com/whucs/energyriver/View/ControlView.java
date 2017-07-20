@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface ControlView {
     void showWaiting();
-    void hideWaiting();
+//    void hideWaiting();
 
     Long getBuildingID();
 

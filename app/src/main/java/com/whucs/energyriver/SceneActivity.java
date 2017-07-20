@@ -3,13 +3,16 @@ package com.whucs.energyriver;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class SceneActivity extends AppCompatActivity implements View.OnClickListener{
+import com.whucs.energyriver.Widget.StateSwitchActivity;
+
+//获得当前房间下的场景
+public class SceneActivity extends StateSwitchActivity implements View.OnClickListener{
     ListView scenes;
     ImageView add,back;
     TextView room;
@@ -17,15 +20,16 @@ public class SceneActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.scene);
-        initWidget();
+        View view = LayoutInflater.from(this).inflate(R.layout.scene,null);
+        initWidget(view);
     }
 
-    private void initWidget(){
-        back = (ImageView) findViewById(R.id.back);
-        add = (ImageView) findViewById(R.id.add);
-        scenes = (ListView) findViewById(R.id.scenes);
-        room = (TextView) findViewById(R.id.room);
+    private void initWidget(View view){
+        iniAdapter(view);
+        back = (ImageView) view.findViewById(R.id.back);
+        add = (ImageView) view.findViewById(R.id.add);
+        scenes = (ListView) view.findViewById(R.id.scenes);
+        room = (TextView) view.findViewById(R.id.room);
 
         back.setOnClickListener(this);
         add.setOnClickListener(this);

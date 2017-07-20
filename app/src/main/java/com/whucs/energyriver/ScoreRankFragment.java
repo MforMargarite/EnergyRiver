@@ -7,12 +7,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.whucs.energyriver.Widget.StateSwitchFragment;
 
-public class ScoreRankFragment extends Fragment {
+
+public class ScoreRankFragment extends StateSwitchFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.score_rank,null);
+        View view = super.onCreateView(inflater,container,savedInstanceState);
+        View content = inflater.inflate(R.layout.score_rank,null);
+        iniAdapter(content);
         return view;
     }
 }
+
+
