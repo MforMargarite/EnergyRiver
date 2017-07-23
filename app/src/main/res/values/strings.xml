@@ -62,7 +62,7 @@
     <string name="light">照明</string>
     <string name="air_condition">空调</string>
     <string name="socket">插座</string>
-    <string name="no_loop_item">暂无回路</string>
+    <string name="no_loop_item">暂无可控制的回路</string>
     <string name="no_control_loop">该房间下暂无可控制的回路</string>
 
 </resources>

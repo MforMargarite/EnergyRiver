@@ -1,23 +1,29 @@
 package com.whucs.energyriver;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
+
 import com.whucs.energyriver.Adapter.BuildingAdapter;
 import com.whucs.energyriver.Bean.Building;
+import com.whucs.energyriver.Bean.Tree;
+import com.whucs.energyriver.Bean.TreeNode;
 import com.whucs.energyriver.Presenter.ChooseRoomPresenter;
 import com.whucs.energyriver.View.ChooseRoomView;
 import com.whucs.energyriver.Widget.StateSwitchActivity;
-import java.util.List;
 
 /*选择房间*/
-public class ChooseRoomActivity extends StateSwitchActivity implements View.OnClickListener,ChooseRoomView{
+public class ChooseRoomActivity extends StateSwitchActivity implements View.OnClickListener,ChooseRoomView,AdapterView.OnItemClickListener {
     ImageView back;
     ListView building;
+    Tree tree;
     ChooseRoomPresenter presenter;
     View view;
 
@@ -33,10 +39,13 @@ public class ChooseRoomActivity extends StateSwitchActivity implements View.OnCl
 
         back = (ImageView) view.findViewById(R.id.back);
         building = (ListView) view.findViewById(R.id.building);
+
         back.setOnClickListener(this);
+        building.setOnItemClickListener(this);
 
         presenter = new ChooseRoomPresenter(this);
         presenter.getBuildingInfo(this);
+
     }
 
     @Override
@@ -61,8 +70,9 @@ public class ChooseRoomActivity extends StateSwitchActivity implements View.OnCl
     }
 
     @Override
-    public void setBuildingInfo(List<Building> buildings) {
-        BuildingAdapter adapter = new BuildingAdapter(this,buildings);
+    public void setBuildingInfo(Tree tree) {
+        this.tree = tree;
+        BuildingAdapter adapter = new BuildingAdapter(this,tree);
         building.setAdapter(adapter);
         adapter.notifyDataSetChanged();
         showContent();
@@ -71,5 +81,20 @@ public class ChooseRoomActivity extends StateSwitchActivity implements View.OnCl
     @Override
     public void execError() {
         showError();
+    }
+
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        TreeNode<Building> node = (TreeNode<Building>) adapterView.getAdapter().getItem(i);
+        if(node.getData().getIsRoom()){
+            Intent data = new Intent();
+            data.putExtra("buildingID",node.getData().getBuildingID());
+            data.putExtra("buildingName",tree.getBuildingPath(node.getData()));
+            setResult(1,data);
+            this.finish();
+        }else{
+            Toast.makeText(this,"请选择房间级别的建筑",Toast.LENGTH_SHORT).show();
+        }
     }
 }

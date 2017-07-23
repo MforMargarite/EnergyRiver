@@ -1,12 +1,11 @@
 package com.whucs.energyriver;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,18 +15,14 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import android.widget.ToggleButton;
 import com.whucs.energyriver.Adapter.LoopAdapter;
 import com.whucs.energyriver.Bean.Building;
 import com.whucs.energyriver.Bean.Loop;
 import com.whucs.energyriver.Presenter.ControlPresenter;
-import com.whucs.energyriver.Public.Common;
 import com.whucs.energyriver.View.ControlView;
 import com.whucs.energyriver.Widget.StateSwitchFragment;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 
 public class ControlFragment extends StateSwitchFragment implements View.OnClickListener,ControlView {
@@ -37,8 +32,12 @@ public class ControlFragment extends StateSwitchFragment implements View.OnClick
     ListView loopListView;
     TextView room;
     Activity activity;
-  //  ProgressDialog dialog;
-    Long buildingID = 79L;
+
+    ProgressDialog waiting;
+    AlertDialog dialog;
+
+    Long buildingID,loopID;
+    String loopState;
     ControlPresenter controlPresenter;
 
     @Nullable
@@ -93,18 +92,48 @@ public class ControlFragment extends StateSwitchFragment implements View.OnClick
                 break;
             case R.id.room_info:
                 intent = new Intent(activity,ChooseRoomActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent,0);
+                break;
+            case R.id.toggle:
+                //空调控制 显示面板
+                loopID = Long.parseLong(view.getTag().toString());
+                //controlPresenter.getAirState(loopID);
+                showPanel();
+                break;
+            case R.id.switcher:
+                ToggleButton switcher = (ToggleButton)view;
+                loopID = Long.parseLong(switcher.getTag().toString());
+                loopState = "{\"EquipmentStatus\":"+(switcher.isChecked()?1:0)+"}";
+                controlPresenter.updateLoopState(switcher,activity);
                 break;
             default:
                 break;
         }
     }
 
-    @Override
-    public void showWaiting() {
-        showLoading();
+    private void showPanel(){
+        //alertDialog
+
     }
 
+    @Override
+    public void showLoading() {
+        super.showLoading();
+    }
+
+    @Override
+    public void showWaiting() {
+        if(waiting == null){
+            waiting = new ProgressDialog(activity);
+          //  waiting.setContentView();
+        }
+        waiting.show();
+    }
+
+    @Override
+    public void hideWaiting() {
+        waiting.dismiss();
+    }
 
     @Override
     public Long getBuildingID() {
@@ -112,8 +141,18 @@ public class ControlFragment extends StateSwitchFragment implements View.OnClick
     }
 
     @Override
+    public Long getLoopID() {
+        return loopID;
+    }
+
+    @Override
+    public String getLoopState() {
+        return loopState;
+    }
+
+    @Override
     public void setLoopList(List<Loop> loops) {
-        LoopAdapter loopAdapter = new LoopAdapter(activity, loops);
+        LoopAdapter loopAdapter = new LoopAdapter(activity,loops,this);
         loopListView.setAdapter(loopAdapter);
         loopAdapter.notifyDataSetInvalidated();
         showContent();
@@ -132,4 +171,52 @@ public class ControlFragment extends StateSwitchFragment implements View.OnClick
         showError();
         Toast.makeText(activity,msg,Toast.LENGTH_SHORT).show();
     }
+
+    @Override
+    public void setUpdateResult(View view,Boolean updated) {
+        if(!updated){
+            switch (view.getId()){
+                case R.id.switcher:
+                    ToggleButton switcher = (ToggleButton)view;
+                    switcher.setChecked(!switcher.isChecked());
+                    break;
+                default:
+                    break;
+            }
+        }else
+            Toast.makeText(activity,"更新成功",Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void updateError(View view) {
+        switch (view.getId()){
+            case R.id.switcher:
+                ToggleButton switcher = (ToggleButton)view;
+                switcher.setChecked(!switcher.isChecked());
+                break;
+            default:
+                break;
+        }
+        Toast.makeText(activity,"更新失败,请检查网络后重试",Toast.LENGTH_SHORT).show();
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch(requestCode){
+            case 0://选择房间
+                if(resultCode == 1) {
+                    //选择了数据
+                    Long newBuildingID = data.getLongExtra("buildingID", buildingID);
+                    String newBuildingName = data.getStringExtra("buildingName");
+                    if (newBuildingID != buildingID) {
+                        buildingID = newBuildingID;
+                        room.setText(newBuildingName);
+                    }
+                    controlPresenter.getLoopInfoByBuildID(activity);
+                }
+                break;
+        }
+    }
+
 }

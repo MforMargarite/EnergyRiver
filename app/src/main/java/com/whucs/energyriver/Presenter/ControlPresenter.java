@@ -1,9 +1,14 @@
 package com.whucs.energyriver.Presenter;
 
 import android.content.Context;
+import android.util.Log;
+import android.view.View;
+
 import com.whucs.energyriver.Bean.Building;
+import com.whucs.energyriver.Bean.HttpData;
 import com.whucs.energyriver.Bean.HttpResult;
 import com.whucs.energyriver.Bean.Loop;
+import com.whucs.energyriver.Bean.Tree;
 import com.whucs.energyriver.Biz.BuildingBiz;
 import com.whucs.energyriver.Biz.LoopBiz;
 import com.whucs.energyriver.Public.TreeUtil;
@@ -27,13 +32,13 @@ public class ControlPresenter {
     }
 
     public void getLoopInfoByBuildID(Context context){
-        controlView.showWaiting();
+        controlView.showLoading();
         loopBiz.getLoopInfoByBuildID(context,controlView.getBuildingID())
-                .map(new Func1<HttpResult<List<Loop>>, List<Loop>>() {
+                .map(new Func1<HttpData<List<Loop>>, List<Loop>>() {
                     @Override
-                    public List<Loop> call(HttpResult<List<Loop>> listHttpResult) {
-                        if(listHttpResult.getData().size()!=0)
-                            return listHttpResult.getData();
+                    public List<Loop> call(HttpData<List<Loop>> listHttpData) {
+                        if(listHttpData.getData().size()!=0)
+                            return listHttpData.getData();
                         else
                             return null;
                     }
@@ -60,12 +65,12 @@ public class ControlPresenter {
     }
 
     public void getFirstBuildUnit(final Context context){
-        controlView.showWaiting();
+        controlView.showLoading();
         buildingBiz.getBuildingInfo(context)
-                .map(new Func1<HttpResult<List<Building>>, List<Building>>() {
+                .map(new Func1<HttpData<List<Building>>, List<Building>>() {
                     @Override
-                    public List<Building> call(HttpResult<List<Building>> listHttpResult) {
-                        return listHttpResult.getData();
+                    public List<Building> call(HttpData<List<Building>> listHttpData) {
+                        return listHttpData.getData();
                     }
                 }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -83,9 +88,44 @@ public class ControlPresenter {
                 @Override
                 public void onNext(List<Building> buildings) {
                     Building building = TreeUtil.getFirstChildID(buildings);
+                    Tree tree = new Tree(buildings);
+                    building.setBuildingName(tree.getBuildingPath(building));
                     controlView.setBuildingUnit(building);
                 }
             });
+    }
+
+    public void updateLoopState(final View view,Context context){
+        controlView.showWaiting();
+        Log.e("what",controlView.getLoopID()+" "+controlView.getLoopState());
+        loopBiz.updateLoop(context,controlView.getLoopID(),controlView.getLoopState())
+                .map(new Func1<HttpResult, Boolean>() {
+                    @Override
+                    public Boolean call(HttpResult booleanHttpData) {
+                        return booleanHttpData.isResult();
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        controlView.hideWaiting();
+                        controlView.updateError(view);
+
+                    }
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        controlView.hideWaiting();
+                        controlView.setUpdateResult(view,aBoolean);
+                    }
+                });
     }
 
 

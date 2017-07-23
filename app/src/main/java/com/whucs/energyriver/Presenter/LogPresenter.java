@@ -2,9 +2,8 @@ package com.whucs.energyriver.Presenter;
 
 
 import android.content.Context;
-import android.util.Log;
 
-import com.whucs.energyriver.Bean.HttpResult;
+import com.whucs.energyriver.Bean.HttpData;
 import com.whucs.energyriver.Bean.User;
 import com.whucs.energyriver.Biz.LogBiz;
 import com.whucs.energyriver.View.LogView;
@@ -27,10 +26,10 @@ public class LogPresenter {
         logView.showWaiting();
         logBiz.login(context,logView.getUsername(),logView.getPassword())
                 .subscribeOn(Schedulers.io())
-                .map(new Func1<HttpResult<User>, User>() {
+                .map(new Func1<HttpData<User>, User>() {
                     @Override
-                    public User call(HttpResult<User> userHttpResult) {
-                        return userHttpResult.getData();
+                    public User call(HttpData<User> userHttpData) {
+                        return userHttpData.getData();
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())

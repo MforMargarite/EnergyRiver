@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.percent.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="@color/baseColor">
     <android.support.v7.widget.Toolbar
         android:layout_width="match_parent"
@@ -26,61 +27,70 @@
             android:id="@+id/menu"
             android:clickable="true"/>
     </android.support.v7.widget.Toolbar>
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_below="@id/toolbar"
-        app:layout_marginLeftPercent="5%"
-        app:layout_marginRightPercent="5%"
-        app:layout_marginTopPercent="1.5%"
-        app:layout_marginBottomPercent="1.5%"
-        android:id="@+id/room_info"
-        android:clickable="true">
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/place"/>
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:id="@+id/room"
-            android:textColor="@color/white"
-            android:layout_marginLeft="8dp"/>
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/add"
-            android:id="@+id/add_scene"
-            android:clickable="true"
-            android:paddingLeft="16dp"/>
-    </LinearLayout>
-    <TextView
+        android:layout_height="wrap_content">
+        <android.support.percent.PercentRelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/gradient_end"
-        android:layout_below="@id/room_info"/>
-    <!--GridView: wrap content-->
+        android:layout_height="wrap_content">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@id/room_info"
-            android:layout_marginTop="1dp"
-            android:orientation="vertical">
-            <GridView
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="3"
-                android:numColumns="3"
-                android:paddingTop="12dp"
-                android:paddingBottom="12dp"
-                android:id="@+id/scene_info"/>
-            <ListView
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="5"
-                android:id="@+id/loop_listView"
-                android:divider="@null"/>
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_marginLeftPercent="5%"
+            app:layout_marginRightPercent="5%"
+            app:layout_marginTopPercent="1.5%"
+            app:layout_marginBottomPercent="1.5%"
+            android:id="@+id/room_info"
+            android:clickable="true">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/place"/>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/room"
+                android:lineSpacingMultiplier="1.2"
+                android:textColor="@color/white"
+                android:layout_marginLeft="8dp"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@mipmap/add"
+                android:id="@+id/add_scene"
+                android:clickable="true"
+                android:layout_gravity="center_vertical"
+                android:paddingLeft="16dp"/>
         </LinearLayout>
-</android.support.percent.PercentRelativeLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gradient_end"
+            android:layout_below="@id/room_info"/>
+        <!--GridView: wrap content-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/room_info"
+                android:layout_marginTop="1dp"
+                android:orientation="vertical">
+                <com.whucs.energyriver.Widget.ScrollGridView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:numColumns="3"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:paddingTop="24dp"
+                    android:paddingBottom="24dp"
+                    android:id="@+id/scene_info"/>
+                <com.whucs.energyriver.Widget.ScrollListView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/loop_listView"
+                    android:divider="@null"/>
+            </LinearLayout>
+        </android.support.percent.PercentRelativeLayout>
+    </ScrollView>
+</LinearLayout>

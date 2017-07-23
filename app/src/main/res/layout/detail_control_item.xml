@@ -23,7 +23,7 @@
         <ToggleButton
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:id="@+id/toggle"
+            android:id="@+id/switcher"
             android:layout_marginRight="16dp"
             android:layout_marginLeft="16dp"
             android:background="@drawable/toggle_style"

@@ -1,19 +1,9 @@
 package com.whucs.energyriver.Bean;
 
-
-public class HttpResult<T> {
+//返回执行结果的请求结果
+public class HttpResult {
     private int code;
-    private int total;
-
-    public int getTotal() {
-        return total;
-    }
-
-    public void setTotal(int total) {
-        this.total = total;
-    }
-
-    private T data;
+    private Boolean result;
 
     public int getCode() {
         return code;
@@ -23,12 +13,19 @@ public class HttpResult<T> {
         this.code = code;
     }
 
-    public T getData() {
-//        Log.e("what",data.toString());
-        return data;
+    public Boolean isResult() {
+        return result;
     }
 
-    public void setData(T data) {
-        this.data = data;
+    public void setResult(Boolean result) {
+        this.result = result;
+    }
+
+    @Override
+    public String toString() {
+        return "HttpResult{" +
+                "code=" + code +
+                ", result=" + result +
+                '}';
     }
 }

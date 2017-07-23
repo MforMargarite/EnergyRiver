@@ -54,7 +54,7 @@ public class Tree {
                 for (Building build : list) {
                     if (build.getBuildingID() == node.getData().getUpperBuildingID()) {
                         if(root!=null)
-                            findParentNodeByBuild(root, build);
+                            findNodeByBuild(root, build);
                         if (parentNode == null) {
                             parentNode = new TreeNode<>();
                             parentNode.setData(build);
@@ -62,7 +62,7 @@ public class Tree {
                             parentNode.setChild(false);
                             findParentInTree(parentNode, list);
                             parentNode = null;
-                            findParentNodeByBuild(root, build);
+                            findNodeByBuild(root, build);
                         }
                         List<TreeNode> childList = parentNode.getChildren();
                         if (childList == null)
@@ -98,14 +98,14 @@ public class Tree {
         }
     }
 
-    private void findParentNodeByBuild(TreeNode<Building> begin,Building build){
+    private void findNodeByBuild(TreeNode<Building> begin,Building build){
         if(begin.getData().getBuildingID() == build.getBuildingID()){
             parentNode = begin;
         }else {
             List<TreeNode>list =  begin.getChildren();
             if(list!=null) {
                 for (TreeNode item : list) {
-                    findParentNodeByBuild(item, build);
+                    findNodeByBuild(item, build);
                 }
             }
         }
@@ -173,6 +173,20 @@ public class Tree {
                 nodes.add(node);
         }
         return nodes;
+    }
+
+    public String getBuildingPath(Building building){
+        String builder = building.getBuildingName();
+        do {
+            parentNode = null;
+            findNodeByBuild(root, building);
+            parentNode = parentNode.getParent();
+            if (parentNode != null) {
+                builder = parentNode.getData().getBuildingName() + " > " + builder;
+                building = parentNode.getData();
+            }
+        }while(parentNode!=null);
+        return builder;
     }
 
 }

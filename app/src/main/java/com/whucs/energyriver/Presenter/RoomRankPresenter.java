@@ -3,15 +3,11 @@ package com.whucs.energyriver.Presenter;
 
 import android.content.Context;
 
-import com.whucs.energyriver.Bean.HttpResult;
+import com.whucs.energyriver.Bean.HttpData;
 import com.whucs.energyriver.Bean.RoomRank;
-import com.whucs.energyriver.Bean.User;
-import com.whucs.energyriver.Biz.LogBiz;
 import com.whucs.energyriver.Biz.RankBiz;
-import com.whucs.energyriver.View.LogView;
 import com.whucs.energyriver.View.RoomRankView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observer;
@@ -34,10 +30,10 @@ public class RoomRankPresenter {
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .map(new Func1<HttpResult<List<RoomRank>>, List<RoomRank>>() {
+                .map(new Func1<HttpData<List<RoomRank>>, List<RoomRank>>() {
                     @Override
-                    public List<RoomRank> call(HttpResult<List<RoomRank>> listHttpResult) {
-                        return listHttpResult.getData();
+                    public List<RoomRank> call(HttpData<List<RoomRank>> listHttpData) {
+                        return listHttpData.getData();
                     }
                 }).subscribe(new Observer<List<RoomRank>>() {
                     @Override

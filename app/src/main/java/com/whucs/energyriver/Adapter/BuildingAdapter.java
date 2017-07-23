@@ -23,9 +23,9 @@ public class BuildingAdapter extends BaseAdapter implements View.OnClickListener
     private Drawable expand,collapse;
     private int padding;
 
-    public BuildingAdapter(Context context, List<Building>list){
+    public BuildingAdapter(Context context, Tree tree){
         this.context = context;
-        this.tree = new Tree(list);
+        this.tree = tree;
         this.treeNodes = tree.getExpandOrCollapseTree();
         this.expand = context.getResources().getDrawable(R.mipmap.expand);
         this.collapse = context.getResources().getDrawable(R.mipmap.collapse);
