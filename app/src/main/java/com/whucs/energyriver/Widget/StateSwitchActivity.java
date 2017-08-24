@@ -1,5 +1,6 @@
 package com.whucs.energyriver.Widget;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -10,7 +11,7 @@ import com.whucs.energyriver.Public.Common;
 import com.whucs.energyriver.R;
 
 
-public class StateSwitchActivity extends AppCompatActivity{
+public class StateSwitchActivity extends Activity {
     ScrollForbidViewPager viewPager;
     StateSwitchPagerAdapter adapter;
 

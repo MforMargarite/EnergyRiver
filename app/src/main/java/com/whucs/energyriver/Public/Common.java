@@ -3,11 +3,15 @@ package com.whucs.energyriver.Public;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 import com.whucs.energyriver.Bean.User;
 import com.whucs.energyriver.Interceptor.AddCookieInterceptor;
 import com.whucs.energyriver.R;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
@@ -22,29 +26,60 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class Common {
     private static Long id = -1L;
     private static Bitmap avatar = null;
-    public static final String ROOT = "http://192.168.137.1:8008/";
+    public static final String ROOT = "http://106.15.35.178:8008/EnergyRiver/";
     public static final String Inquiry = "view/energyInfo/index.html";
     public static final String[] types = {"照明","空调","插座"};
     public static int[] cate_icon = {R.mipmap.light,R.mipmap.air_condition,R.mipmap.socket};
     public static final int LOADING = 0;
     public static final int CONTENT = 1;
     public static final int ERROR = 2;
+    private static SharedPreferences sharedPreferences;
+    private static Retrofit retrofit;
 
-
-    public static Bitmap getAvatar() {
+    public static Bitmap getAvatar(Context context) {
+        if(sharedPreferences == null)
+            sharedPreferences =  context.getSharedPreferences("data",0);
+        if(sharedPreferences.contains("avatar")) {
+            byte[] avatar_data = sharedPreferences.getString("avatar", "").getBytes();
+            avatar = BitmapFactory.decodeByteArray(avatar_data,0,avatar_data.length);
+        }
         return avatar;
     }
 
-    public static boolean hasAvatar(){
-        return avatar != null;
+    public static boolean hasAvatar(Context context){
+        if(sharedPreferences == null)
+            sharedPreferences =  context.getSharedPreferences("data",0);
+        return sharedPreferences.contains("avatar");
     }
 
-    public static void setAvatar(Bitmap avatar) {
+    public static void saveAvatar(Context context, Bitmap avatar) {
+        //将头像存至数据库
         Common.avatar = avatar;
+        if(sharedPreferences == null)
+            sharedPreferences =  context.getSharedPreferences("data",0);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        avatar.compress(Bitmap.CompressFormat.PNG,100,outputStream);
+        sharedPreferences.edit().putString("avatar",new String(outputStream.toByteArray())).apply();
     }
 
-    private static SharedPreferences sharedPreferences;
-    private static Retrofit retrofit;
+    public static String getUserName(Context context){
+        if(sharedPreferences == null)
+            sharedPreferences =  context.getSharedPreferences("data",0);
+        return sharedPreferences.getString("username","");
+    }
+
+    public static Integer getScore(Context context){
+        if(sharedPreferences == null)
+            sharedPreferences =  context.getSharedPreferences("data",0);
+        return sharedPreferences.getInt("score",0);
+    }
+
+    public static void saveUserName(Context context,String username){
+        if(sharedPreferences == null)
+            sharedPreferences =  context.getSharedPreferences("data",0);
+        sharedPreferences.edit().putString("username",username).apply();
+    }
+
 
     public static Long getID(Context context){
         //获得登陆id
@@ -71,17 +106,39 @@ public class Common {
     }
 
 
-    public static void setUser(Context context,User user){
+    public static void setUser(Context context,User user)throws Exception{
         if(sharedPreferences == null)
             sharedPreferences = context.getSharedPreferences("data",0);
         Set<String> cookieSet =  new HashSet<>();
-        cookieSet.add("tokenNo="+user.getTokenNo()+";");
-        cookieSet.add("userID="+user.getUserID());
-        sharedPreferences.edit().putLong("id",user.getUserID())
-                .putString("username",user.getUsername())
-                .putInt("score",user.getScore())
+        cookieSet.add("tokenNo="+user.getData().getTokenNo()+";");
+        cookieSet.add("userID="+user.getData().getUserID());
+        byte[] avatar_data;
+        if(avatar == null && user.getHeadImg()!=null){
+            avatar_data = getAvatarByUrl(user.getHeadImg());
+            sharedPreferences.edit().putString("avatar",new String(avatar_data)).apply();
+            //bitmap->byte[]->String 保存头像至数据库
+        }
+        sharedPreferences.edit().putLong("id",user.getData().getUserID())
+                .putString("username",user.getData().getUsername())
+                .putInt("score",user.getUserPoint())
                 .putStringSet("cookies",cookieSet)
                 .apply();
+
+    }
+
+    private static byte[] getAvatarByUrl(String path)throws Exception{
+        URL url = new URL(path);
+        InputStream is = url.openStream();
+        avatar = BitmapFactory.decodeStream(is);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        byte[] temp = new byte[1024];//缓冲byte数组
+        int len;
+        while((len = is.read(temp))>-1){
+            outputStream.write(temp,0,len);
+        }
+        outputStream.close();
+        is.close();
+        return outputStream.toByteArray();
     }
 
     public static void unLogUser(Context context){
@@ -92,6 +149,7 @@ public class Common {
                 .remove("score")
                 .remove("cookies")
                 .remove("token")
+                .remove("avatar")
                 .apply();
     }
 
@@ -105,5 +163,13 @@ public class Common {
         if(sharedPreferences == null)
             sharedPreferences = context.getSharedPreferences("data",0);
         return sharedPreferences;
+    }
+
+    public static void saveBuilding(Context context,Long buildingID,String buildingName){
+        if(sharedPreferences == null)
+            sharedPreferences = context.getSharedPreferences("data",0);
+        sharedPreferences.edit().putString("buildingName",buildingName)
+                .putLong("buildingID",buildingID)
+                .apply();
     }
 }

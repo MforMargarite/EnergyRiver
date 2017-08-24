@@ -6,6 +6,8 @@
     <string name="load_error">加载出现问题</string>
     <string name="reload">重新加载</string>
     <string name="loading">加载中...</string>
+    <string name="ensure">确认</string>
+    <string name="cancel">取消</string>
     <!--底部tab-->
     <string name="inquiry">能耗查询</string>
     <string name="control">智能控制</string>
@@ -38,7 +40,7 @@
         <string name="change_name">修改用户名</string>
     <string name="submit">提交</string>
     <string name="shoot">拍照</string>
-    <string name="photograph">相册</string>
+    <string name="photograph">从相册中选择</string>
     <!--能耗查询-->
     <string name="consume_rank_monthly">本月能耗排名</string>
     <array name="tab_name">
@@ -64,5 +66,13 @@
     <string name="socket">插座</string>
     <string name="no_loop_item">暂无可控制的回路</string>
     <string name="no_control_loop">该房间下暂无可控制的回路</string>
-
+    <string name="room_temp">室内\n温度</string>
+    <string name="set_temp">设定\n温度</string>
+    <string name="low_speed">低速</string>
+    <string name="medium_speed">中速</string>
+    <string name="high_speed">高速</string>
+    <string name="cold_mode">冷风</string>
+    <string name="hot_mode">暖风</string>
+    <string name="dehumidify">除湿</string>
+    <string name="temp_unit"> ℃</string>
 </resources>

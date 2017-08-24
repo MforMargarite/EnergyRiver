@@ -108,4 +108,13 @@ public class ACAlter {
                 ", ResponseStatus=" + ResponseStatus +
                 '}';
     }
+/*
+    public void unset()throws Exception{
+        Method[] methods = this.getClass().getDeclaredMethods();
+        for (Method method:methods) {
+            if(method.toString().contains("set")){
+                method.invoke(this,null);
+            }
+        }
+    }*/
 }

@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -78,6 +77,8 @@ public class LoopAdapter extends BaseAdapter {
                 view = LayoutInflater.from(context).inflate(R.layout.detail_control_item, null);
                 TextView cate_name = (TextView) view.findViewById(R.id.cate_name);
                 ToggleButton toggle = (ToggleButton) view.findViewById(R.id.switcher);
+                if(loop.getOpenStatus()!=null)
+                    toggle.setChecked(loop.getOpenStatus());
                 toggle.setOnClickListener(clickListener);
                 cate_name.setText(loop.getLoopName());
                 toggle.setTag(loop.getLoopID());

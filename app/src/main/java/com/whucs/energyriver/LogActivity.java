@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.percent.PercentRelativeLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -73,13 +74,21 @@ public class LogActivity extends AppCompatActivity implements View.OnClickListen
     }
 
     @Override
-    public void setUser(User user) {
-        //将用户信息保存至SharedPreference中
-        Common.setUser(this,user);
-        //跳转至主界面
-        Toast.makeText(LogActivity.this, "登陆成功", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(LogActivity.this,MainActivity.class);
-        startActivity(intent);
+    public void setUser(User user){
+        Log.e("what",user.toString());
+        try {
+            //将用户信息保存至SharedPreference中
+            Common.setUser(this, user);
+            //跳转至主界面
+            Toast.makeText(LogActivity.this, "登陆成功", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(LogActivity.this,MainActivity.class);
+            startActivity(intent);
+        }catch (Exception e){
+            e.printStackTrace();
+            Log.e("what",e.getMessage());
+            Toast.makeText(LogActivity.this, "保存用户信息失败,请重试", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     @Override

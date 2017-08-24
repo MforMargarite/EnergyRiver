@@ -4,8 +4,9 @@ import android.content.Context;
 import android.util.Log;
 import android.view.View;
 
+import com.whucs.energyriver.Bean.ACCollect;
 import com.whucs.energyriver.Bean.Building;
-import com.whucs.energyriver.Bean.HttpData;
+import com.whucs.energyriver.Bean.HttpListData;
 import com.whucs.energyriver.Bean.HttpResult;
 import com.whucs.energyriver.Bean.Loop;
 import com.whucs.energyriver.Bean.Tree;
@@ -13,6 +14,8 @@ import com.whucs.energyriver.Biz.BuildingBiz;
 import com.whucs.energyriver.Biz.LoopBiz;
 import com.whucs.energyriver.Public.TreeUtil;
 import com.whucs.energyriver.View.ControlView;
+
+import java.util.HashMap;
 import java.util.List;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
@@ -34,9 +37,9 @@ public class ControlPresenter {
     public void getLoopInfoByBuildID(Context context){
         controlView.showLoading();
         loopBiz.getLoopInfoByBuildID(context,controlView.getBuildingID())
-                .map(new Func1<HttpData<List<Loop>>, List<Loop>>() {
+                .map(new Func1<HttpListData<List<Loop>>, List<Loop>>() {
                     @Override
-                    public List<Loop> call(HttpData<List<Loop>> listHttpData) {
+                    public List<Loop> call(HttpListData<List<Loop>> listHttpData) {
                         if(listHttpData.getData().size()!=0)
                             return listHttpData.getData();
                         else
@@ -67,9 +70,9 @@ public class ControlPresenter {
     public void getFirstBuildUnit(final Context context){
         controlView.showLoading();
         buildingBiz.getBuildingInfo(context)
-                .map(new Func1<HttpData<List<Building>>, List<Building>>() {
+                .map(new Func1<HttpListData<List<Building>>, List<Building>>() {
                     @Override
-                    public List<Building> call(HttpData<List<Building>> listHttpData) {
+                    public List<Building> call(HttpListData<List<Building>> listHttpData) {
                         return listHttpData.getData();
                     }
                 }).subscribeOn(Schedulers.io())
@@ -97,7 +100,6 @@ public class ControlPresenter {
 
     public void updateLoopState(final View view,Context context){
         controlView.showWaiting();
-        Log.e("what",controlView.getLoopID()+" "+controlView.getLoopState());
         loopBiz.updateLoop(context,controlView.getLoopID(),controlView.getLoopState())
                 .map(new Func1<HttpResult, Boolean>() {
                     @Override
@@ -126,6 +128,69 @@ public class ControlPresenter {
                         controlView.setUpdateResult(view,aBoolean);
                     }
                 });
+    }
+
+    public void getLoopStateByBuild(Context context){
+        controlView.showWaiting();
+        loopBiz.getLoopStateByBuilding(context,controlView.getBuildingID())
+                .map(new Func1<HttpListData<HashMap<Long,Object>>, HashMap<Long,Object>>() {
+                    @Override
+                    public HashMap<Long,Object> call(HttpListData<HashMap<Long, Object>> hashMapHttpData) {
+                        return hashMapHttpData.getData();
+                    }
+                }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<HashMap<Long, Object>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        controlView.getStateError();
+                        controlView.hideWaiting();
+                    }
+
+                    @Override
+                    public void onNext(HashMap<Long, Object> map) {
+                        controlView.setLoopState(map);
+                        controlView.hideWaiting();
+                    }
+                });
+    }
+
+    public void getAirState(Context context,Long loopID){
+        controlView.showWaiting();
+        loopBiz.getAirLoopStateByID(context,loopID)
+                .map(new Func1<HttpListData<ACCollect>, ACCollect>() {
+                    @Override
+                    public ACCollect call(HttpListData<ACCollect> acCollectHttpData) {
+                        Log.e("what",acCollectHttpData.getData().toString());
+                        return acCollectHttpData.getData();
+                    }
+                }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<ACCollect>() {
+                               @Override
+                               public void onCompleted() {
+
+                               }
+
+                               @Override
+                               public void onError(Throwable e) {
+                                    Log.e("what",e.getMessage());
+                                   controlView.getACError();
+                                   controlView.hideWaiting();
+                               }
+
+                               @Override
+                               public void onNext(ACCollect acCollect) {
+                                    controlView.setACCollect(acCollect);
+                                    controlView.hideWaiting();
+                               }
+                           }
+                );
     }
 
 

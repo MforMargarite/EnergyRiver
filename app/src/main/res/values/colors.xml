@@ -16,4 +16,10 @@
     <color name="grey">#ccc</color>
     <color name="dark_grey">#666</color>
     <color name="black">#000</color>
+    <color name="control_panel">#FAFAFA</color>
+    <color name="control_name">#B6B6B6</color>
+    <color name="control_selected">#ff7e00</color>
+    <color name="control_bg">#e4e4e4</color>
+    <color name='a1'>#eb6100</color>
+
 </resources>

@@ -2,18 +2,16 @@ package com.whucs.energyriver.Presenter;
 
 
 import android.content.Context;
-
 import com.whucs.energyriver.Bean.HttpData;
 import com.whucs.energyriver.Bean.RoomRank;
 import com.whucs.energyriver.Biz.RankBiz;
 import com.whucs.energyriver.View.RoomRankView;
-
 import java.util.List;
-
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+
 
 
 public class RoomRankPresenter {

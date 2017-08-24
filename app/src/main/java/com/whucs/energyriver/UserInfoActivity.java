@@ -1,5 +1,6 @@
 package com.whucs.energyriver;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,23 +10,26 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.percent.PercentRelativeLayout;
-import android.support.v4.view.GravityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.whucs.energyriver.Presenter.UserInfoPresenter;
 import com.whucs.energyriver.Public.Common;
+import com.whucs.energyriver.View.UserInfoView;
 import com.whucs.energyriver.Widget.MyCircleCrop;
-
 import java.io.File;
 
 
-public class UserInfoActivity extends AppCompatActivity implements View.OnClickListener{
+public class UserInfoActivity extends AppCompatActivity implements View.OnClickListener,UserInfoView{
     private PercentRelativeLayout avatar_panel,name_panel;
     private ImageView avatar,back;
     private TextView username;
@@ -34,8 +38,13 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
     private PopupWindow popupWindow;
     private static final int PHOTO_REQUEST_SHOOT = 1;
     private static final int PHOTO_REQUEST_PHOTOGRAPH = 2;
+    private static final int CHANGE_USERNAME = 4;
     private static final String ROOT = "EnergyRiver";
     private static final String AVATAR = "avatar";
+    private UserInfoPresenter presenter;
+    private byte[] avatar_byte;         //新头像
+    private String username_value;      //新用户名
+    private ProgressDialog dialog;      //加载中悬浮窗
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,8 +62,12 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
         avatar_panel.setOnClickListener(this);
         name_panel.setOnClickListener(this);
         back.setOnClickListener(this);
-        if(Common.hasAvatar())
-            avatar.setImageBitmap(Common.getAvatar());
+        //初始化 加载头像和用户名
+        if(Common.hasAvatar(this))
+            avatar.setImageBitmap(Common.getAvatar(this));
+        username.setText(Common.getUserName(this));
+        //初始化presenter
+        presenter = new UserInfoPresenter(this);
     }
 
     @Override
@@ -68,7 +81,7 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
                 break;
             case R.id.name_panel:
                 intent = new Intent(UserInfoActivity.this,ChangeNameActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent,CHANGE_USERNAME);
                 break;
             case R.id.fromCamera:
                 intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -116,12 +129,24 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
                 if (data != null) {
                     if (data.getIntExtra("mode", 0) != -1) {
                         try {
-                            byte[] avatar_byte = data.getByteArrayExtra("crop_pic");
-                            //post 更新至服务器 若成功
-                            Bitmap bmp = BitmapFactory.decodeByteArray(avatar_byte,0,avatar_byte.length);
-                            avatar.setImageBitmap(bmp);
-                            Common.setAvatar(bmp);
+                            avatar_byte = data.getByteArrayExtra("crop_pic");
+                            if(avatar_byte!=null)
+                                presenter.uploadAvatar(this);//post 更新至服务器
                         } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                break;
+            case 4:
+                if (data != null) {
+                    if (resultCode == 1) {
+                        try {
+                            username_value = data.getStringExtra("username").trim();
+                            if(!username_value.equals(username.getText().toString()))//用户名改变了
+                               presenter.updateUsername(this);//post 更新至服务器
+                        } catch (Exception e) {
+                            Log.e("what",e.getMessage());
                             e.printStackTrace();
                         }
                     }
@@ -130,7 +155,7 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-        private void showPopupWindow(View view) {
+    private void showPopupWindow(View view) {
         // 一个自定义的布局，作为显示的内容
         View contentView = LayoutInflater.from(this).inflate(
                 R.layout.pop_window, null);
@@ -148,4 +173,46 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
         popupWindow.showAtLocation(view, Gravity.CENTER_VERTICAL,0,0);
     }
 
+    @Override
+    public void showWaiting() {
+        if(dialog == null){
+            dialog = new ProgressDialog(this);
+        }
+        dialog.show();
+        dialog.setContentView(R.layout.progress_dialog);
+    }
+
+    @Override
+    public void hideWaiting() {
+        if(dialog!=null && dialog.isShowing())
+            dialog.dismiss();
+    }
+
+    @Override
+    public byte[] getAvatarData() {
+        return avatar_byte;
+    }
+
+    @Override
+    public String getUsername() {
+        return username_value;
+    }
+
+    @Override
+    public void uploadAvatarSuccess(byte[] avatar_byte) {
+        Bitmap bmp = BitmapFactory.decodeByteArray(avatar_byte,0,avatar_byte.length);
+        avatar.setImageBitmap(bmp);
+        Common.saveAvatar(this,bmp);
+    }
+
+    @Override
+    public void uploadUsernameSuccess(String username_value){
+        username.setText(username_value);
+        Common.saveUserName(this,username_value);
+    }
+
+    @Override
+    public void execError(String msg) {
+        Toast.makeText(this,msg,Toast.LENGTH_SHORT).show();
+    }
 }

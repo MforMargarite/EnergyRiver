@@ -32,6 +32,7 @@
         android:gravity="center_vertical"
         android:id="@+id/ori_pwd"
         android:textSize="14sp"
+        android:inputType="textPassword"
         app:layout_marginTopPercent="3%"
         app:layout_marginLeftPercent="5%"
         android:hint="@string/input_ori"/>
@@ -44,6 +45,7 @@
         android:gravity="center_vertical"
         android:id="@+id/new_pwd"
         android:textSize="14sp"
+        android:inputType="textPassword"
         app:layout_marginLeftPercent="5%"
         android:hint="@string/input_new"/>
     <EditText
@@ -54,6 +56,7 @@
         android:layout_centerHorizontal="true"
         android:gravity="center_vertical"
         android:textSize="14sp"
+        android:inputType="textPassword"
         app:layout_marginLeftPercent="5%"
         android:hint="@string/input_new_twice"
         android:id="@+id/ensure_new_pwd"/>

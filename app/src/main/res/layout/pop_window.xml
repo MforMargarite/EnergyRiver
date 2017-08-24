@@ -7,32 +7,52 @@
     android:gravity="bottom"
     android:clickable="true"
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/shoot"
-        android:gravity="center_horizontal"
-        android:paddingTop="12dp"
-        android:paddingBottom="12dp"
-        android:id="@+id/fromCamera"
-        android:clickable="true"
-        android:textSize="14sp"
-        android:textColor="@color/black"
-        android:background="@drawable/edit_shape" />
-    <TextView android:layout_height="1dp"
-        android:layout_width="match_parent"
-        android:background="@color/grey" />
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/photograph"
-        android:gravity="center_horizontal"
-        android:paddingTop="12dp"
-        android:paddingBottom="12dp"
-        android:id="@+id/fromGallery"
-        android:clickable="true"
-        android:textColor="@color/black"
-        android:textSize="14sp"
-        android:background="@drawable/edit_shape"
-        />
+        android:orientation="vertical"
+        android:background="@color/grey">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/shoot"
+            android:gravity="center_horizontal"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:id="@+id/fromCamera"
+            android:clickable="true"
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            android:background="@drawable/edit_shape" />
+        <TextView android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="@color/grey" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/photograph"
+            android:gravity="center_horizontal"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:id="@+id/fromGallery"
+            android:clickable="true"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:background="@drawable/edit_shape" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/cancel"
+            android:gravity="center_horizontal"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:id="@+id/cancel"
+            android:clickable="true"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/edit_shape"
+            />
+    </LinearLayout>
 </LinearLayout>

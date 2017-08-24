@@ -52,7 +52,6 @@
             android:layout_toRightOf="@id/avatar"
             android:layout_below="@id/username"
             android:id="@+id/score"
-            android:text="积分:406"
             app:layout_marginTopPercent="2%"
             android:textColor="@color/white"/>
         <ImageView

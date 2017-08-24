@@ -2,7 +2,7 @@ package com.whucs.energyriver.Presenter;
 
 import android.content.Context;
 import com.whucs.energyriver.Bean.Building;
-import com.whucs.energyriver.Bean.HttpData;
+import com.whucs.energyriver.Bean.HttpListData;
 import com.whucs.energyriver.Bean.Tree;
 import com.whucs.energyriver.Biz.BuildingBiz;
 import com.whucs.energyriver.View.ChooseRoomView;
@@ -27,9 +27,9 @@ public class ChooseRoomPresenter {
     public void getBuildingInfo(Context context){
         chooseRoomView.showWaiting();
         buildingBiz.getBuildingInfo(context)
-                .map(new Func1<HttpData<List<Building>>, Tree>() {
+                .map(new Func1<HttpListData<List<Building>>, Tree>() {
                     @Override
-                    public Tree call(HttpData<List<Building>> listHttpData){
+                    public Tree call(HttpListData<List<Building>> listHttpData){
                         List<Building>buildings = listHttpData.getData();
                         return new Tree(buildings);
                     }
