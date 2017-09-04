@@ -2,6 +2,7 @@ package com.whucs.energyriver.Widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.ListView;
 
 
@@ -20,9 +21,14 @@ public class ScrollListView extends ListView {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int expandSpec = MeasureSpec.makeMeasureSpec(Integer.MAX_VALUE >> 2,
-                MeasureSpec.AT_MOST);
-        super.onMeasure(widthMeasureSpec, expandSpec);
+        if(MeasureSpec.getMode(heightMeasureSpec) == MeasureSpec.EXACTLY) {
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        }
+        else {
+            int expandSpec = MeasureSpec.makeMeasureSpec(Integer.MAX_VALUE >> 2,
+                    MeasureSpec.AT_MOST);
+            super.onMeasure(widthMeasureSpec, expandSpec);
+        }
     }
 }
 

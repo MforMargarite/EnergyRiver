@@ -12,6 +12,7 @@ import com.whucs.energyriver.Bean.Loop;
 import com.whucs.energyriver.Bean.Tree;
 import com.whucs.energyriver.Biz.BuildingBiz;
 import com.whucs.energyriver.Biz.LoopBiz;
+import com.whucs.energyriver.Public.Common;
 import com.whucs.energyriver.Public.TreeUtil;
 import com.whucs.energyriver.View.ControlView;
 
@@ -92,7 +93,7 @@ public class ControlPresenter {
                 public void onNext(List<Building> buildings) {
                     Building building = TreeUtil.getFirstChildID(buildings);
                     Tree tree = new Tree(buildings);
-                    building.setBuildingName(tree.getBuildingPath(building));
+                    building.setBuildingName(tree.getBuildingPath(building,3));
                     controlView.setBuildingUnit(building);
                 }
             });
@@ -100,7 +101,7 @@ public class ControlPresenter {
 
     public void updateLoopState(final View view,Context context){
         controlView.showWaiting();
-        loopBiz.updateLoop(context,controlView.getLoopID(),controlView.getLoopState())
+        loopBiz.updateLoop(context, Common.getID(context),controlView.getLoopID(),controlView.getLoopState())
                 .map(new Func1<HttpResult, Boolean>() {
                     @Override
                     public Boolean call(HttpResult booleanHttpData) {
@@ -112,11 +113,12 @@ public class ControlPresenter {
                 .subscribe(new Observer<Boolean>() {
                     @Override
                     public void onCompleted() {
-
+                        controlView.hideWaiting();
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        Log.e("what",e.getMessage());
                         controlView.hideWaiting();
                         controlView.updateError(view);
 
@@ -124,7 +126,6 @@ public class ControlPresenter {
 
                     @Override
                     public void onNext(Boolean aBoolean) {
-                        controlView.hideWaiting();
                         controlView.setUpdateResult(view,aBoolean);
                     }
                 });

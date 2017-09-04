@@ -9,7 +9,7 @@
     <android.support.v7.widget.Toolbar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bottom_line"
+        android:background="@mipmap/navbg"
         android:id="@+id/toolbar">
         <TextView
             android:layout_width="wrap_content"
@@ -27,6 +27,10 @@
             android:id="@+id/menu"
             android:clickable="true"/>
     </android.support.v7.widget.Toolbar>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/gradient_end"/>
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -89,7 +93,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/loop_listView"
-                    android:divider="@null"/>
+                    android:divider="@null"
+                    android:layout_marginTop="16dp"/>
             </LinearLayout>
         </android.support.percent.PercentRelativeLayout>
     </ScrollView>

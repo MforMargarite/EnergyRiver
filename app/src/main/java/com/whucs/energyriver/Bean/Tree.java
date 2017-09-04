@@ -1,6 +1,5 @@
 package com.whucs.energyriver.Bean;
 
-
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -52,7 +51,7 @@ public class Tree {
                 containsNode(node,root);
             if(!isContains) {
                 for (Building build : list) {
-                    if (build.getBuildingID() == node.getData().getUpperBuildingID()) {
+                    if (build.getBuildingID().equals(node.getData().getUpperBuildingID())) {
                         if(root!=null)
                             findNodeByBuild(root, build);
                         if (parentNode == null) {
@@ -175,17 +174,18 @@ public class Tree {
         return nodes;
     }
 
-    public String getBuildingPath(Building building){
+    public String getBuildingPath(Building building,int layer){
         String builder = building.getBuildingName();
         do {
             parentNode = null;
             findNodeByBuild(root, building);
             parentNode = parentNode.getParent();
             if (parentNode != null) {
-                builder = parentNode.getData().getBuildingName() + " > " + builder;
+                builder = parentNode.getData().getBuildingName() + " - " + builder;
                 building = parentNode.getData();
+                layer--;
             }
-        }while(parentNode!=null);
+        }while(layer>1 && parentNode!=null);
         return builder;
     }
 

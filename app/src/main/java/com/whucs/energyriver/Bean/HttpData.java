@@ -16,7 +16,6 @@ public class HttpData<T> {
     }
 
     public T getData() {
-        Log.e("what",data.toString());
         return data;
     }
 

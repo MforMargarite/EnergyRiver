@@ -10,48 +10,56 @@ import android.view.ViewGroup;
 import com.whucs.energyriver.Public.Common;
 import com.whucs.energyriver.R;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 
 public class StateSwitchPagerAdapter extends PagerAdapter {
-    private View[] views;
-
-    public StateSwitchPagerAdapter(Context context,View view) {
+    //private View[] views;
+    private LinkedHashMap<String,View> mapView;
+    public StateSwitchPagerAdapter(Context context,View content) {
         ViewPager.LayoutParams layoutParams = new ViewPager.LayoutParams();
-        views = new View[getCount()];
-        views[Common.LOADING] = LayoutInflater.from(context).inflate(R.layout.loading, null);
-        views[Common.CONTENT] = view;
-        views[Common.ERROR] = LayoutInflater.from(context).inflate(R.layout.error, null);
-        for (int i=0;i<views.length;i++) {
-            views[i].setLayoutParams(layoutParams);
-            views[i].setMinimumWidth(ViewPager.LayoutParams.MATCH_PARENT);
-            views[i].setMinimumHeight(ViewPager.LayoutParams.MATCH_PARENT);
+        mapView = new LinkedHashMap<>();
+        mapView.put("loading",LayoutInflater.from(context).inflate(R.layout.loading, null));
+        mapView.put("content",content);
+        mapView.put("error",LayoutInflater.from(context).inflate(R.layout.error, null));
+        Iterator<Map.Entry<String,View>>iterator = mapView.entrySet().iterator();
+        while(iterator.hasNext()){
+            Map.Entry<String,View>entry = iterator.next();
+            View view = entry.getValue();
+            view.setLayoutParams(layoutParams);
+            view.setMinimumWidth(ViewPager.LayoutParams.MATCH_PARENT);
+            view.setMinimumHeight(ViewPager.LayoutParams.MATCH_PARENT);
+            mapView.put(entry.getKey(),view);
         }
     }
 
-    public void setContentLayout(View view){
-        views[Common.CONTENT] = view;
+    public void setViewWithTag(String tag,View view){
+        mapView.put(tag,view);
     }
 
-    public void setErrorLayout(View view){
-        views[Common.ERROR] = view;
+    public View getViewByTag(String tag){
+        return mapView.get(tag);
     }
 
-    public void setLoadingLayout(View view){
-        views[Common.LOADING] = view;
-    }
+    public int getIndexByTag(String tag){return new ArrayList<>(mapView.keySet()).indexOf(tag);}
 
-    public View getViewByType(int type){
-        return views[type];
+    public void addState(String tag,View view){
+        mapView.put(tag,view);
     }
 
     @Override
     public int getCount() {
-        return 3;//页面加载的三种状态：加载中、加载完成和加载失败
+        return mapView.size();//页面加载的三种状态：加载中、加载完成和加载失败
     }
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        container.addView(views[position]);
-        return views[position];
+        container.addView((View)mapView.values().toArray()[position]);
+        return mapView.values().toArray()[position];
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.whucs.energyriver;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -10,17 +11,20 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.whucs.energyriver.Adapter.MainPagerAdapter;
+import com.whucs.energyriver.Public.Common;
 import com.whucs.energyriver.Public.Layout;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,ViewPager.OnPageChangeListener{
     private ViewPager viewPager;
     private ImageView inquiry,control,user,cur_tab;//底部导航
+    private Resources res;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initWidget();
+
     }
 
     private void initWidget(){
@@ -33,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         user.setOnClickListener(this);
         viewPager.addOnPageChangeListener(this);
         viewPager.setAdapter(new MainPagerAdapter(getSupportFragmentManager()));
+        res = getResources();
         setCurrentTab(0);
     }
 
@@ -40,12 +45,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.inquiry:
+                setCurrentTab(0);
                 viewPager.setCurrentItem(0,true);
                 break;
             case R.id.control:
+                setCurrentTab(1);
                 viewPager.setCurrentItem(1,true);
                 break;
             case R.id.user:
+                setCurrentTab(2);
                 viewPager.setCurrentItem(2,true);
                 break;
         }
@@ -66,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    private void setCurrentTab(int position){
+    public void setCurrentTab(int position){
         switch (position){
             case 0:
                 if(cur_tab == null)
@@ -75,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     if (cur_tab != inquiry) {
                         clearAllTab();
                         cur_tab = inquiry;
-                        //    cur_tab.setImageDrawable(Layout.getSelectedMenu(this)[position]);
+                        cur_tab.setBackgroundColor(res.getColor(R.color.selected_tab_blue));
                     }
                 }
                 break;
@@ -83,14 +91,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (cur_tab != control) {
                     clearAllTab();
                     cur_tab = control;
-                    //    cur_tab.setImageDrawable(Layout.getSelectedMenu(this)[position]);
+                    cur_tab.setBackgroundColor(res.getColor(R.color.selected_tab_blue));
                 }
                 break;
             case 2:
                 if (cur_tab != user) {
                     clearAllTab();
                     cur_tab = user;
-                    //    cur_tab.setImageDrawable(Layout.getSelectedMenu(this)[position]);
+                    cur_tab.setBackgroundColor(res.getColor(R.color.selected_tab_blue));
                 }
                 break;
             default:
@@ -101,8 +109,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void clearAllTab(){
         Drawable[] origin_menu = Layout.getOriginMenu(this);
         inquiry.setImageDrawable(origin_menu[0]);
+        inquiry.setBackgroundColor(res.getColor(R.color.tab_blue));
         control.setImageDrawable(origin_menu[1]);
+        control.setBackgroundColor(res.getColor(R.color.tab_blue));
         user.setImageDrawable(origin_menu[2]);
+        user.setBackgroundColor(res.getColor(R.color.tab_blue));
     }
 
     @Override
@@ -117,4 +128,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return super.onKeyDown(keyCode, event);
     }
 
+    @Override
+    protected void onResume() {
+        if(Common.getID(this) == -1) {
+            Intent intent = new Intent(this,LogActivity.class);
+            startActivity(intent);
+            MainActivity.this.finish();
+        }else
+            super.onResume();
+    }
 }

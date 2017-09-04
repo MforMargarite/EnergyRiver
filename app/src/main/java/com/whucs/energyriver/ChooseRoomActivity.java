@@ -66,7 +66,7 @@ public class ChooseRoomActivity extends StateSwitchActivity implements View.OnCl
 
     @Override
     public void showWaiting() {
-        showLoading();
+        showViewByTag("loading");
     }
 
     @Override
@@ -75,12 +75,12 @@ public class ChooseRoomActivity extends StateSwitchActivity implements View.OnCl
         BuildingAdapter adapter = new BuildingAdapter(this,tree);
         building.setAdapter(adapter);
         adapter.notifyDataSetChanged();
-        showContent();
+        showViewByTag("content");
     }
 
     @Override
     public void execError() {
-        showError();
+        showViewByTag("error");
     }
 
 
@@ -90,7 +90,7 @@ public class ChooseRoomActivity extends StateSwitchActivity implements View.OnCl
         if(node.getData().getIsRoom()){
             Intent data = new Intent();
             data.putExtra("buildingID",node.getData().getBuildingID());
-            data.putExtra("buildingName",tree.getBuildingPath(node.getData()));
+            data.putExtra("buildingName",tree.getBuildingPath(node.getData(),3));
             setResult(1,data);
             this.finish();
         }else{

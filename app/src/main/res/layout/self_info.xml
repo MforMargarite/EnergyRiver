@@ -8,7 +8,7 @@
     <android.support.v7.widget.Toolbar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bottom_line"
+        android:background="@mipmap/navbg"
         android:id="@+id/toolbar">
         <TextView
             android:layout_width="wrap_content"
@@ -23,12 +23,18 @@
             android:src="@mipmap/back"
             android:id="@+id/back"/>
     </android.support.v7.widget.Toolbar>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/gradient_end"
+        android:layout_below="@id/toolbar"
+        android:id="@+id/underline"/>
     <android.support.percent.PercentRelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/toolbar"
         android:id="@+id/avatar_panel"
         android:clickable="true"
+        android:layout_below="@id/underline"
         android:background="@color/colorPrimary"
         app:layout_marginTopPercent="5%">
         <TextView android:layout_width="wrap_content"
@@ -48,6 +54,7 @@
             app:layout_marginTopPercent="2%"
             app:layout_marginBottomPercent="2%"
             android:id="@+id/avatar"
+            android:src="@mipmap/avatar"
             android:layout_toLeftOf="@+id/arrow"/>
         <ImageView
             android:layout_width="wrap_content"

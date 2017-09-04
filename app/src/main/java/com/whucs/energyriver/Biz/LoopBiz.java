@@ -6,6 +6,8 @@ import com.whucs.energyriver.Bean.ACCollect;
 import com.whucs.energyriver.Bean.HttpListData;
 import com.whucs.energyriver.Bean.HttpResult;
 import com.whucs.energyriver.Bean.Loop;
+import com.whucs.energyriver.Public.Common;
+
 import java.util.HashMap;
 import java.util.List;
 import retrofit2.http.GET;
@@ -19,21 +21,21 @@ public class LoopBiz {
 
     public static LoopService getLoopService(Context context){
         if(loopService == null)
-            loopService = getLoopService(context);
+            loopService = Common.getRetrofit(context).create(LoopService.class);
         return loopService;
     }
 
     interface LoopService {
-        @GET("/loopManage/getLoopInfoByBuildSortByType")
+        @GET("loopManage/getLoopInfoByBuildSortByType")
         Observable<HttpListData<List<Loop>>> getLoopInfoByBuildID(@Query("buildingID") Long buildingID);
 
-        @POST("/monitor/updateLoopStateByLoopID")
-        Observable<HttpResult> updateLoop (@Query("loopID") Long loopID, @Query("loopState") String loopState);
+        @GET("monitor/updateLoopStateByLoopID")
+        Observable<HttpResult> updateLoop (@Query("userID")Long userID,@Query("loopID") Long loopID, @Query("loopState") String loopState);
 
-        @GET("/monitor/getLoopStateByBuilding")
+        @GET("monitor/getLoopStateByBuilding")
         Observable<HttpListData<HashMap<Long,Object>>> getLoopStateByBuilding (@Query("buildingID") Long buildingID);
 
-        @GET("/monitor/getLoopStateByLoopID")
+        @GET("monitor/getLoopStateByLoopID")
         Observable<HttpListData<ACCollect>> getAirLoopStateByID (@Query("loopID") Long loopID);
 
     }
@@ -42,8 +44,8 @@ public class LoopBiz {
         return getLoopService(context).getLoopInfoByBuildID(buildingID);
     }
 
-    public Observable<HttpResult> updateLoop (Context context, Long buildingID, String loopState){
-        return getLoopService(context).updateLoop(buildingID,loopState);
+    public Observable<HttpResult> updateLoop (Context context, Long userID,Long buildingID, String loopState){
+        return getLoopService(context).updateLoop(userID,buildingID,loopState);
     }
 
     public Observable<HttpListData<HashMap<Long,Object>>> getLoopStateByBuilding (Context context, Long buildingID){

@@ -44,6 +44,7 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
     private UserInfoPresenter presenter;
     private byte[] avatar_byte;         //新头像
     private String username_value;      //新用户名
+    private String avatar_url;          //新头像地址
     private ProgressDialog dialog;      //加载中悬浮窗
 
     @Override
@@ -94,8 +95,13 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
                 intent.setType("image/*");
                 startActivityForResult(intent, PHOTO_REQUEST_PHOTOGRAPH);
                 break;
+            case R.id.cancel:
+                if(popupWindow.isShowing())
+                    popupWindow.dismiss();
+                break;
             case R.id.avatar_click:
-                popupWindow.dismiss();
+                if(popupWindow.isShowing())
+                    popupWindow.dismiss();
                 break;
 
         }
@@ -163,10 +169,11 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
         LinearLayout avatar_click = (LinearLayout) contentView.findViewById(R.id.avatar_click);
         TextView fromGallery = (TextView) contentView.findViewById(R.id.fromGallery);
         TextView fromCamera = (TextView) contentView.findViewById(R.id.fromCamera);
+        TextView cancel = (TextView) contentView.findViewById(R.id.cancel);
         avatar_click.setOnClickListener(this);
         fromCamera.setOnClickListener(this);
         fromGallery.setOnClickListener(this);
-        fromGallery.setOnClickListener(this);
+        cancel.setOnClickListener(this);
         popupWindow = new PopupWindow(contentView,
                 PercentRelativeLayout.LayoutParams.MATCH_PARENT, PercentRelativeLayout.LayoutParams.MATCH_PARENT, true);
         popupWindow.setTouchable(true);
@@ -199,10 +206,25 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
     }
 
     @Override
-    public void uploadAvatarSuccess(byte[] avatar_byte) {
+    public void updateURLSuccess(byte[] avatar_byte){
         Bitmap bmp = BitmapFactory.decodeByteArray(avatar_byte,0,avatar_byte.length);
         avatar.setImageBitmap(bmp);
         Common.saveAvatar(this,bmp);
+
+    }
+
+    @Override
+    public void uploadAvatarSuccess(String url) {
+        //更新用户头像
+        if(popupWindow.isShowing())
+            popupWindow.dismiss();
+        avatar_url = url;
+        presenter.updateAvatarURL(this);
+    }
+
+    @Override
+    public String getAvatarURL(){
+        return avatar_url;
     }
 
     @Override

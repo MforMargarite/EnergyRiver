@@ -31,35 +31,31 @@ public class StateSwitchFragment extends Fragment{
         if(activity == null)
             activity  = getActivity();
         adapter = new StateSwitchPagerAdapter(activity,view);//加载内容区至ViewPager中
-        adapter.setErrorLayout(initErrorWidget(adapter.getViewByType(Common.ERROR)));
+        adapter.setViewWithTag("error",initErrorWidget(adapter.getViewByTag("error")));
         viewPager.setAdapter(adapter);
     }
 
-    public View initErrorWidget(View view){
+    public void addState(String tag,View view){
+        adapter.addState(tag,view);
+        adapter.notifyDataSetChanged();
+    }
+
+
+    private View initErrorWidget(View view){
         TextView reload = (TextView) view.findViewById(R.id.reload);
         reload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showContent();
                 reload();
             }
         });
         return view;
     }
 
-    public void showLoading(){
-        if(viewPager.getCurrentItem()!=Common.LOADING)
-            viewPager.setCurrentItem(Common.LOADING);
-    }
-
-    public void showError(){
-        if(viewPager.getCurrentItem()!=Common.ERROR)
-            viewPager.setCurrentItem(Common.ERROR);
-    }
-
-    public void showContent(){
-        if(viewPager.getCurrentItem()!=Common.CONTENT)
-            viewPager.setCurrentItem(Common.CONTENT);
+    public void showViewByTag(String tag){
+        int chosen = adapter.getIndexByTag(tag);
+        if(viewPager.getCurrentItem()!=chosen)
+            viewPager.setCurrentItem(chosen);
     }
 
     public void reload(){}

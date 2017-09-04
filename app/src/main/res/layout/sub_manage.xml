@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.percent.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="@color/baseColor">
     <android.support.v7.widget.Toolbar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/toolbar"
-        android:background="@drawable/bottom_line">
+        android:background="@mipmap/navbg">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:textColor="@color/white"
-            android:text="@string/sub_manage"/>
+            android:text="@string/sub_manage"
+            android:textSize="16sp"/>
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -29,13 +29,15 @@
             android:id="@+id/add"
             android:layout_marginRight="16dp"/>
     </android.support.v7.widget.Toolbar>
-
-    <ListView
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/room_info"
+        android:layout_height="1dp"
+        android:background="@color/gradient_end"
+        android:id="@+id/underline"/>
+    <com.whucs.energyriver.Widget.ScrollListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_marginTop="1dp"
         android:id="@+id/subs"
-        android:background="@null"
-        app:layout_marginTopPercent="3%"/>
-</android.support.percent.PercentRelativeLayout>
+        android:divider="@null"/>
+</LinearLayout>

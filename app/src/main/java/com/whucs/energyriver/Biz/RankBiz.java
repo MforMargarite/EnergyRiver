@@ -17,11 +17,11 @@ import rx.Observable;
 
 public class RankBiz {
     interface RankService {
-        @POST("/roomrank")
+        @POST("roomrank")
         Observable<HttpData<List<RoomRank>>> getRoomRank();
-        @POST("/roomrank")
+        @POST("roomrank")
         Observable<HttpData<List<ScoreRank>>> getScoreRank(@Query("username") String username, @Query("password") String password);
-        @POST("/roomrank")
+        @POST("roomrank")
         Observable<HttpData<List<DeptRank>>> getDeptRank(@Query("username") String username, @Query("password") String password);
     }
 

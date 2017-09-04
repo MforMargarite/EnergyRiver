@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="standard_blue">#7880FF</color>
-    <color name="colorPrimary">#002038</color>
+    <color name="selected_tab_blue">#051A32</color>
+    <color name="tab_blue">#002543</color>
     <color name="baseColor">#03172D</color>
+    <color name="colorPrimary">#002038</color>
     <color name="toolbarColor">#002543</color>
     <color name="bottomColor">#071C35</color>
     <color name="gradient_end">#0A2F5F</color>
@@ -20,6 +22,9 @@
     <color name="control_name">#B6B6B6</color>
     <color name="control_selected">#ff7e00</color>
     <color name="control_bg">#e4e4e4</color>
-    <color name='a1'>#eb6100</color>
+    <color name="authority_grey">#A1A1A1</color>
+    <color name="auth_cancel_grey">#D2D2D2</color>
+    <color name="auth_text_grey">#555</color>
+    <color name="red">#C93333</color>
 
 </resources>

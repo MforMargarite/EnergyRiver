@@ -5,11 +5,11 @@
     <android.support.v7.widget.Toolbar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/baseColor">
+        android:background="@mipmap/navbg">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
+            android:layout_gravity="center"
             android:text="@string/inquiry"
             android:textColor="@color/white"
             android:textSize="16sp"/>

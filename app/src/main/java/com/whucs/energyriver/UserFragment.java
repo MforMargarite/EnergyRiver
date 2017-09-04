@@ -22,6 +22,8 @@ public class UserFragment extends Fragment implements View.OnClickListener{
     PercentRelativeLayout sub_manage;//子用户管理
     PercentRelativeLayout bill;//账单管理
     PercentRelativeLayout notification;//事件通知
+    PercentRelativeLayout buy_vip;//VIP购买
+    PercentRelativeLayout invoice_manage;//发票管理
     PercentRelativeLayout change_pwd;//修改密码
     PercentRelativeLayout log_out;//退出登录
     PercentRelativeLayout about_us;//关于我们
@@ -47,6 +49,8 @@ public class UserFragment extends Fragment implements View.OnClickListener{
         sub_manage = (PercentRelativeLayout) view.findViewById(R.id.sub_manage);
         bill = (PercentRelativeLayout) view.findViewById(R.id.bill);
         notification = (PercentRelativeLayout) view.findViewById(R.id.notification);
+        buy_vip = (PercentRelativeLayout) view.findViewById(R.id.buy_vip);
+        invoice_manage = (PercentRelativeLayout) view.findViewById(R.id.invoice_manage);
         change_pwd = (PercentRelativeLayout) view.findViewById(R.id.change_pwd);
         log_out = (PercentRelativeLayout) view.findViewById(R.id.log_out);
         about_us = (PercentRelativeLayout) view.findViewById(R.id.about_us);
@@ -59,12 +63,13 @@ public class UserFragment extends Fragment implements View.OnClickListener{
         log_out.setOnClickListener(this);
         about_us.setOnClickListener(this);
 
-        //初始化用户头像、用户名和积分信息
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        //初始化用户头像、用户名和积分信息
         if(Common.hasAvatar(activity))
             avatar.setImageBitmap(Common.getAvatar(activity));
         username.setText(Common.getUserName(activity));

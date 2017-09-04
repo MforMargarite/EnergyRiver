@@ -22,9 +22,14 @@ public class StateSwitchActivity extends Activity {
         viewPager = (ScrollForbidViewPager) findViewById(R.id.container);
     }
 
+    public void addState(String tag,View view){
+        adapter.addState(tag,view);
+        adapter.notifyDataSetChanged();
+    }
+
     public void iniAdapter(View view){
         adapter = new StateSwitchPagerAdapter(this,view);//加载内容区至ViewPager中
-        adapter.setErrorLayout(initErrorWidget(adapter.getViewByType(Common.ERROR)));
+        adapter.setViewWithTag("error",initErrorWidget(adapter.getViewByTag("error")));
         viewPager.setAdapter(adapter);
     }
 
@@ -34,23 +39,16 @@ public class StateSwitchActivity extends Activity {
         reload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showContent();
                 reload();
             }
         });
         return view;
     }
 
-    public void showLoading(){
-        viewPager.setCurrentItem(Common.LOADING);
-    }
-
-    public void showError(){
-        viewPager.setCurrentItem(Common.ERROR);
-    }
-
-    public void showContent(){
-        viewPager.setCurrentItem(Common.CONTENT);
+    public void showViewByTag(String tag){
+        int chosen = adapter.getIndexByTag(tag);
+        if(viewPager.getCurrentItem()!=chosen)
+            viewPager.setCurrentItem(chosen);
     }
 
     public void reload(){}

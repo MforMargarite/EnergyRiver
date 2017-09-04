@@ -28,16 +28,16 @@ public class InquiryFragment extends Fragment implements View.OnClickListener{
             initWidget(view);
         }return view;
     }
-/*
 
     @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if(getUserVisibleHint()) {
+    public void onResume() {
+        super.onResume();
+        if(view == null) {
+            activity = getActivity();
+            view = LayoutInflater.from(activity).inflate(R.layout.inquiry, null);
         }
+        initWidget(view);
     }
-*/
-
 
     private void initWidget(View view){
         webView = (WebView) view.findViewById(R.id.result);

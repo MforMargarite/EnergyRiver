@@ -3,6 +3,8 @@ package com.whucs.energyriver.Public;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 
 import java.util.HashMap;
@@ -23,12 +25,25 @@ public class HttpUtil {
     public boolean saveToken(Context context,HashSet<String>cookieSet){
         HashMap<String,String>cookieMap = convertToCookieMap(cookieSet);
         if(cookieMap.containsKey("tokenNo")){
-            Log.e("what","tokenNo:"+cookieMap.get("tokenNo"));
+            //Log.e("what","tokenNo:"+cookieMap.get("tokenNo"));
             Common.getSharedPreference(context).edit().putString("token",cookieMap.get("token")).apply();
             return true;
         }
         return false;
     }
 
+    public static boolean isNetworkAvailable(Context context){
+        boolean netStatus = false;
+        try{
+            ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+            if(networkInfo!=null)
+                if(networkInfo.isAvailable() && networkInfo.isConnected())
+                    netStatus = true;
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return netStatus;
+    }
 
 }

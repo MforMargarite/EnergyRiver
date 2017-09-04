@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_bg">
     <android.support.v7.widget.Toolbar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/baseColor">
+        android:background="@mipmap/navbg">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -20,7 +21,7 @@
             android:id="@+id/back"
             android:clickable="true"/>
     </android.support.v7.widget.Toolbar>
-    <WebView
+    <com.whucs.energyriver.Widget.ScrollListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/bill"/>

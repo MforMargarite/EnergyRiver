@@ -8,8 +8,10 @@ public interface UserInfoView {
 
     byte[] getAvatarData();
     String getUsername();
+    String getAvatarURL();
 
-    void uploadAvatarSuccess(byte[] avatar_byte);
+    void uploadAvatarSuccess(String url);
+    void updateURLSuccess(byte[] avatar_byte);
     void uploadUsernameSuccess(String username);
     void execError(String msg);
 }

@@ -22,6 +22,17 @@ public class User {
     private String headImg;	    //头像文件的路径
     private LoginInfo data;
     private int code;           //执行结果
+    private Integer isVIP;      //是否为VIP用户
+
+    public Integer getIsVIP() {
+        if(isVIP!=null)
+            return isVIP;
+        return 0;
+    }
+
+    public void setIsVIP(Integer isVIP) {
+        this.isVIP = isVIP;
+    }
 
     public int getCode() {
         return code;
@@ -128,7 +139,9 @@ public class User {
     }
 
     public Integer getIsAdmin() {
-        return isAdmin;
+        if(isAdmin!=null)
+            return isAdmin;
+        return 0;
     }
 
     public void setIsAdmin(Integer isAdmin) {
@@ -136,7 +149,9 @@ public class User {
     }
 
     public Integer getIsSysAdmin() {
-        return isSysAdmin;
+        if(isSysAdmin!=null)
+            return isSysAdmin;
+        return 0;
     }
 
     public void setIsSysAdmin(Integer isSysAdmin) {
@@ -208,6 +223,7 @@ public class User {
                 ", headImg='" + headImg + '\'' +
                 ", data=" + data +
                 ", code=" + code +
+                ", isVIP=" + isVIP +
                 '}';
     }
 }

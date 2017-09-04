@@ -49,29 +49,22 @@ public class BuildingAdapter extends BaseAdapter implements View.OnClickListener
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        ViewHolder holder;
-        if(view == null){
-            view = LayoutInflater.from(context).inflate(R.layout.tree_item,null);
-            holder = new ViewHolder();
-            holder.content = (TextView) view.findViewById(R.id.content);
-            holder.toggle = (ImageView) view.findViewById(R.id.toggle);
-            holder.wrapper = (LinearLayout) view.findViewById(R.id.wrapper);
-            view.setTag(holder);
-        }else
-            holder = (ViewHolder) view.getTag();
-        holder.toggle.setOnClickListener(this);
+        view = LayoutInflater.from(context).inflate(R.layout.tree_item,null);
+        TextView content = (TextView) view.findViewById(R.id.content);
+        ImageView toggle = (ImageView) view.findViewById(R.id.toggle);
+        LinearLayout wrapper = (LinearLayout) view.findViewById(R.id.wrapper);
+        toggle.setOnClickListener(this);
         TreeNode<Building>node = treeNodes.get(i);
         if (!node.isChild()) {
             //加载展开/折叠按钮
-            holder.toggle.setVisibility(View.VISIBLE);
-            holder.toggle.setTag(node);
-            initToggle(holder.toggle,node);
-            holder.wrapper.setPadding(node.getLayer()*40,padding,0,padding);
+            toggle.setVisibility(View.VISIBLE);
+            toggle.setTag(node);
+            initToggle(toggle,node);
         }else {
-            holder.toggle.setVisibility(View.INVISIBLE);
-            holder.wrapper.setPadding(node.getLayer()*32,padding,0,padding);
+            toggle.setVisibility(View.INVISIBLE);
         }
-        holder.content.setText(node.getData().getBuildingName());
+        wrapper.setPadding(node.getLayer()*32,padding,0,padding);
+        content.setText(node.getData().getBuildingName());
         return view;
     }
 

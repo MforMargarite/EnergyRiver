@@ -9,7 +9,7 @@
     <android.support.v7.widget.Toolbar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bottom_line"
+        android:background="@mipmap/navbg"
         android:id="@+id/toolbar">
         <TextView
             android:layout_width="wrap_content"
@@ -20,13 +20,20 @@
             android:textSize="16sp"/>
     </android.support.v7.widget.Toolbar>
     <!--用户信息-->
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/gradient_end"
+        android:layout_below="@+id/toolbar"
+        android:id="@+id/underline"/>
     <android.support.percent.PercentRelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/toolbar"
+        android:layout_below="@id/underline"
         android:id="@+id/user_panel"
         android:background="@color/colorPrimary"
-        app:layout_marginTopPercent="5%">
+        app:layout_marginTopPercent="3%">
         <ImageView
             app:layout_widthPercent="17%"
             app:layout_heightPercent="12%"
@@ -34,7 +41,8 @@
             app:layout_marginRightPercent="3%"
             app:layout_marginTopPercent="3%"
             app:layout_marginBottomPercent="3%"
-            android:id="@+id/avatar"/>
+            android:id="@+id/avatar"
+            android:src="@mipmap/avatar"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="0dp"
@@ -68,7 +76,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/user_panel"
-        app:layout_marginTopPercent="5%"
+        app:layout_marginTopPercent="3%"
         android:id="@+id/operate_panel">
         <!--子用户管理-->
         <android.support.percent.PercentRelativeLayout
@@ -150,18 +158,69 @@
         </android.support.percent.PercentRelativeLayout>
     </android.support.percent.PercentRelativeLayout>
 
-    <!--修改密码-->
+    <!--VIP购买-->
     <android.support.percent.PercentRelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/operate_panel"
-        android:id="@+id/change_pwd"
+        android:id="@+id/buy_vip"
         android:background="@color/colorPrimary"
-        app:layout_marginTopPercent="5%">
+        app:layout_marginTopPercent="3%">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_marginPercent="7%"
+            app:layout_marginLeftPercent="7%"
+            app:layout_marginTopPercent="4%"
+            app:layout_marginBottomPercent="4%"
+            android:text="@string/buy_vip"
+            android:textColor="@color/white"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            app:layout_marginRightPercent="5%"
+            android:src="@mipmap/arrow"/>
+    </android.support.percent.PercentRelativeLayout>
+
+    <!--发票管理-->
+    <android.support.percent.PercentRelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/buy_vip"
+        android:id="@+id/invoice_manage"
+        android:background="@color/colorPrimary">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_marginLeftPercent="7%"
+            app:layout_marginTopPercent="4%"
+            app:layout_marginBottomPercent="4%"
+            android:text="@string/invoice_manage"
+            android:textColor="@color/white"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            app:layout_marginRightPercent="5%"
+            android:src="@mipmap/arrow"/>
+    </android.support.percent.PercentRelativeLayout>
+
+    <!--修改密码-->
+    <android.support.percent.PercentRelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/invoice_manage"
+        android:id="@+id/change_pwd"
+        android:background="@color/colorPrimary"
+        app:layout_marginTopPercent="3%">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_marginLeftPercent="7%"
+            app:layout_marginTopPercent="7%"
+            app:layout_marginBottomPercent="7%"
             android:text="@string/change_pwd"
             android:textColor="@color/white"/>
         <ImageView
@@ -169,7 +228,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            app:layout_marginRightPercent="7%"
+            app:layout_marginRightPercent="5%"
             android:src="@mipmap/arrow"/>
     </android.support.percent.PercentRelativeLayout>
 
@@ -183,7 +242,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_marginPercent="7%"
+            app:layout_marginLeftPercent="7%"
+            app:layout_marginTopPercent="7%"
+            app:layout_marginBottomPercent="7%"
             android:text="@string/log_out"
             android:textColor="@color/white"/>
         <ImageView
@@ -191,7 +252,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            app:layout_marginRightPercent="7%"
+            app:layout_marginRightPercent="5%"
             android:src="@mipmap/arrow"/>
     </android.support.percent.PercentRelativeLayout>
 
@@ -207,8 +268,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_marginLeftPercent="7%"
-            app:layout_marginTopPercent="12%"
-            app:layout_marginBottomPercent="12%"
+            app:layout_marginTopPercent="15%"
+            app:layout_marginBottomPercent="15%"
             android:text="@string/about_us"
             android:textColor="@color/white"/>
         <ImageView
@@ -216,7 +277,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            app:layout_marginRightPercent="7%"
+            app:layout_marginRightPercent="5%"
             android:src="@mipmap/arrow"/>
     </android.support.percent.PercentRelativeLayout>
 </android.support.percent.PercentRelativeLayout>

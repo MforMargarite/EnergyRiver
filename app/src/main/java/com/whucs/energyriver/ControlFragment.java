@@ -1,6 +1,5 @@
 package com.whucs.energyriver;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -28,8 +27,11 @@ import com.whucs.energyriver.Presenter.ControlPresenter;
 import com.whucs.energyriver.Public.Common;
 import com.whucs.energyriver.View.ControlView;
 import com.whucs.energyriver.Widget.AirControlDialog;
+import com.whucs.energyriver.Widget.ScrollListView;
 import com.whucs.energyriver.Widget.StateSwitchFragment;
 
+import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -43,7 +45,7 @@ public class ControlFragment extends StateSwitchFragment implements View.OnClick
     GridView scene_info;
     ListView loopListView;
     TextView room;
-    Activity activity;
+    MainActivity activity;
 
     ProgressDialog waiting;
     AirControlDialog dialog;
@@ -68,41 +70,65 @@ public class ControlFragment extends StateSwitchFragment implements View.OnClick
         return view;
     }
 
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if(getUserVisibleHint()) {
+    private void getPageInfo(){
+        if(controlPresenter == null)
             controlPresenter = new ControlPresenter(this);
-            buildingID = Common.getSharedPreference(activity).getLong("buildingID",-1L);
-            if(buildingID!=-1L) {
-                buildingName = Common.getSharedPreference(activity).getString("buildingName","");
-                room.setText(buildingName);
-                controlPresenter.getLoopInfoByBuildID(activity);
-            }else
-                controlPresenter.getFirstBuildUnit(activity);
-        }
+        buildingID = Common.getSharedPreference(activity).getLong("buildingID",-1L);
+        if(buildingID!=-1L) {
+            buildingName = Common.getSharedPreference(activity).getString("buildingName","");
+            room.setText(buildingName);
+            controlPresenter.getLoopInfoByBuildID(activity);
+        }else
+            controlPresenter.getFirstBuildUnit(activity);
     }
 
     @Override
     public void reload(){
-        controlPresenter.getFirstBuildUnit(activity);
+        getPageInfo();
     }
 
     private void initWidget(View view){
+        activity = (MainActivity) getActivity();
+        //调用父类装入View content的方法,并加入权限页
         iniAdapter(view);
-        activity = getActivity();
-        menu = (ImageView) view.findViewById(R.id.menu);
-        room = (TextView) view.findViewById(R.id.room);
-        add_scene = (ImageView) view.findViewById(R.id.add_scene);
-        room_info = (LinearLayout) view.findViewById(R.id.room_info);
-        scene_info = (GridView) view.findViewById(R.id.scene_info);
-        loopListView = (ListView) view.findViewById(R.id.loop_listView);
-        acAlter = new ACAlter();
-        res = activity.getResources();
-        menu.setOnClickListener(this);
-        add_scene.setOnClickListener(this);
-        room_info.setOnClickListener(this);
+        addState("auth",getAuthView());
+        //判断是否有权限使用控制功能
+        if(!Common.hasAuth(activity))
+            showViewByTag("auth");
+        else {
+            menu = (ImageView) view.findViewById(R.id.menu);
+            room = (TextView) view.findViewById(R.id.room);
+            add_scene = (ImageView) view.findViewById(R.id.add_scene);
+            room_info = (LinearLayout) view.findViewById(R.id.room_info);
+            scene_info = (GridView) view.findViewById(R.id.scene_info);
+            loopListView = (ListView) view.findViewById(R.id.loop_listView);
+            acAlter = new ACAlter();
+            res = activity.getResources();
+            menu.setOnClickListener(this);
+            add_scene.setOnClickListener(this);
+            room_info.setOnClickListener(this);
+            getPageInfo();
+        }
+    }
 
+    private View getAuthView(){
+        //获取View并初始化
+        View view = LayoutInflater.from(activity).inflate(R.layout.authority_check,null);
+        TextView auth_cancel = (TextView) view.findViewById(R.id.auth_cancel);
+        TextView auth_ensure = (TextView) view.findViewById(R.id.auth_ensure);
+        auth_cancel.setOnClickListener(this);
+        auth_ensure.setOnClickListener(this);
+
+        List<Loop>loops = new ArrayList<>();
+        Gson gson = new Gson();
+        for (String loop:Common.loops) {
+            loops.add(gson.fromJson(loop,Loop.class));
+        }
+        ScrollListView loopListView = (ScrollListView) view.findViewById(R.id.loop_listView);
+        LoopAdapter loopAdapter = new LoopAdapter(activity,loops,this);
+        loopListView.setAdapter(loopAdapter);
+        loopAdapter.notifyDataSetInvalidated();
+        return view;
     }
 
     @Override
@@ -129,7 +155,7 @@ public class ControlFragment extends StateSwitchFragment implements View.OnClick
             case R.id.switcher:
                 ToggleButton switcher = (ToggleButton)view;
                 loopID = Long.parseLong(switcher.getTag().toString());
-                loopState = "{\"EquipmentStatus\":"+(switcher.isChecked()?1:0)+"}";
+                loopState = "{'EquipmentStatus':"+(switcher.isChecked()?1:0)+"}";
                 controlPresenter.updateLoopState(switcher,activity);
                 break;
             case R.id.to_low:
@@ -163,13 +189,21 @@ public class ControlFragment extends StateSwitchFragment implements View.OnClick
             case R.id.ensure:
                 acAlter.setSetTemp(Float.parseFloat(setTemp.getText().toString()));
                 loopState = new Gson().toJson(acAlter);
-                Log.e("what",loopState.toString());
                 controlPresenter.updateLoopState(view,activity);
                 acAlter = new ACAlter();
                 break;
             case R.id.cancel:
                 if(dialog!=null)
                     dialog.dismiss();
+                break;
+            case R.id.auth_ensure:
+                //跳转至缴费页面
+                intent = new Intent(activity,BillActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.auth_cancel:
+                //跳转至能耗概况tab
+                activity.setCurrentTab(0);
                 break;
             default:
                 break;
@@ -259,21 +293,23 @@ public class ControlFragment extends StateSwitchFragment implements View.OnClick
 
     @Override
     public void showLoading() {
-        super.showLoading();
+        super.showViewByTag("loading");
     }
 
     @Override
     public void showWaiting() {
         if(waiting == null){
             waiting = new ProgressDialog(activity);
-          //  waiting.setContentView();
         }
         waiting.show();
+        //  waiting.setContentView();
+
     }
 
     @Override
     public void hideWaiting() {
-        waiting.dismiss();
+        if(waiting.isShowing())
+            waiting.dismiss();
     }
 
     @Override
@@ -288,6 +324,11 @@ public class ControlFragment extends StateSwitchFragment implements View.OnClick
 
     @Override
     public String getLoopState() {
+        try {
+            loopState = URLEncoder.encode(loopState, "UTF-8");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return loopState;
     }
 
@@ -296,7 +337,7 @@ public class ControlFragment extends StateSwitchFragment implements View.OnClick
         LoopAdapter loopAdapter = new LoopAdapter(activity,loops,this);
         loopListView.setAdapter(loopAdapter);
         loopAdapter.notifyDataSetInvalidated();
-        showContent();
+        showViewByTag("content");
     }
 
     @Override
@@ -305,12 +346,12 @@ public class ControlFragment extends StateSwitchFragment implements View.OnClick
         room.setText(building.getBuildingName());
         controlPresenter.getLoopInfoByBuildID(activity);
         controlPresenter.getLoopStateByBuild(activity);
-        showContent();
+        showViewByTag("content");
     }
 
     @Override
     public void execError(String msg) {
-        showError();
+        showViewByTag("error");
         Toast.makeText(activity,msg,Toast.LENGTH_SHORT).show();
     }
 
@@ -321,6 +362,7 @@ public class ControlFragment extends StateSwitchFragment implements View.OnClick
                 case R.id.switcher:
                     ToggleButton switcher = (ToggleButton)view;
                     switcher.setChecked(!switcher.isChecked());
+                    Toast.makeText(activity,"状态更新失败",Toast.LENGTH_SHORT).show();
                     break;
                 default:
                     break;

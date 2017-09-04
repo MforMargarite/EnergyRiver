@@ -59,7 +59,7 @@ public class LoopAdapter extends BaseAdapter {
             TextView content = (TextView) view.findViewById(R.id.content);
             content.setText(res.getText(R.string.no_loop_item));
             content.setPadding(0,(int)res.getDimension(R.dimen.building_list_padding),0,(int)res.getDimension(R.dimen.building_list_padding));
-        }else
+        }else {
             if (loop.getLoopID() == 0L) {
                 view = LayoutInflater.from(context).inflate(R.layout.cate_control_item, null);
                 TextView cate_name = (TextView) view.findViewById(R.id.cate_name);
@@ -77,12 +77,13 @@ public class LoopAdapter extends BaseAdapter {
                 view = LayoutInflater.from(context).inflate(R.layout.detail_control_item, null);
                 TextView cate_name = (TextView) view.findViewById(R.id.cate_name);
                 ToggleButton toggle = (ToggleButton) view.findViewById(R.id.switcher);
-                if(loop.getOpenStatus()!=null)
+                if (loop.getOpenStatus() != null)
                     toggle.setChecked(loop.getOpenStatus());
                 toggle.setOnClickListener(clickListener);
                 cate_name.setText(loop.getLoopName());
                 toggle.setTag(loop.getLoopID());
             }
+        }
         return view;
     }
 

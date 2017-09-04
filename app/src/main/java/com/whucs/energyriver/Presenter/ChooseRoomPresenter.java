@@ -1,6 +1,8 @@
 package com.whucs.energyriver.Presenter;
 
 import android.content.Context;
+import android.util.Log;
+
 import com.whucs.energyriver.Bean.Building;
 import com.whucs.energyriver.Bean.HttpListData;
 import com.whucs.energyriver.Bean.Tree;
@@ -43,6 +45,7 @@ public class ChooseRoomPresenter {
 
                     @Override
                     public void onError(Throwable e) {
+                        Log.e("what",e.getMessage());
                         chooseRoomView.execError();
                     }
 

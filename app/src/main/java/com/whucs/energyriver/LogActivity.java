@@ -5,24 +5,31 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.percent.PercentRelativeLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.support.v7.widget.AppCompatCheckBox;
+import android.view.KeyEvent;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.whucs.energyriver.Bean.SubUser;
 import com.whucs.energyriver.Bean.User;
 import com.whucs.energyriver.Presenter.LogPresenter;
 import com.whucs.energyriver.Public.Common;
 import com.whucs.energyriver.Public.Layout;
 import com.whucs.energyriver.View.LogView;
 
-public class LogActivity extends AppCompatActivity implements View.OnClickListener,LogView{
-    private EditText username,password;
+public class LogActivity extends AppCompatActivity implements View.OnClickListener,CompoundButton.OnCheckedChangeListener, LogView {
+    private EditText username, password;
     private PercentRelativeLayout submit;
     private ProgressBar progressBar;
     private LogPresenter logPresenter;
+    private AppCompatCheckBox checkBox;
+    private boolean isSubVIPLogin;//是否为VIP子用户登陆
+
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -31,22 +38,30 @@ public class LogActivity extends AppCompatActivity implements View.OnClickListen
         initWidget();
     }
 
-    private void initWidget(){
+    private void initWidget() {
         Layout.setTranslucent(this);
         username = (EditText) findViewById(R.id.username);
         password = (EditText) findViewById(R.id.password);
         submit = (PercentRelativeLayout) findViewById(R.id.submit);
         progressBar = (ProgressBar) findViewById(R.id.progressbar);
+        checkBox = (AppCompatCheckBox) findViewById(R.id.checkbox);
         submit.setOnClickListener(this);
 
         logPresenter = new LogPresenter(this);
+        username.setText(Common.getUserName(this));
+        checkBox.setOnCheckedChangeListener(this);
+
+        isSubVIPLogin = false;
     }
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.submit:
-                logPresenter.login(LogActivity.this);
+                if(!isSubVIPLogin)
+                    logPresenter.login(LogActivity.this);
+                else
+                    logPresenter.subLogin(LogActivity.this);
                 break;
             default:
                 break;
@@ -74,25 +89,53 @@ public class LogActivity extends AppCompatActivity implements View.OnClickListen
     }
 
     @Override
-    public void setUser(User user){
-        Log.e("what",user.toString());
+    public void setUser(User user) {
         try {
             //将用户信息保存至SharedPreference中
             Common.setUser(this, user);
             //跳转至主界面
             Toast.makeText(LogActivity.this, "登陆成功", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(LogActivity.this,MainActivity.class);
+            Intent intent = new Intent(LogActivity.this, MainActivity.class);
             startActivity(intent);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            Log.e("what",e.getMessage());
             Toast.makeText(LogActivity.this, "保存用户信息失败,请重试", Toast.LENGTH_SHORT).show();
         }
 
     }
 
     @Override
+    public void setSubUser(SubUser user) {
+        try {
+            Common.setSubUser(this,user);
+            Toast.makeText(LogActivity.this, "登陆成功", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(LogActivity.this, MainActivity.class);
+            startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(LogActivity.this, "保存用户信息失败,请重试", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
     public void loginError(String msg) {
         Toast.makeText(LogActivity.this, msg, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            Intent home = new Intent(Intent.ACTION_MAIN);
+            home.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            home.addCategory(Intent.CATEGORY_HOME);
+            startActivity(home);
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+       isSubVIPLogin = isChecked;
     }
 }

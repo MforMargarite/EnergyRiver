@@ -8,6 +8,8 @@
     <string name="loading">加载中...</string>
     <string name="ensure">确认</string>
     <string name="cancel">取消</string>
+    <string name="is_VIP_user">VIP子用户登陆</string>
+    <string name="empty_data">暂无数据</string>
     <!--底部tab-->
     <string name="inquiry">能耗查询</string>
     <string name="control">智能控制</string>
@@ -15,13 +17,31 @@
     <!--个人中心-->
     <string name="sub_manage">管理子用户</string>
         <string name="edit_sub">编辑子用户</string>
+        <string name="no_sub_user">暂无子用户</string>
         <string name="add_sub">新增子用户</string>
         <string name="sub_username">子用户名</string>
         <string name="input_sub_username">请输入子用户名</string>
-        <string name="work_num">工位数</string>
-        <string name="input_work_num">请输入工位数</string>
+        <string name="work_num">工&#160;&#160;位&#160;&#160;号</string>
+        <string name="input_work_num">请输入工位号</string>
+        <string name="init_password">初始密码</string>
+        <string name="input_init_password">请输入初始密码</string>
+        <string name="department">部&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;门</string>
+        <string name="input_department">请输入部门</string>
+        <string name="job">职&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;位</string>
+        <string name="input_job">请输入职位</string>
+        <string name="mobile">手&#160;&#160;机&#160;&#160;号</string>
+        <string name="input_mobile">请输入手机号</string>
+        <string name="identity">身份证号</string>
+        <string name="input_identity">请输入身份证号</string>
+        <string name="empty_input">请将信息填写完整</string>
+        <string name="illegal_mobile">手机格式不正确</string>
+        <string name="illegal_id">身份证号码格式不正确</string>
+        <string name="delete_user">删除用户</string>
     <string name="bill">能耗账单</string>
+    <string name="bill_detail">账单详情</string>
     <string name="notification">事件通知</string>
+    <string name="buy_vip">VIP购买</string>
+    <string name="invoice_manage">发票管理</string>
     <string name="change_pwd">修改密码</string>
         <string name="input_ori">请输入原密码：</string>
         <string name="input_new">请输入新密码：</string>
@@ -75,4 +95,7 @@
     <string name="hot_mode">暖风</string>
     <string name="dehumidify">除湿</string>
     <string name="temp_unit"> ℃</string>
+    <string name="buy_VIP">请点击确认购买VIP用户功能</string>
+    <string name="auth_cancel">取&#160;&#160;消</string>
+    <string name="auth_ensure">确&#160;&#160;认</string>
 </resources>
