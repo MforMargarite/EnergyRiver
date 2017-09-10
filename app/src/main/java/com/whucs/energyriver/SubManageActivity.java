@@ -119,6 +119,7 @@ public class SubManageActivity extends StateSwitchActivity implements View.OnCli
         intent.putExtra("mobile",user.getMobile());
         intent.putExtra("IDNum",user.getIdentity());
         intent.putExtra("buildingID",user.getBuildingID());
+        intent.putExtra("buildingName",user.getBuildingName());
         //intent.putExtra("password",user.getInitPassword());
         startActivityForResult(intent,UPDATE_USER);
     }
@@ -128,11 +129,11 @@ public class SubManageActivity extends StateSwitchActivity implements View.OnCli
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode){
             case ADD_USER:
-                if(resultCode == 1)
+                if(resultCode == RESULT_OK)
                     reload();
                 break;
             case UPDATE_USER:
-                if(resultCode == 1)
+                if(resultCode == RESULT_OK)
                     reload();
                 break;
         }

@@ -85,7 +85,7 @@ public class UserInfoPresenter {
                     @Override
                     public void onNext(Boolean result) {
                         if(result){
-                            userInfoView.uploadUsernameSuccess(userInfoView.getUsername());
+                            userInfoView.uploadUsernameSuccess();
                         }else
                             userInfoView.execError("用户名更新失败,请检查网络后重试");
                     }
@@ -128,5 +128,36 @@ public class UserInfoPresenter {
                 });
     }
 
+    public void updateMobile(Context context){
+        userInfoView.showWaiting();
+        userBiz.updateMobile(context,userInfoView.getMobile(), Common.getID(context),Common.getBranchID(context))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<HttpCode>() {
+                    @Override
+                    public void onCompleted() {
+                        userInfoView.hideWaiting();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        userInfoView.execError(e.getMessage());
+                        userInfoView.hideWaiting();
+                    }
+
+                    @Override
+                    public void onNext(HttpCode result) {
+                        try {
+                            if (result.getCode() == 200) {
+                                userInfoView.changeMobileSuccess();
+                            } else
+                                userInfoView.execError("手机号修改失败,请检查网络后重试");
+                        }catch (Exception e){
+                            e.printStackTrace();
+                            userInfoView.execError("手机号修改失败,请检查网络后重试");
+                        }
+                    }
+                });
+    }
 
 }

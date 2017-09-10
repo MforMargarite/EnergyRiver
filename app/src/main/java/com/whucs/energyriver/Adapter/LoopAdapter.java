@@ -2,11 +2,15 @@ package com.whucs.energyriver.Adapter;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.support.v4.view.GravityCompat;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 import com.whucs.energyriver.Bean.Loop;
@@ -58,7 +62,8 @@ public class LoopAdapter extends BaseAdapter {
             view = LayoutInflater.from(context).inflate(R.layout.textview_item, null);
             TextView content = (TextView) view.findViewById(R.id.content);
             content.setText(res.getText(R.string.no_loop_item));
-            content.setPadding(0,(int)res.getDimension(R.dimen.building_list_padding),0,(int)res.getDimension(R.dimen.building_list_padding));
+            content.setPadding(0,(int)res.getDimension(R.dimen.empty_loop_padding),0,(int)res.getDimension(R.dimen.building_list_padding));
+            content.setGravity(Gravity.CENTER);
         }else {
             if (loop.getLoopID() == 0L) {
                 view = LayoutInflater.from(context).inflate(R.layout.cate_control_item, null);
@@ -67,7 +72,7 @@ public class LoopAdapter extends BaseAdapter {
                 cate_name.setText(loop.getLoopName());
                 cate_img.setImageDrawable(res.getDrawable(Common.cate_icon[Integer.parseInt(loop.getLoopTypeID().toString()) - 1]));
             } else if (loop.getLoopTypeID() == 2L) {
-                view = LayoutInflater.from(context).inflate(R.layout.air_detail_control_item, null);
+                view = LayoutInflater.from(context).inflate(R.layout.air_control_item, null);
                 TextView cate_name = (TextView) view.findViewById(R.id.cate_name);
                 ImageView toggle = (ImageView) view.findViewById(R.id.toggle);
                 toggle.setOnClickListener(clickListener);

@@ -46,6 +46,11 @@ public class UserBiz {
 
         @FormUrlEncoded
         @POST("usermanager/updateUser")
+        Observable<HttpCode> updateMobile(@Field("telephone") String mobile,@Field("userID") Long userID,@Field("branchID")Long branchID); //参数为json字符串
+
+
+        @FormUrlEncoded
+        @POST("usermanager/updateUser")
         Observable<HttpCode> updateAvatarURL(@Field("headImg") String avatar_url,@Field("userID") Long userID,@Field("branchID")Long branchID);
      }
 
@@ -60,6 +65,10 @@ public class UserBiz {
 
     public Observable<HttpCode> updateUserName(Context context,String username,Long userID,Long branchID){
         return getUserService(context).updateUserName(username,userID,branchID);
+    }
+
+    public Observable<HttpCode> updateMobile(Context context,String mobile,Long userID,Long branchID){
+        return getUserService(context).updateMobile(mobile,userID,branchID);
     }
 
     public Observable<HttpCode> updateAvatarURL(Context context,String avatar_url,Long userID,Long branchID){

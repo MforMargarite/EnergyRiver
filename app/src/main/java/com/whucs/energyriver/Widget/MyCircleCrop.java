@@ -17,6 +17,8 @@ import android.app.Activity;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+
+import com.whucs.energyriver.Public.Common;
 import com.whucs.energyriver.R;
 import com.whucs.energyriver.UserInfoActivity;
 import java.io.ByteArrayOutputStream;
@@ -33,6 +35,8 @@ public class MyCircleCrop extends Activity implements View.OnClickListener{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Common.getParentWidth(this);
+        Common.getParentHeight(this);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.circle_crop_layout);
         frameLayout = (FrameLayout)findViewById(R.id.frame_layout);

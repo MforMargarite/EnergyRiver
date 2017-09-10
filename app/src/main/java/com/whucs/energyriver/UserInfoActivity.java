@@ -15,36 +15,38 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.whucs.energyriver.Presenter.UserInfoPresenter;
 import com.whucs.energyriver.Public.Common;
 import com.whucs.energyriver.View.UserInfoView;
+import com.whucs.energyriver.Widget.AvatarImageView;
 import com.whucs.energyriver.Widget.MyCircleCrop;
 import java.io.File;
 
 
 public class UserInfoActivity extends AppCompatActivity implements View.OnClickListener,UserInfoView{
-    private PercentRelativeLayout avatar_panel,name_panel;
-    private ImageView avatar,back;
-    private TextView username;
+    private PercentRelativeLayout avatar_panel,name_panel,mobile_panel;
+    private ImageView back;
+    private AvatarImageView avatar;
+    private TextView username,mobile;
     private Intent intent;
     private File tempFile;
     private PopupWindow popupWindow;
     private static final int PHOTO_REQUEST_SHOOT = 1;
     private static final int PHOTO_REQUEST_PHOTOGRAPH = 2;
     private static final int CHANGE_USERNAME = 4;
+    private static final int CHANGE_MOBILE = 5;
     private static final String ROOT = "EnergyRiver";
     private static final String AVATAR = "avatar";
     private UserInfoPresenter presenter;
     private byte[] avatar_byte;         //新头像
     private String username_value;      //新用户名
     private String avatar_url;          //新头像地址
+    private String mobile_value;        //新手机号
     private ProgressDialog dialog;      //加载中悬浮窗
 
     @Override
@@ -55,18 +57,24 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void initWidget(){
+        Common.getParentWidth(this);
+        Common.getParentHeight(this);
         avatar_panel = (PercentRelativeLayout) findViewById(R.id.avatar_panel);
         name_panel = (PercentRelativeLayout) findViewById(R.id.name_panel);
-        avatar = (ImageView) findViewById(R.id.avatar);
+        mobile_panel = (PercentRelativeLayout) findViewById(R.id.mobile_panel);
+        avatar = (AvatarImageView) findViewById(R.id.avatar);
         back = (ImageView) findViewById(R.id.back);
         username = (TextView) findViewById(R.id.username);
+        mobile = (TextView) findViewById(R.id.mobile);
         avatar_panel.setOnClickListener(this);
         name_panel.setOnClickListener(this);
+        mobile_panel.setOnClickListener(this);
         back.setOnClickListener(this);
         //初始化 加载头像和用户名
         if(Common.hasAvatar(this))
             avatar.setImageBitmap(Common.getAvatar(this));
         username.setText(Common.getUserName(this));
+        mobile.setText(Common.getMobile(this));
         //初始化presenter
         presenter = new UserInfoPresenter(this);
     }
@@ -83,6 +91,10 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
             case R.id.name_panel:
                 intent = new Intent(UserInfoActivity.this,ChangeNameActivity.class);
                 startActivityForResult(intent,CHANGE_USERNAME);
+                break;
+            case R.id.mobile_panel:
+                intent = new Intent(UserInfoActivity.this,ChangeMobileActivity.class);
+                startActivityForResult(intent,CHANGE_MOBILE);
                 break;
             case R.id.fromCamera:
                 intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -151,6 +163,20 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
                             username_value = data.getStringExtra("username").trim();
                             if(!username_value.equals(username.getText().toString()))//用户名改变了
                                presenter.updateUsername(this);//post 更新至服务器
+                        } catch (Exception e) {
+                            Log.e("what",e.getMessage());
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                break;
+            case 5:
+                if (data != null) {
+                    if (resultCode == RESULT_OK) {
+                        try {
+                            mobile_value = data.getStringExtra("mobile").trim();
+                            if(!mobile_value.equals(mobile.getText().toString()))//用户名改变了
+                                presenter.updateMobile(this);//post 更新至服务器
                         } catch (Exception e) {
                             Log.e("what",e.getMessage());
                             e.printStackTrace();
@@ -228,7 +254,20 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
     }
 
     @Override
-    public void uploadUsernameSuccess(String username_value){
+    public String getMobile() {
+        return mobile_value;
+    }
+
+    @Override
+    public void changeMobileSuccess() {
+        Common.saveMobile(this,getMobile());
+        mobile.setText(getMobile());
+        Toast.makeText(this,"手机号绑定成功",Toast.LENGTH_SHORT).show();
+    }
+
+
+    @Override
+    public void uploadUsernameSuccess(){
         username.setText(username_value);
         Common.saveUserName(this,username_value);
     }

@@ -37,14 +37,15 @@
         android:layout_below="@id/underline"
         android:background="@color/colorPrimary"
         app:layout_marginTopPercent="5%">
-        <TextView android:layout_width="wrap_content"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
             android:layout_centerVertical="true"
             app:layout_marginLeftPercent="7%"
             android:text="@string/avatar"
             android:textSize="14sp"/>
-        <ImageView
+        <com.whucs.energyriver.Widget.AvatarImageView
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_widthPercent="15%"
@@ -100,6 +101,42 @@
             app:layout_marginRightPercent="7%"
             android:src="@mipmap/arrow"
             android:id="@+id/arrow1"
+            app:layout_marginBottomPercent="5%"/>
+    </android.support.percent.PercentRelativeLayout>
+    <android.support.percent.PercentRelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/name_panel"
+        android:id="@+id/mobile_panel"
+        android:clickable="true"
+        android:background="@color/colorPrimary">
+        <TextView android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            app:layout_marginLeftPercent="7%"
+            android:text="@string/user_mobile"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:layout_marginBottomPercent="5%"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_marginLeftPercent="7%"
+            app:layout_marginRightPercent="3%"
+            app:layout_marginTopPercent="4%"
+            app:layout_marginBottomPercent="4%"
+            android:id="@+id/mobile"
+            android:textSize="14sp"
+            android:textColor="@color/white"
+            android:layout_toLeftOf="@+id/arrow2"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            app:layout_marginRightPercent="7%"
+            android:src="@mipmap/arrow"
+            android:id="@+id/arrow2"
             app:layout_marginBottomPercent="5%"/>
     </android.support.percent.PercentRelativeLayout>
 </android.support.percent.PercentRelativeLayout>

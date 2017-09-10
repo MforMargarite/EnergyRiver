@@ -2,9 +2,11 @@ package com.whucs.energyriver;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +44,13 @@ public class InquiryFragment extends Fragment implements View.OnClickListener{
     private void initWidget(View view){
         webView = (WebView) view.findViewById(R.id.result);
         webView.getSettings().setJavaScriptEnabled(true);//允许js交互
-        webView.loadUrl(Common.ROOT + Common.Inquiry);
+        String url = Common.ROOT + Common.Inquiry;
+        SharedPreferences sharedPreferences = Common.getSharedPreference(activity);
+        if(sharedPreferences.getLong("subBuildingID",-1L) != -1L )
+            url += "?buildingID="+sharedPreferences.getLong("subBuildingID",-1L);
+        else
+            url += "?userID="+sharedPreferences.getLong("id",-1L);
+        webView.loadUrl(url);
         rank = (ImageView) view.findViewById(R.id.rank);
         rank.setOnClickListener(this);
     }

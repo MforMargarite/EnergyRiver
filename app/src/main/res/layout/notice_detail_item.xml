@@ -8,17 +8,23 @@
     <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="4"
+        android:layout_weight="2.5"
         android:id="@+id/notice_content"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:layout_gravity="center_vertical"
         android:layout_marginLeft="16dp"
         android:textColor="@color/white"/>
-    <TextView
+    <View
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="right"
-        android:layout_marginRight="16dp"
-        android:layout_marginLeft="48dp"
+        android:layout_weight="1"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:paddingRight="16dp"
         android:id="@+id/notice_time"
+        android:textSize="12sp"
         android:textColor="@color/white"/>
 </LinearLayout>

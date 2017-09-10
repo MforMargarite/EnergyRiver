@@ -7,11 +7,11 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.net.Uri;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.widget.ImageView;
+import com.whucs.energyriver.Public.Common;
 import java.io.InputStream;
 
 
@@ -30,17 +30,17 @@ public class AvatarView extends ImageView{
 
     public AvatarView(Context context){
         super(context);
-        parent_height = 1677;
-        parent_width = 1080;
+        parent_height = Common.screen_height;
+        parent_width = Common.screen_width;
     }
 
     public AvatarView(Context context, Uri uri) {
         super(context);
         values = new float[9];
         setLongClickable(true);
-        parent_height = 1677;
-        parent_width = 1080;
-        circleRect = new RectF((parent_width - (int)(520)) / 2, (parent_height - (int)(520)) / 2, (parent_width + (int)(520)) / 2, (parent_height + (int)(520)) / 2);
+        parent_height = Common.screen_height;
+        parent_width = Common.screen_width;
+        circleRect = new RectF((parent_width - 520) / 2, (parent_height - 520) / 2, (parent_width + 520) / 2, (parent_height + 520) / 2);
         multiplyTouchesListener = new ScaleGestureDetector(context, new MultiplyTouchesListener());
         singleTouchListener = new GestureDetector(context, new SingleTouchListener());
         try{
@@ -51,7 +51,8 @@ public class AvatarView extends ImageView{
             BitmapFactory.decodeStream(is, null, options);
             pic_width = options.outWidth;
             pic_height = options.outHeight;
-            is.close();
+            if(is!=null)
+                is.close();
             if(pic_width>parent_width || pic_height>parent_height) {
                 float y_scale = (float) pic_height / parent_height;
                 float x_scale = (float) pic_width / parent_width;
@@ -69,7 +70,8 @@ public class AvatarView extends ImageView{
             bitmap = BitmapFactory.decodeStream(is, null,options);
             pic_width = bitmap.getWidth();
             pic_height = bitmap.getHeight();
-            is.close();
+            if(is!=null)
+                is.close();
           } catch (Exception e){
             e.printStackTrace();
         }
@@ -84,7 +86,6 @@ public class AvatarView extends ImageView{
         srcRect = new RectF(0,0,pic_width,pic_height);
         dstRect = new RectF();
         invalidate();
-        Log.i("what", "长宽:" + parent_width + " " + parent_height);
     }
 
     @Override

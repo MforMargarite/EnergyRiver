@@ -1,19 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/gradient_bg"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
     <android.support.v7.widget.Toolbar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@mipmap/navbg"
-        android:id="@+id/toolbar">
+        android:background="@mipmap/navbg">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/notification"
+            android:layout_gravity="center"
+            android:text="@string/bill_detail"
             android:textColor="@color/white"
             android:textSize="16sp"/>
         <ImageView
@@ -23,8 +20,8 @@
             android:id="@+id/back"
             android:clickable="true"/>
     </android.support.v7.widget.Toolbar>
-    <com.whucs.energyriver.Widget.ScrollListView
+    <WebView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/notices"/>
+        android:id="@+id/webView"/>
 </LinearLayout>

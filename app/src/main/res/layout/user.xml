@@ -34,7 +34,7 @@
         android:id="@+id/user_panel"
         android:background="@color/colorPrimary"
         app:layout_marginTopPercent="3%">
-        <ImageView
+        <com.whucs.energyriver.Widget.AvatarImageView
             app:layout_widthPercent="17%"
             app:layout_heightPercent="12%"
             app:layout_marginLeftPercent="7%"

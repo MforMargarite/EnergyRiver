@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/toolbar"
-        android:background="@drawable/bottom_line">
+        android:background="@mipmap/navbg">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -29,12 +29,17 @@
             android:id="@+id/add"
             android:layout_marginRight="16dp"/>
     </android.support.v7.widget.Toolbar>
-
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/gradient_end"
+        android:layout_below="@id/toolbar"
+        android:id="@+id/toolbar_underline"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_below="@id/toolbar"
+        android:layout_below="@id/toolbar_underline"
         app:layout_marginLeftPercent="5%"
         app:layout_marginRightPercent="5%"
         app:layout_marginTopPercent="1.5%"
@@ -57,11 +62,12 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/gradient_end"
-        android:layout_below="@id/room_info"/>
-    <ListView
+        android:layout_below="@id/room_info"
+        android:id="@+id/underline"/>
+    <com.whucs.energyriver.Widget.ScrollListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/room_info"
+        android:layout_below="@id/underline"
         android:layout_marginTop="1dp"
         android:id="@+id/scenes"
         android:background="@null"

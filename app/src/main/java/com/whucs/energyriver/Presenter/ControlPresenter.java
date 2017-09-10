@@ -118,10 +118,8 @@ public class ControlPresenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e("what",e.getMessage());
                         controlView.hideWaiting();
                         controlView.updateError(view);
-
                     }
 
                     @Override

@@ -1,5 +1,6 @@
 package com.whucs.energyriver;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -9,16 +10,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 import com.google.gson.Gson;
 import com.whucs.energyriver.Adapter.LoopAdapter;
+import com.whucs.energyriver.Adapter.SceneAdapter;
 import com.whucs.energyriver.Bean.ACAlter;
 import com.whucs.energyriver.Bean.ACCollect;
 import com.whucs.energyriver.Bean.Building;
@@ -27,9 +28,9 @@ import com.whucs.energyriver.Presenter.ControlPresenter;
 import com.whucs.energyriver.Public.Common;
 import com.whucs.energyriver.View.ControlView;
 import com.whucs.energyriver.Widget.AirControlDialog;
+import com.whucs.energyriver.Widget.ScrollGridView;
 import com.whucs.energyriver.Widget.ScrollListView;
 import com.whucs.energyriver.Widget.StateSwitchFragment;
-
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,12 +39,12 @@ import java.util.List;
 import java.util.Map;
 
 
-public class ControlFragment extends StateSwitchFragment implements View.OnClickListener,ControlView {
+public class ControlFragment extends StateSwitchFragment implements View.OnClickListener,ControlView,AdapterView.OnItemClickListener {
     View view ;
-    ImageView menu,add_scene;
+    ImageView menu;
     LinearLayout room_info;
-    GridView scene_info;
-    ListView loopListView;
+    ScrollGridView scene_info;
+    ScrollListView loopListView;
     TextView room;
     MainActivity activity;
 
@@ -58,6 +59,7 @@ public class ControlFragment extends StateSwitchFragment implements View.OnClick
     Long buildingID,loopID;
     String buildingName;
     String loopState;
+    SceneAdapter sceneAdapter;
     ControlPresenter controlPresenter;
     Resources res;
 
@@ -98,15 +100,23 @@ public class ControlFragment extends StateSwitchFragment implements View.OnClick
         else {
             menu = (ImageView) view.findViewById(R.id.menu);
             room = (TextView) view.findViewById(R.id.room);
-            add_scene = (ImageView) view.findViewById(R.id.add_scene);
             room_info = (LinearLayout) view.findViewById(R.id.room_info);
-            scene_info = (GridView) view.findViewById(R.id.scene_info);
-            loopListView = (ListView) view.findViewById(R.id.loop_listView);
-            acAlter = new ACAlter();
+            scene_info = (ScrollGridView) view.findViewById(R.id.scene_info);
+            int widthSlice = Common.getParentWidth(activity)/9;
+            int heightSlice = Common.getParentHeight(activity)/40;
+            scene_info.setPadding(widthSlice,heightSlice,widthSlice,heightSlice);
+            scene_info.setHorizontalSpacing(widthSlice);
+            loopListView = (ScrollListView) view.findViewById(R.id.loop_listView);
+
             res = activity.getResources();
             menu.setOnClickListener(this);
-            add_scene.setOnClickListener(this);
             room_info.setOnClickListener(this);
+
+            acAlter = new ACAlter();
+            sceneAdapter = new SceneAdapter(activity,null);
+            scene_info.setAdapter(sceneAdapter);
+            sceneAdapter.notifyDataSetChanged();
+            scene_info.setOnItemClickListener(this);
             getPageInfo();
         }
     }
@@ -137,10 +147,6 @@ public class ControlFragment extends StateSwitchFragment implements View.OnClick
         switch (view.getId()){
             case R.id.menu:
                 intent = new Intent(activity,SceneActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.add_scene:
-                intent = new Intent(activity,AddSceneActivity.class);
                 startActivity(intent);
                 break;
             case R.id.room_info:
@@ -302,7 +308,7 @@ public class ControlFragment extends StateSwitchFragment implements View.OnClick
             waiting = new ProgressDialog(activity);
         }
         waiting.show();
-        //  waiting.setContentView();
+        waiting.setContentView(R.layout.progress_dialog);
 
     }
 
@@ -425,11 +431,10 @@ public class ControlFragment extends StateSwitchFragment implements View.OnClick
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch(requestCode){
             case 0://选择房间
-                if(resultCode == 1) {
+                if(resultCode == Activity.RESULT_OK) {
                     //选择了数据
                     Long newBuildingID = data.getLongExtra("buildingID", buildingID);
                     String newBuildingName = data.getStringExtra("buildingName");
-                    //todo 保存至SharedPreference
                     Common.saveBuilding(activity,newBuildingID,newBuildingName);
                     if (newBuildingID != buildingID) {
                         buildingID = newBuildingID;
@@ -441,4 +446,14 @@ public class ControlFragment extends StateSwitchFragment implements View.OnClick
         }
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        if(sceneAdapter.getItemId(i) == -1){
+            Intent intent = new Intent(activity,AddSceneActivity.class);
+            startActivity(intent);
+        }else{
+            //选中当前场景 并更新数据库
+            Log.e("what","第"+i+"个场景被点击");
+        }
+    }
 }

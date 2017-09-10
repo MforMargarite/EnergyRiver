@@ -34,8 +34,10 @@
         <activity android:name=".ChooseRoomActivity"/>
         <activity android:name=".Widget.MyCircleCrop"/>
         <activity android:name=".ChangeNameActivity"/>
+        <activity android:name=".ChangeMobileActivity"/>
         <activity android:name=".EditSubActivity"/>
         <activity android:name=".AddSubActivity"/>
+        <activity android:name=".NoticeDetailActivity"/>
     </application>
 
 </manifest>

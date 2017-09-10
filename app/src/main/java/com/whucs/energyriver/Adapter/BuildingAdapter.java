@@ -60,10 +60,11 @@ public class BuildingAdapter extends BaseAdapter implements View.OnClickListener
             toggle.setVisibility(View.VISIBLE);
             toggle.setTag(node);
             initToggle(toggle,node);
+            wrapper.setPadding(node.getLayer()*32,padding,0,padding);
         }else {
             toggle.setVisibility(View.INVISIBLE);
+            wrapper.setPadding(node.getLayer()*40,padding,0,padding);
         }
-        wrapper.setPadding(node.getLayer()*32,padding,0,padding);
         content.setText(node.getData().getBuildingName());
         return view;
     }

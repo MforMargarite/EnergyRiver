@@ -1,6 +1,7 @@
 package com.whucs.energyriver;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -20,7 +21,6 @@ import com.whucs.energyriver.View.EditUserView;
 
 
 public class AddSubActivity extends AppCompatActivity implements View.OnClickListener,EditUserView {
-    ListView building;
     ImageView back;
     TextView save,title;
     TextView room_value;//所选房间
@@ -35,7 +35,7 @@ public class AddSubActivity extends AppCompatActivity implements View.OnClickLis
     TextView deleteUser;
     ProgressDialog waiting;
     EditUserManagePresenter presenter;
-    Long buildingID = 75L;
+    Long buildingID = -1L;
     Resources res;
 
     @Override
@@ -48,7 +48,6 @@ public class AddSubActivity extends AppCompatActivity implements View.OnClickLis
     private void initWidget(){
         back = (ImageView) findViewById(R.id.back);
         save = (TextView) findViewById(R.id.save);
-        building = (ListView) findViewById(R.id.building);
         title = (TextView) findViewById(R.id.title);
         sub_username_value = (EditText) findViewById(R.id.sub_username_value);
         work_num_value = (EditText) findViewById(R.id.work_num_value);
@@ -84,6 +83,8 @@ public class AddSubActivity extends AppCompatActivity implements View.OnClickLis
                     presenter.addSubUser(this);
                 break;
             case R.id.choose_room:
+                Intent intent = new Intent(this,ChooseRoomActivity.class);
+                startActivityForResult(intent,0);
                 break;
             default:
                 break;
@@ -126,7 +127,7 @@ public class AddSubActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public void execSuccess(String msg) {
         Toast.makeText(this,msg,Toast.LENGTH_SHORT).show();
-        setResult(1);
+        setResult(RESULT_OK);
         AddSubActivity.this.finish();
     }
 
@@ -141,9 +142,7 @@ public class AddSubActivity extends AppCompatActivity implements View.OnClickLis
             waiting = new ProgressDialog(this);
         }
         waiting.show();
-        waiting.setMessage("正在加载...");
-        //  waiting.setContentView();
-
+        waiting.setContentView(R.layout.progress_dialog);
     }
 
     @Override
@@ -152,5 +151,17 @@ public class AddSubActivity extends AppCompatActivity implements View.OnClickLis
             waiting.dismiss();
     }
 
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode){
+            //选择房间
+            case 0:
+                if(resultCode == RESULT_OK) {
+                    buildingID = data.getLongExtra("buildingID", -1);
+                    room_value.setText(data.getStringExtra("buildingName"));
+                }
+                break;
+        }
+    }
 }

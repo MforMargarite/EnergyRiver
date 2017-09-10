@@ -4,6 +4,7 @@ package com.whucs.energyriver.Biz;
 import android.content.Context;
 
 import com.whucs.energyriver.Bean.Bill;
+import com.whucs.energyriver.Bean.HttpData;
 import com.whucs.energyriver.Public.Common;
 
 import java.util.List;
@@ -21,12 +22,12 @@ public class BillBiz {
     }
 
     interface BillService{
-        @POST("bill/get")
-        Observable<List<Bill>>getBillByUser(@Query("userID")Long userID);
+        @POST("bill/listBill")
+        Observable<HttpData<List<Bill>>>getBillByUser(@Query("userID")Long userID, @Query("pwd")String pwd);
     }
 
-    public Observable<List<Bill>> getBillByUser(Context context,Long userID){
-        return getBillService(context).getBillByUser(userID);
+    public Observable<HttpData<List<Bill>>> getBillByUser(Context context,Long userID,String pwd){
+        return getBillService(context).getBillByUser(userID,pwd);
     }
 
 }

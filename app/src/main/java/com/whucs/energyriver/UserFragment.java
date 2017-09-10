@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.whucs.energyriver.Public.Common;
+import com.whucs.energyriver.Widget.AvatarImageView;
 
 
 public class UserFragment extends Fragment implements View.OnClickListener{
@@ -27,7 +28,7 @@ public class UserFragment extends Fragment implements View.OnClickListener{
     PercentRelativeLayout change_pwd;//修改密码
     PercentRelativeLayout log_out;//退出登录
     PercentRelativeLayout about_us;//关于我们
-    ImageView avatar;
+    AvatarImageView avatar;
     TextView username,score;
     Activity activity;
     @Nullable
@@ -41,7 +42,7 @@ public class UserFragment extends Fragment implements View.OnClickListener{
     private void initWidget(View view){
         activity = getActivity();
 
-        avatar = (ImageView) view.findViewById(R.id.avatar);
+        avatar = (AvatarImageView) view.findViewById(R.id.avatar);
         username = (TextView) view.findViewById(R.id.username);
         score = (TextView)view.findViewById(R.id.score);
 

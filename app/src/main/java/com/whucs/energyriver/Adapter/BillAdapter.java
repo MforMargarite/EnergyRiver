@@ -26,12 +26,7 @@ public class BillAdapter extends BaseAdapter{
     public BillAdapter(Context context, List<Bill> billList) {
         this.context = context;
         this.res = context.getResources();
-        if (billList == null || billList.size() == 0) {
-            Bill bill = new Bill();
-            bill.setBillID(-1L);
-            this.billList.add(bill);
-        }else
-            this.billList = billList;
+        this.billList = billList;
     }
 
     @Override
@@ -53,27 +48,19 @@ public class BillAdapter extends BaseAdapter{
     public View getView(int i, View view, ViewGroup viewGroup) {
         ViewHolder holder;
         Bill bill = billList.get(i);
-        if(bill.getBillID() == -1L){
-            view = LayoutInflater.from(context).inflate(R.layout.empty, null);
-            AdapterView.LayoutParams layoutParams = new AdapterView.LayoutParams(AdapterView.LayoutParams.MATCH_PARENT,AdapterView.LayoutParams.MATCH_PARENT);
-            view.setLayoutParams(layoutParams);
-            TextView content = (TextView) view.findViewById(R.id.content);
-            content.setText("暂无账单");
-        }else {
-            if (view == null) {
-                view = LayoutInflater.from(context).inflate(R.layout.bill_item, null);
-                holder = new ViewHolder();
-                holder.bill_time = (TextView) view.findViewById(R.id.bill_time);
-                holder.bill_num = (TextView) view.findViewById(R.id.bill_num);
-                holder.bill_status = (TextView) view.findViewById(R.id.bill_status);
-                view.setTag(holder);
-            } else
-                holder = (ViewHolder) view.getTag();
-            holder.bill_time.setText(bill.getTime());
-            holder.bill_num.setText(bill.getMoney()+"元");
-            holder.bill_status.setText(bill.getStatus()?"已缴费":"未缴费");
+        if (view == null) {
+            view = LayoutInflater.from(context).inflate(R.layout.bill_item, null);
+            holder = new ViewHolder();
+            holder.bill_time = (TextView) view.findViewById(R.id.bill_time);
+            holder.bill_num = (TextView) view.findViewById(R.id.bill_num);
+            holder.bill_status = (TextView) view.findViewById(R.id.bill_status);
+            view.setTag(holder);
+        } else
+            holder = (ViewHolder) view.getTag();
+        holder.bill_time.setText(bill.getYearMonth());
+        holder.bill_num.setText(bill.getBasicCost()+"元");
+        holder.bill_status.setText(bill.getState()>1?"已缴费":"未缴费");
 
-        }
         return view;
     }
 

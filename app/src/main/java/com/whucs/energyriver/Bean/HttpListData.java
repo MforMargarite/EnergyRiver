@@ -26,7 +26,7 @@ public class HttpListData<T> {
     }
 
     public T getData() {
-        //Log.e("what",data.toString());
+       // Log.e("what",data.toString());
         return data;
     }
 

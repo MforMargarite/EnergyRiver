@@ -14,6 +14,15 @@ public class SubUser {
     private String createTime;
     private long buildingID;
     private String headImg;
+    private String buildingName;
+
+    public String getBuildingName() {
+        return buildingName;
+    }
+
+    public void setBuildingName(String buildingName) {
+        this.buildingName = buildingName;
+    }
 
     public String getCreateTime() {
         return createTime;
@@ -117,7 +126,7 @@ public class SubUser {
                 "userID=" + userID +
                 ", userName='" + userName + '\'' +
                 ", initPassword='" + initPassword + '\'' +
-                ", workNum=" + workNum +
+                ", workNum='" + workNum + '\'' +
                 ", department='" + department + '\'' +
                 ", job='" + job + '\'' +
                 ", mobile='" + mobile + '\'' +
@@ -126,6 +135,7 @@ public class SubUser {
                 ", createTime='" + createTime + '\'' +
                 ", buildingID=" + buildingID +
                 ", headImg='" + headImg + '\'' +
+                ", buildingName='" + buildingName + '\'' +
                 '}';
     }
 }

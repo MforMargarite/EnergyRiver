@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.widget.AbsListView;
 import android.widget.TextView;
 
@@ -17,6 +18,9 @@ public class CircleView extends TextView{
     public CircleView(Context context){
         super(context);
         res = context.getResources();
+        setTextColor(Color.WHITE);
+        setTextSize(24);
+        setGravity(Gravity.CENTER);
         initPaint();
     }
 
@@ -41,8 +45,8 @@ public class CircleView extends TextView{
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        radius = getWidth()/2;
-        canvas.drawCircle(radius,radius,radius,paint);
+        radius = getWidth()/2-1;
+        canvas.drawCircle(radius+1,radius+1,radius,paint);
     }
 
     //宽=高

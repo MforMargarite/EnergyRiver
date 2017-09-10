@@ -32,6 +32,7 @@ public class ChooseRoomActivity extends StateSwitchActivity implements View.OnCl
         super.onCreate(savedInstanceState);
         view = LayoutInflater.from(this).inflate(R.layout.choose_room,null);
         initWidget(view);
+
     }
 
     private void initWidget(View view){
@@ -91,7 +92,7 @@ public class ChooseRoomActivity extends StateSwitchActivity implements View.OnCl
             Intent data = new Intent();
             data.putExtra("buildingID",node.getData().getBuildingID());
             data.putExtra("buildingName",tree.getBuildingPath(node.getData(),3));
-            setResult(1,data);
+            setResult(RESULT_OK,data);
             this.finish();
         }else{
             Toast.makeText(this,"请选择房间级别的建筑",Toast.LENGTH_SHORT).show();
