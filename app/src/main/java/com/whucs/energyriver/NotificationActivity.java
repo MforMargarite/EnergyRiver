@@ -123,6 +123,9 @@ public class NotificationActivity extends StateSwitchActivity implements View.On
         }else{
             Intent intent = new Intent(this,NoticeDetailActivity.class);
             intent.putExtra("id",notice.getnID());
+            intent.putExtra("time",notice.getnTime());
+            intent.putExtra("content",notice.getnContent());
+            intent.putExtra("title",notice.getnTitle());
             startActivityForResult(intent,0);
         }
     }

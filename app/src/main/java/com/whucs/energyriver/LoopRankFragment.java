@@ -17,11 +17,10 @@ import com.whucs.energyriver.Widget.StateSwitchFragment;
 import java.util.List;
 
 
-public class RoomRankFragment extends StateSwitchFragment implements RankView {
+public class LoopRankFragment extends StateSwitchFragment implements RankView{
     private ListView listView;
     private Activity activity;
     private RankPresenter presenter;
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -37,7 +36,7 @@ public class RoomRankFragment extends StateSwitchFragment implements RankView {
         listView = (ListView) view.findViewById(R.id.listView);
 
         presenter = new RankPresenter(this);
-        presenter.getRoomRank(activity);
+        presenter.getDeviceRank(activity);
     }
 
     @Override
@@ -59,6 +58,8 @@ public class RoomRankFragment extends StateSwitchFragment implements RankView {
             activity = getActivity();
         if(presenter == null)
             presenter = new RankPresenter(this);
-        presenter.getRoomRank(activity);
+        presenter.getDeviceRank(activity);
     }
 }
+
+

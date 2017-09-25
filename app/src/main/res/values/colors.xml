@@ -26,5 +26,9 @@
     <color name="auth_cancel_grey">#D2D2D2</color>
     <color name="auth_text_grey">#555</color>
     <color name="red">#C93333</color>
-
+    <color name="unclickable_text">#dddddd</color>
+    <color name="unclickable_btn">#a0a0a0</color>
+    <color name="yellow">#FFFF00</color>
+    <color name="orange">#FF7E00</color>
+    <color name="beige">#F5F5DC</color>
 </resources>

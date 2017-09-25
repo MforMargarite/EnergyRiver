@@ -43,6 +43,10 @@
     <string name="no_bill">未查询到账单</string>
     <string name="no_bill_addition">可能原因:\n1.暂无账单\n2.顶级机构不存在账单</string>
     <string name="notification">事件通知</string>
+    <string name="notice_detail">事件详情</string>
+        <string name="time">时&#160;&#160;间</string>
+        <string name="title">标&#160;&#160;题</string>
+        <string name="content">内&#160;&#160;容</string>
     <string name="buy_vip">VIP购买</string>
     <string name="invoice_manage">发票管理</string>
     <string name="change_pwd">修改密码</string>
@@ -55,10 +59,14 @@
         <string name="about_us_content">本期项目开发核心内容主要包括三个部分：一是建设运营商与租户的账单结算模块、二是开发租户使用的专用APP，三是建设智能门牌管理子系统。核心思路是将现有系统的web前端模块升级为二级运营商管理平台，web后台模块升级为顶级运营商（盐巴科技）使用的管理平台，在二级运营商管理平台拓展租户管理功能和开发租户专用的app子系统和建设智能门牌管理系统。</string>
     <string name="self_info">个人信息</string>
         <string name="avatar">头像</string>
-        <string name="name">名字</string>
+        <string name="name">名称</string>
         <string name="user_mobile">绑定手机号</string>
         <string name="get_verify">获取验证码</string>
         <string name="input_verify">请输入验证码</string>
+        <string name="get_verify_success">获取短信验证码成功</string>
+        <string name="get_verify_fail">获取短信验证码失败,请检查网络后重试</string>
+        <string name="empty_verify">请输入短信验证码</string>
+        <string name="wrong_verify">输入验证码有误</string>
         <string name="ori_pwd">原密码</string>
         <string name="new_pwd">新密码</string>
         <string name="ensure_new_pwd">确认新密码</string>
@@ -70,14 +78,16 @@
     <!--能耗查询-->
     <string name="consume_rank_monthly">本月能耗排名</string>
     <array name="tab_name">
-        <item>房间排名</item>
-        <item>积分排名</item>
-        <item>部门排名</item>
+        <item>区域</item>
+        <item>机构</item>
+        <item>设备</item>
+        <item>分相</item>
     </array>
     <string name="user">用户</string>
-    <string name="location">位置</string>
-    <string name="dept">部门</string>
     <string name="money">金额</string>
+    <string name="percent">比例</string>
+    <string name="no_type">暂无分相数据</string>
+    <string name="no_type_addition">(不存在基础回路)</string>
     <!--智能控制-->
     <string name="scene_mode">场景模式</string>
     <string name="save">保存</string>

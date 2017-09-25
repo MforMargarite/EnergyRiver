@@ -9,6 +9,7 @@ import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
+import com.java4less.rchart.gc.ChartColor;
 import com.whucs.energyriver.Bean.SubUser;
 import com.whucs.energyriver.Bean.User;
 import com.whucs.energyriver.Interceptor.AddCookieInterceptor;
@@ -25,6 +26,7 @@ import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class Common {
     private static Long id = -1L;
@@ -33,8 +35,15 @@ public class Common {
     private static Bitmap avatar = null;
     public static int screen_width = 0;
     public static int screen_height = 0;
+    private static int MSG_ID = 332;
+    private static String MSG_NAME = "yanba";
+    private static String MSG_PWD = "123456";
+    private static int msg_random;
+    public static int times = 0;
+    public static String phone_input;
+
     private static SharedPreferences sharedPreferences;
-    private static Retrofit retrofit;
+    private static Retrofit retrofit,msgRetrofit;
     public static final String[] loops = {"{\"loopID\":1,\"loopTypeID\":1,\"loopName\":\"照明回路01\",\"openStatus\":false}",
             "{\"loopID\":2,\"loopTypeID\":1,\"loopName\":\"照明回路02\",\"openStatus\":false}",
             "{\"loopID\":3,\"loopTypeID\":2,\"loopName\":\"空调回路01\",\"openStatus\":false}",
@@ -43,12 +52,14 @@ public class Common {
             "{\"loopID\":6,\"loopTypeID\":3,\"loopName\":\"插座回路03\",\"openStatus\":true}"};
 
     public static final String ROOT = "http://106.15.35.178:8008/EnergyRiver/";
-    public static final String BILL = "view/bill/info.html?id=";               //能耗账单详情
+    public static final String BILL = "view/bill/bill_details_mobile.html";               //能耗账单详情
   //  public static final String ROOT = "http://192.168.137.1:8008/";
     public static final String Inquiry = "view/apphome/index.html";            //首页-能耗概况
+    public static final String MESSAGE_VERIFY="http://124.172.234.157:8180/";//短信验证码
 
     public static final String[] types = {"照明","空调","插座"};
     public static int[] cate_icon = {R.mipmap.light,R.mipmap.air_condition,R.mipmap.socket};
+    public static String[] type_colors={ChartColor.ORANGE,ChartColor.YELLOW,ChartColor.BEIGE};
     public static final String[] noticeType = {"用电安全","电能参数","环境安全"};
 
 
@@ -75,7 +86,6 @@ public class Common {
     public static boolean hasAvatar(Context context){
         if(sharedPreferences == null)
             sharedPreferences =  context.getSharedPreferences("data",0);
-        Log.e("what",sharedPreferences.contains("avatar")+"");
         return sharedPreferences.contains("avatar");
     }
 
@@ -169,6 +179,23 @@ public class Common {
         return branchID;
     }
 
+    public static Retrofit getMsgRetrofit(Context context) {
+        if(msgRetrofit == null) {
+            OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder();
+            httpClientBuilder.connectTimeout(5, TimeUnit.SECONDS);
+            httpClientBuilder.readTimeout(10,TimeUnit.SECONDS);
+            httpClientBuilder.writeTimeout(10,TimeUnit.SECONDS);
+            httpClientBuilder.addInterceptor(new AddCookieInterceptor(context));
+            msgRetrofit = new Retrofit.Builder()
+                    .client(httpClientBuilder.build())
+                    .baseUrl(Common.MESSAGE_VERIFY)
+                    .addConverterFactory(ScalarsConverterFactory.create())//以String类型解释结果
+                    .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                    .build();
+        }
+        return msgRetrofit;
+    }
+
     public static Retrofit getRetrofit(Context context) {
         if(retrofit == null) {
             OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder();
@@ -193,7 +220,7 @@ public class Common {
         Set<String> cookieSet =  new HashSet<>();
         cookieSet.add("tokenNo="+user.getData().getTokenNo()+";");
         cookieSet.add("userID="+user.getData().getUserID());
-        if(avatar == null && user.getHeadImg()!=null){
+        if(avatar == null && user.getHeadImg()!=null && !user.getHeadImg().trim().equals("")){
             String path = Common.ROOT+user.getHeadImg().split("../../")[1];
             getAvatarByUrl(path);
             //bitmap->byte[]->base64加密->String 保存头像至数据库
@@ -315,5 +342,37 @@ public class Common {
                 .apply();
     }
 
+    public static String getMsgName(){
+        return MSG_NAME;
+    }
+
+    public static int getMsgId(){
+        return MSG_ID;
+    }
+
+    public static String getMsgPwd(){
+        return MSG_PWD;
+    }
+
+    public static String getTimestamp(){
+        return System.currentTimeMillis()/1000L+"";
+    }
+
+    public static String getMessage(){
+        double random_num = Math.random();
+        while(random_num<0.1)
+            random_num = Math.random();
+        msg_random = (int)(1000000*random_num);
+        StringBuilder builder= new StringBuilder();
+        builder.append("【盐巴科技】PNP您好，您正在进行手机验证，本次验证码为")
+        .append(msg_random)
+        .append("，请按页面提示提交验证码，以完成操作(有效时间5分钟)。如非本人操作，请忽略本短信。");
+        return builder.toString();
+    }
+
+    public static boolean verifySMS(String verify_code){
+        int verify = Integer.parseInt(verify_code);
+        return verify == msg_random;
+    }
 
 }

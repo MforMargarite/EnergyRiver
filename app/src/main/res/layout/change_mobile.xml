@@ -49,7 +49,7 @@
         android:orientation="horizontal"
         android:layout_below="@id/mobile"
         android:id="@+id/verify_panel"
-        android:visibility="gone">
+        android:layout_marginTop="4dp">
         <EditText
             android:background="@color/colorPrimary"
             android:layout_weight="1"
@@ -69,7 +69,7 @@
             android:gravity="center_vertical"
             android:textSize="12sp"
             android:clickable="true"
-            android:layout_marginLeft="12dp"
+            android:layout_marginLeft="4dp"
             android:text="@string/get_verify"
             android:id="@+id/get_verify"
             android:textColor="@color/white"

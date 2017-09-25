@@ -19,7 +19,7 @@ public class RankActivity extends AppCompatActivity{
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.rank);
+        setContentView(R.layout.rank_wrapper);
         initWidget();
     }
 

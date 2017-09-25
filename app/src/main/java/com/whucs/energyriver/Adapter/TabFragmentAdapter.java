@@ -6,10 +6,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.whucs.energyriver.DeptRankFragment;
+import com.whucs.energyriver.LoopRankFragment;
 import com.whucs.energyriver.R;
 import com.whucs.energyriver.RoomRankFragment;
-import com.whucs.energyriver.ScoreRankFragment;
+import com.whucs.energyriver.BranchRankFragment;
+import com.whucs.energyriver.TypeRankFragment;
 
 
 public class TabFragmentAdapter extends FragmentStatePagerAdapter {
@@ -25,11 +26,13 @@ public class TabFragmentAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             default:
-                return new RoomRankFragment();//房间排名
+                return new RoomRankFragment();//区域排名
             case 1:
-                return new ScoreRankFragment();//积分排名
+                return new BranchRankFragment();//机构排名
             case 2:
-                return new DeptRankFragment();//部门排名
+                return new LoopRankFragment();//设备排名
+            case 3:
+                return new TypeRankFragment();//用电类型排名
         }
     }
 

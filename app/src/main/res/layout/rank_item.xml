@@ -6,28 +6,30 @@
     android:paddingBottom="12dp"
     android:background="@drawable/bottom_line"
     xmlns:android="http://schemas.android.com/apk/res/android">
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.5"
+        android:gravity="center_horizontal"
+        android:id="@+id/upOrDown"
+        />
     <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="center_horizontal"
-        android:id="@+id/user"/>
+        android:id="@+id/name"/>
     <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:id="@+id/location"
-        android:gravity="center_horizontal"/>
+        android:id="@+id/money"
+        android:gravity="center_horizontal"
+        />
     <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="center_horizontal"
-        android:id="@+id/dept"/>
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center_horizontal"
-        android:id="@+id/money"/>
+        android:id="@+id/percent"/>
 </LinearLayout>

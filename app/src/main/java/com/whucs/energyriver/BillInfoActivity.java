@@ -25,10 +25,11 @@ public class BillInfoActivity extends AppCompatActivity implements View.OnClickL
         back = (ImageView) findViewById(R.id.back);
         bill = (WebView) findViewById(R.id.bill);
         back.setOnClickListener(this);
-        String url = Common.ROOT+Common.BILL;
         Intent intent = getIntent();
         if(intent!=null){
-            url += intent.getIntExtra("id",-1);
+            String url = Common.ROOT+Common.BILL;
+            String param = "?userID="+Common.getID(this)+"&pwd="+Common.getPwd(this)+"&billID="+intent.getIntExtra("id",-1);
+            url += param;
             bill.getSettings().setJavaScriptEnabled(true);
             bill.loadUrl(url);
         }
