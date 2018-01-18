@@ -5,7 +5,9 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -14,10 +16,11 @@ import com.whucs.energyriver.Adapter.StateSwitchPagerAdapter;
 import com.whucs.energyriver.Public.Common;
 import com.whucs.energyriver.R;
 
-public class StateSwitchFragment extends Fragment{
+public class StateSwitchFragment extends Fragment {
     ScrollForbidViewPager viewPager;
     StateSwitchPagerAdapter adapter;
     Activity activity;
+
 
     @Nullable
     @Override
@@ -59,6 +62,8 @@ public class StateSwitchFragment extends Fragment{
     }
 
     public void reload(){}
-    }
+
+
+}
 
 

@@ -4,17 +4,65 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="0dp"
-    android:layout_margin="0dp"
     android:background="@drawable/gradient_bg">
-    <android.support.v4.view.ViewPager
+
+        <android.support.v7.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@mipmap/navbg"
+            android:id="@+id/toolbar">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/inquiry"
+                android:id="@+id/title"
+                android:textColor="@color/white"
+                android:textSize="16sp"/>
+            <com.whucs.energyriver.Widget.MessageImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginRight="24dp"
+                android:id="@+id/menu"
+                android:clickable="true"/>
+        </android.support.v7.widget.Toolbar>
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:id="@+id/container"/>
-    <include
-        layout="@layout/bottom_menu"
+        android:layout_height="36dp"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/pull_refresh_initial"
+        android:visibility="invisible"
+        android:gravity="center_horizontal"
+        android:id="@+id/pull_to_refresh">
+        <ProgressBar
+            android:layout_width="24dp"
+            android:layout_height="match_parent"
+            style="@style/StyleProgressBarMini"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:id="@+id/refresh_state"
+            android:textColor="@color/white"
+            android:text="正在加载"
+            android:layout_marginLeft="8dp"/>
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <android.support.v4.view.ViewPager
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:id="@+id/container"/>
+        <include
+            layout="@layout/bottom_menu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"/>
+    </LinearLayout>
 </LinearLayout>

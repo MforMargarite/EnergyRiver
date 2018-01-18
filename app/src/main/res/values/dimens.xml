@@ -4,4 +4,5 @@
     <dimen name="login_paddingRight">48dp</dimen>
     <dimen name="building_list_padding">12dp</dimen>
     <dimen name="empty_loop_padding">64dp</dimen>
+    <dimen name="pull_refresh_initial">-36dp</dimen>
 </resources>

@@ -96,7 +96,7 @@ public class UserInfoPresenter {
         //将byte[]包装成后台可识别的avatar data
         byte[] postAvatar = Base64.encode(avatar_byte, Base64.DEFAULT);
         StringBuilder builder = new StringBuilder();
-        builder.append("***********************").append(new String(postAvatar));
+        builder.append("***********************").append(new String(postAvatar));//23位前缀
         return builder.toString();
     }
 

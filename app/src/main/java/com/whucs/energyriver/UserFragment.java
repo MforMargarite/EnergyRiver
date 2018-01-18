@@ -2,6 +2,8 @@ package com.whucs.energyriver;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -41,7 +43,6 @@ public class UserFragment extends Fragment implements View.OnClickListener{
 
     private void initWidget(View view){
         activity = getActivity();
-
         avatar = (AvatarImageView) view.findViewById(R.id.avatar);
         username = (TextView) view.findViewById(R.id.username);
         score = (TextView)view.findViewById(R.id.score);

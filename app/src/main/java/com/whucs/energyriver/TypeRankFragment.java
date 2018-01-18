@@ -111,6 +111,7 @@ public class TypeRankFragment extends StateSwitchFragment implements PercentView
 
     @Override
     public void reload() {
+        showViewByTag("loading");
         if(activity == null)
             activity = getActivity();
         if(presenter == null)

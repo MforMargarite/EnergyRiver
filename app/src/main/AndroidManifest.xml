@@ -19,25 +19,45 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity"/>
-        <activity android:name=".LogActivity"/>
-        <activity android:name=".RankActivity"/>
-        <activity android:name=".UserInfoActivity"/>
-        <activity android:name=".SubManageActivity"/>
-        <activity android:name=".BillActivity"/>
-        <activity android:name=".NotificationActivity"/>
-        <activity android:name=".AboutUs"/>
-        <activity android:name=".ChangePwdActivity"/>
-        <activity android:name=".AddSceneActivity"/>
-        <activity android:name=".EditSceneActivity"/>
-        <activity android:name=".SceneActivity"/>
-        <activity android:name=".ChooseRoomActivity"/>
-        <activity android:name=".Widget.MyCircleCrop"/>
-        <activity android:name=".ChangeNameActivity"/>
-        <activity android:name=".ChangeMobileActivity"/>
-        <activity android:name=".EditSubActivity"/>
-        <activity android:name=".AddSubActivity"/>
-        <activity android:name=".NoticeDetailActivity"/>
+        <activity android:name=".MainActivity"
+            android:screenOrientation="portrait"/>
+            <!--android:configChanges="orientation|keyboardHidden|keyboard"/>-->
+        <activity android:name=".LogActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".RankActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".UserInfoActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".SubManageActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".BillActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".NotificationActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".AboutUs"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ChangePwdActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".AddSceneActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".EditSceneActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".SceneActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ChooseRoomActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".Widget.MyCircleCrop"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ChangeNameActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ChangeMobileActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".EditSubActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".AddSubActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".NoticeDetailActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

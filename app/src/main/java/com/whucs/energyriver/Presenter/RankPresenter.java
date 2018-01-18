@@ -40,7 +40,10 @@ public class RankPresenter {
                 .map(new Func1<HttpData<List<Rank>>, List<Rank>>() {
                     @Override
                     public List<Rank> call(HttpData<List<Rank>> listHttpData) {
-                        return listHttpData.getData();
+                        if(listHttpData.getCode() == 200)
+                            return listHttpData.getData();
+                        else
+                            return null;
                     }
                 }).subscribe(new Observer<List<Rank>>() {
                     @Override
@@ -68,7 +71,10 @@ public class RankPresenter {
                 .map(new Func1<HttpData<List<Rank>>, List<Rank>>() {
                     @Override
                     public List<Rank> call(HttpData<List<Rank>> listHttpData) {
-                        return listHttpData.getData();
+                        if(listHttpData.getCode() == 200)
+                            return listHttpData.getData();
+                        else
+                            return null;
                     }
                 }).subscribe(new Observer<List<Rank>>() {
             @Override
@@ -97,7 +103,10 @@ public class RankPresenter {
                 .map(new Func1<HttpData<List<Rank>>, List<Rank>>() {
                     @Override
                     public List<Rank> call(HttpData<List<Rank>> listHttpData) {
-                        return listHttpData.getData();
+                        if(listHttpData.getCode() == 200)
+                            return listHttpData.getData();
+                        else
+                            return null;
                     }
                 }).subscribe(new Observer<List<Rank>>() {
             @Override

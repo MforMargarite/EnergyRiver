@@ -28,7 +28,6 @@ public class MessagePresenter {
                     @Override
                     public Boolean call(String s) {
                         int result = Integer.parseInt(s.split("State:")[1].split(",")[0]);
-                        Log.e("what",result+"");
                         if(result == 1)
                             return true;
                         else

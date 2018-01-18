@@ -3,6 +3,7 @@ package com.whucs.energyriver;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -41,7 +42,6 @@ import java.util.Map;
 
 public class ControlFragment extends StateSwitchFragment implements View.OnClickListener,ControlView,AdapterView.OnItemClickListener {
     View view ;
-    ImageView menu;
     LinearLayout room_info;
     ScrollGridView scene_info;
     ScrollListView loopListView;
@@ -98,7 +98,6 @@ public class ControlFragment extends StateSwitchFragment implements View.OnClick
         if(!Common.hasAuth(activity))
             showViewByTag("auth");
         else {
-            menu = (ImageView) view.findViewById(R.id.menu);
             room = (TextView) view.findViewById(R.id.room);
             room_info = (LinearLayout) view.findViewById(R.id.room_info);
             scene_info = (ScrollGridView) view.findViewById(R.id.scene_info);
@@ -109,7 +108,6 @@ public class ControlFragment extends StateSwitchFragment implements View.OnClick
             loopListView = (ScrollListView) view.findViewById(R.id.loop_listView);
 
             res = activity.getResources();
-            menu.setOnClickListener(this);
             room_info.setOnClickListener(this);
 
             acAlter = new ACAlter();
@@ -145,10 +143,6 @@ public class ControlFragment extends StateSwitchFragment implements View.OnClick
     public void onClick(View view) {
         Intent intent;
         switch (view.getId()){
-            case R.id.menu:
-                intent = new Intent(activity,SceneActivity.class);
-                startActivity(intent);
-                break;
             case R.id.room_info:
                 intent = new Intent(activity,ChooseRoomActivity.class);
                 startActivityForResult(intent,0);
@@ -204,8 +198,8 @@ public class ControlFragment extends StateSwitchFragment implements View.OnClick
                 break;
             case R.id.auth_ensure:
                 //跳转至缴费页面
-                intent = new Intent(activity,BillActivity.class);
-                startActivity(intent);
+                //intent = new Intent(activity,BillActivity.class);
+               // startActivity(intent);
                 break;
             case R.id.auth_cancel:
                 //跳转至能耗概况tab

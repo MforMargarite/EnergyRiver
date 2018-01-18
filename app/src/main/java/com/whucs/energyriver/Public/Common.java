@@ -55,6 +55,7 @@ public class Common {
     public static final String BILL = "view/bill/bill_details_mobile.html";               //能耗账单详情
   //  public static final String ROOT = "http://192.168.137.1:8008/";
     public static final String Inquiry = "view/apphome/index.html";            //首页-能耗概况
+    public static final String LANDSCAPE = "view/apphome/landscape.html";      //首页-横屏
     public static final String MESSAGE_VERIFY="http://124.172.234.157:8180/";//短信验证码
 
     public static final String[] types = {"照明","空调","插座"};
@@ -220,9 +221,10 @@ public class Common {
         Set<String> cookieSet =  new HashSet<>();
         cookieSet.add("tokenNo="+user.getData().getTokenNo()+";");
         cookieSet.add("userID="+user.getData().getUserID());
+        sharedPreferences.edit().remove("lastAvatar").apply();
         if(avatar == null && user.getHeadImg()!=null && !user.getHeadImg().trim().equals("")){
             String path = Common.ROOT+user.getHeadImg().split("../../")[1];
-            getAvatarByUrl(path);
+            getAvatarByUrl(context,path);
             //bitmap->byte[]->base64加密->String 保存头像至数据库
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             avatar.compress(Bitmap.CompressFormat.PNG,100,outputStream);
@@ -249,7 +251,7 @@ public class Common {
             sharedPreferences = context.getSharedPreferences("data",0);
         if(avatar == null && user.getHeadImg()!=null){
             String path = Common.ROOT+user.getHeadImg().split("../../")[1];
-            getAvatarByUrl(path);
+            getAvatarByUrl(context,path);
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             avatar.compress(Bitmap.CompressFormat.PNG,100,outputStream);
             sharedPreferences.edit().putString("avatar",Base64.encodeToString(outputStream.toByteArray(),Base64.DEFAULT)).apply();
@@ -263,7 +265,7 @@ public class Common {
                 .apply();
     }
 
-    private static void getAvatarByUrl(final String path){
+    private static void getAvatarByUrl(final Context context,final String path){
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -274,6 +276,7 @@ public class Common {
 
                }catch (Exception e){
                     e.printStackTrace();
+                    avatar = BitmapFactory.decodeResource(context.getResources(),R.mipmap.avatar);
                 }
             }
         });
