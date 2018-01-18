@@ -28,8 +28,11 @@ public class NoticeBiz {
         @POST("system/notice/update")
         Observable<HttpResult> updateNotice(@Query("nID") Long nID, @Query("state") int state);
 
-        @GET("system/notice/listByBranchAndType")
+        @GET("system/notice/listByBranchAndTypeUnread")
         Observable<HttpListData<List<Notice>>> getNoticeByType(@Query("userID") Long userID,@Query("type") int type);
+
+        @GET("system/notice/listByBranchAndType")
+        Observable<HttpListData<List<Notice>>> getNoticeByTypeAndPage(@Query("userID") Long userID,@Query("type") int type,@Query("pageIndex")int pageIndex,@Query("pageSize")int pageSize);
 
     }
 
@@ -42,6 +45,8 @@ public class NoticeBiz {
         return getNoticeService(context).getNoticeByType(userID,type+1);
     }
 
-
+    public Observable<HttpListData<List<Notice>>> getNoticeByTypeAndPage(Context context, Long userID, int type,int pageIndex,int pageSize){
+        return getNoticeService(context).getNoticeByTypeAndPage(userID,type+1,pageIndex,pageSize);
+    }
 
 }

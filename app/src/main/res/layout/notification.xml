@@ -23,8 +23,48 @@
             android:id="@+id/back"
             android:clickable="true"/>
     </android.support.v7.widget.Toolbar>
-    <com.whucs.energyriver.Widget.ScrollListView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/notices"/>
+        android:layout_height="wrap_content"
+        android:id="@+id/notice_title"
+        android:layout_marginLeft="36dp"
+        android:layout_marginRight="36dp"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:padding="4dp"
+        android:background="@drawable/white_outline">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:id="@+id/elec_safety"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:gravity="center_horizontal"
+            android:background="@drawable/right_line"
+            android:clickable="true"/>
+        <TextView android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:id="@+id/elec_param"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:gravity="center_horizontal"
+            android:background="@drawable/right_line"
+            android:clickable="true"/>
+        <TextView android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:id="@+id/envir_param"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:gravity="center_horizontal"
+            android:clickable="true"/>
+    </LinearLayout>
+    <com.whucs.energyriver.Widget.RefreshListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="16dp"
+            android:id="@+id/notices"/>
+
 </LinearLayout>

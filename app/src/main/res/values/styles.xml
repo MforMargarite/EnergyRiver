@@ -18,6 +18,15 @@
         <item name="android:indeterminateDrawable">@drawable/shape_progressbar_mini</item>
     </style>
 
+    <style name="StyleProgressBarMedium" parent="Widget.AppCompat.ProgressBar">
+        <item name="android:maxHeight">48dp</item>
+        <item name="android:minHeight">32dp</item>
+        <item name="android:maxWidth">48dp</item>
+        <item name="android:minWidth">32dp</item>
+        <item name="android:indeterminateOnly">true</item>
+        <item name="android:indeterminateDrawable">@drawable/shape_progressbar_mini</item>
+    </style>
+
     <style name="MyToggleButton" parent="@android:style/Widget.CompoundButton">
         <item name="android:button">@drawable/toggle_style</item>
     </style>

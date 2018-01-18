@@ -26,8 +26,28 @@ public class NoticePresenter {
         this.noticeBiz = new NoticeBiz();
     }
 
-    public void getNoticeByType(Context context, final int type){
-        noticeBiz.getNoticeByType(context, Common.getID(context),type)
+    public void getNoticeByType(Context context, final int type,int pageIndex,int pageSize){
+        noticeBiz.getNoticeByTypeAndPage(context, Common.getID(context),type,pageIndex,pageSize)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<HttpListData<List<Notice>>>() {
+                    @Override
+                    public void onCompleted() {}
+
+                    @Override
+                    public void onError(Throwable e) {
+                        noticeView.execError("获取事件通知失败,请检查网络后重试");
+                    }
+
+                    @Override
+                    public void onNext(HttpListData<List<Notice>> notices) {
+                        noticeView.setNoticeList(notices.getData(),type,notices.getTotal());
+                    }
+                });
+    }
+
+    public void getNoticeByTypeAppend(Context context, int type, int pageIndex, int pageSize){
+        noticeBiz.getNoticeByTypeAndPage(context, Common.getID(context),type,pageIndex,pageSize)
                 .subscribeOn(Schedulers.io())
                 .map(new Func1<HttpListData<List<Notice>>, List<Notice>>() {
                     @Override
@@ -44,18 +64,12 @@ public class NoticePresenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e("what",e.getMessage());
                         noticeView.execError("获取事件通知失败,请检查网络后重试");
                     }
 
                     @Override
                     public void onNext(List<Notice> notices) {
-                        List<Notice> list = new ArrayList<>();
-                        for (Notice notice:notices) {
-                            if(notice.getnState() == 0)
-                                list.add(notice);
-                        }
-                        noticeView.setNoticeList(list,type);
+                        noticeView.setNoticeListAppend(notices);
                     }
                 });
     }
