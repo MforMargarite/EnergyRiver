@@ -24,7 +24,6 @@ import java.util.List;
 
 public class NotificationActivity extends StateSwitchActivity implements View.OnClickListener,NoticeView,AdapterView.OnItemClickListener{
     ImageView back;
-    ViewPager notices;
     ScrollListView noticeListView;
     Resources res;
     ArrayList<ArrayList<Notice>> noticeList,tempList;
@@ -45,7 +44,7 @@ public class NotificationActivity extends StateSwitchActivity implements View.On
         res = getResources();
         //初始化控件
         back = (ImageView) view.findViewById(R.id.back);
-       // noticeListView = (ScrollListView) view.findViewById(R.id.notices);
+        noticeListView = (ScrollListView) view.findViewById(R.id.notices);
         back.setOnClickListener(this);
         //初始化按通知类型划分的List
         noticeList = new ArrayList<>();
