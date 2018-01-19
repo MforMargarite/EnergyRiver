@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsListView;
@@ -22,6 +23,7 @@ import com.whucs.energyriver.View.NoticeView;
 import com.whucs.energyriver.Widget.RefreshListView;
 import com.whucs.energyriver.Widget.StateSwitchActivity;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +59,7 @@ public class NotificationActivity extends StateSwitchActivity implements View.On
         res = getResources();
         noticeList = new HashMap<>();
         countMap = new HashMap<>();
+        cur_list = new ArrayList<>();
 
         //初始化控件
         elec_safety = (TextView) view.findViewById(R.id.elec_safety);//用电安全
@@ -90,58 +93,37 @@ public class NotificationActivity extends StateSwitchActivity implements View.On
                 break;
             case R.id.elec_safety:
                 if(cur!=0) {
-                    pageIndex = 0;
-                    cur = 0;
-                    cur_list = noticeList.get(cur);
-                    adapter = new NoticeAdapter(this,cur_list);
-                    noticeListView.setAdapter(adapter);
-                    adapter.notifyDataSetChanged();
-                    if(cur_list == null || cur_list.size() == 0|| (noticeListView.getFirstVisiblePosition()==0 && noticeListView.getCount()==noticeListView.getLastVisiblePosition()+1))
-                        noticeListView.removeFooterView(refresh_footer);
-                    else {
-                        if (noticeListView.getFooterViewsCount() == 0)
-                            noticeListView.addFooterView(refresh_footer);
-                    }
+                    changeNoticeType(0);
                 }
-                hidePullToRefresh();
                 break;
             case R.id.elec_param:
                 if(cur!=1) {
-                    pageIndex = 0;
-                    cur = 1;
-                    cur_list = noticeList.get(cur);
-                    adapter = new NoticeAdapter(this,cur_list);
-                    noticeListView.setAdapter(adapter);
-                    adapter.notifyDataSetChanged();
-                    if(cur_list == null || cur_list.size() == 0|| (noticeListView.getFirstVisiblePosition()==0 && noticeListView.getCount()==noticeListView.getLastVisiblePosition()+1))
-                        noticeListView.removeFooterView(refresh_footer);
-                    else {
-                        if (noticeListView.getFooterViewsCount() == 0)
-                            noticeListView.addFooterView(refresh_footer);
-                    }
+                    changeNoticeType(1);
                 }
-                hidePullToRefresh();
                 break;
             case R.id.envir_param:
                 if(cur!=2) {
-                    pageIndex = 0;
-                    cur = 2;
-                    cur_list = noticeList.get(cur);
-                    adapter = new NoticeAdapter(this, cur_list);
-                    noticeListView.setAdapter(adapter);
-                    adapter.notifyDataSetChanged();
-                    if (cur_list == null || cur_list.size() == 0 || (noticeListView.getFirstVisiblePosition() == 0 && noticeListView.getCount() == noticeListView.getLastVisiblePosition() + 1))
-                        noticeListView.removeFooterView(refresh_footer);
-                    else {
-                        if (noticeListView.getFooterViewsCount() == 0)
-                            noticeListView.addFooterView(refresh_footer);
-                    }
+                    changeNoticeType(2);
                 }
-                hidePullToRefresh();
                 break;
             default:
                 break;
         }
+    }
+
+    private void changeNoticeType(int type){
+        cur = type;
+        pageIndex = 0;
+        cur_list.clear();
+        cur_list.addAll(noticeList.get(cur));
+        if (cur_list.size() == 0 || cur_list.size() < (noticeListView.getLastVisiblePosition()-noticeListView.getFirstVisiblePosition()))
+            noticeListView.removeFooterView(refresh_footer);
+        else {
+            if (noticeListView.getFooterViewsCount() == 0)
+                noticeListView.addFooterView(refresh_footer);
+        }
+        adapter.notifyDataSetChanged();
+        hidePullToRefresh();
     }
 
     @Override
@@ -166,13 +148,20 @@ public class NotificationActivity extends StateSwitchActivity implements View.On
             }
         }
         if(type == cur) {
-            cur_list = noticeList.get(cur);
-            adapter = new NoticeAdapter(this, cur_list);
-            if(noticeListView.getFooterViewsCount() == 0)
-                noticeListView.addFooterView(refresh_footer);
-            noticeListView.setAdapter(adapter);
-            adapter.notifyDataSetChanged();
-            noticeListView.setOnItemClickListener(this);
+            if(cur_list.size() == 0) {
+                cur_list.addAll(noticeList.get(cur));
+                if(adapter == null)
+                    adapter = new NoticeAdapter(this, cur_list);
+                if(noticeListView.getFooterViewsCount() == 0)
+                    noticeListView.addFooterView(refresh_footer);
+                noticeListView.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
+                noticeListView.setOnItemClickListener(this);
+            }else{
+                cur_list.clear();
+                cur_list.addAll(noticeList.get(cur));
+                adapter.notifyDataSetChanged();
+            }
             showViewByTag("content");
         }
     }
@@ -221,17 +210,19 @@ public class NotificationActivity extends StateSwitchActivity implements View.On
             hint.setVisibility(View.GONE);
             progressBar.setVisibility(View.VISIBLE);
             refresh();
+            return true;
         }else{
             progressBar.setVisibility(View.GONE);
             hint.setVisibility(View.VISIBLE);
+            return false;
         }
-        return true;
     }
 
     public void hidePullToRefresh(){
         refresh_footer.setPadding(0, -refresh_footer.getMeasuredHeight(), 0, 0);
         hint.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
+        noticeListView.resetRefreshState();
     }
 
     @Override

@@ -27,6 +27,7 @@ import com.whucs.energyriver.Widget.MessageImageView;
 
 import java.util.List;
 
+import cn.jpush.android.api.JPushInterface;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
@@ -48,9 +49,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initWidget();
+        //启动极光推服务
+        JPushInterface.init(this);
+        //更新别名
+        JPushInterface.setAlias(this,Integer.parseInt(Common.getID(this)+""),Common.getUserName(this));//将Username设为别名
 
     }
-
 
     private void initWidget(){
         setContentView(R.layout.activity_main);
@@ -72,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         viewPager.setAdapter(new MainPagerAdapter(getSupportFragmentManager()));
         res = getResources();
         setCurrentTab(0);
+
     }
 
 
