@@ -77,7 +77,7 @@ public class Common {
     }
 
     public static String getLatestUrl(){
-        return ROOT+"Upload/Apk/EnergyRiver_"+latest_version+".apk";
+        return ROOT+"Apk/EnergyRiver_"+latest_version+".apk";
     }
 
     public static Bitmap getAvatar(Context context) {

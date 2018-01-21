@@ -181,11 +181,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     clearAllTab();
                     cur_tab = control;
                     cur_tab.setBackgroundColor(res.getColor(R.color.selected_tab_blue));
-                    toolbar.setVisibility(View.GONE);
-                   /* title.setText(res.getText(R.string.control));
+                    title.setText(res.getText(R.string.control));
                     menu.setImageDrawable(res.getDrawable(R.mipmap.menu));
                     menu.setTag("menu");
-                    menu.setVisibility(View.VISIBLE);*/
+                    menu.setVisibility(View.VISIBLE);
                     setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
                 }
                 break;
@@ -203,6 +202,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             default:
                 break;
         }
+    }
+
+    public void setToolbar(int state){
+        toolbar.setVisibility(state);
     }
 
     private void getNoticeUnReadNum(){

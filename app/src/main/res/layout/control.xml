@@ -6,27 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/baseColor">
-        <android.support.v7.widget.Toolbar
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bottom_line"
-            android:id="@+id/toolbar">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="@string/control"
-                android:textColor="@color/white"
-                android:textSize="16sp"/>
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="12dp"
-                android:layout_gravity="end"
-                android:src="@mipmap/menu"
-                android:layout_marginRight="24dp"
-                android:id="@+id/menu"
-                android:clickable="true"/>
-        </android.support.v7.widget.Toolbar>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="1dp"

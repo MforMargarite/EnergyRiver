@@ -99,8 +99,9 @@ public class ControlFragment extends StateSwitchFragment implements View.OnClick
         iniAdapter(view);
         addState("auth",getAuthView());
         //判断是否有权限使用控制功能
-        if(!Common.hasAuth(activity))
+        if(!Common.hasAuth(activity)) {
             showViewByTag("auth");
+        }
         else {
             acAlter = new ACAlter();
             res = activity.getResources();
@@ -121,6 +122,18 @@ public class ControlFragment extends StateSwitchFragment implements View.OnClick
             scene_info.setOnItemClickListener(this);*/
 
             getPageInfo();
+        }
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if(isVisibleToUser) {
+            if(!Common.hasAuth(activity)) {
+                activity.setToolbar(View.GONE);
+            }else{
+                activity.setToolbar(View.VISIBLE);
+            }
         }
     }
 
