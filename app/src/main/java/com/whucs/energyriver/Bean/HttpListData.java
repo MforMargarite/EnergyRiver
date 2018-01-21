@@ -1,7 +1,5 @@
 package com.whucs.energyriver.Bean;
 
-import android.util.Log;
-
 //返回数据的请求结果
 public class HttpListData<T> {
     private int code;
@@ -15,7 +13,6 @@ public class HttpListData<T> {
     public void setTotal(int total) {
         this.total = total;
     }
-
 
     public int getCode() {
         return code;

@@ -3,7 +3,6 @@ package com.whucs.energyriver.Presenter;
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
-
 import com.whucs.energyriver.Bean.ACCollect;
 import com.whucs.energyriver.Bean.Building;
 import com.whucs.energyriver.Bean.HttpListData;
@@ -12,10 +11,8 @@ import com.whucs.energyriver.Bean.Loop;
 import com.whucs.energyriver.Bean.Tree;
 import com.whucs.energyriver.Biz.BuildingBiz;
 import com.whucs.energyriver.Biz.LoopBiz;
-import com.whucs.energyriver.Public.Common;
 import com.whucs.energyriver.Public.TreeUtil;
 import com.whucs.energyriver.View.ControlView;
-
 import java.util.HashMap;
 import java.util.List;
 import rx.Observer;
@@ -38,7 +35,7 @@ public class ControlPresenter {
     public void getLoopInfoByBuildID(Context context){
         controlView.showLoading();
         loopBiz.getLoopInfoByBuildID(context,controlView.getBuildingID())
-                .map(new Func1<HttpListData<List<Loop>>, List<Loop>>() {
+                /*.map(new Func1<HttpListData<List<Loop>>, List<Loop>>() {
                     @Override
                     public List<Loop> call(HttpListData<List<Loop>> listHttpData) {
                         if(listHttpData.getData().size()!=0)
@@ -46,7 +43,7 @@ public class ControlPresenter {
                         else
                             return null;
                     }
-                })
+                })*/
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<List<Loop>>() {
@@ -76,7 +73,8 @@ public class ControlPresenter {
                     public List<Building> call(HttpListData<List<Building>> listHttpData) {
                         return listHttpData.getData();
                     }
-                }).subscribeOn(Schedulers.io())
+                })
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<List<Building>>() {
                 @Override
@@ -101,13 +99,13 @@ public class ControlPresenter {
 
     public void updateLoopState(final View view,Context context){
         controlView.showWaiting();
-        loopBiz.updateLoop(context, Common.getID(context),controlView.getLoopID(),controlView.getLoopState())
-                .map(new Func1<HttpResult, Boolean>() {
+        loopBiz.updateLoop(context,controlView.getLoopID(),controlView.getLoopOpenStatus())
+                /*.map(new Func1<HttpResult, Boolean>() {
                     @Override
                     public Boolean call(HttpResult booleanHttpData) {
                         return booleanHttpData.isResult();
                     }
-                })
+                })*/
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Boolean>() {

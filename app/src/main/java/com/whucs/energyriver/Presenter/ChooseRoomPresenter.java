@@ -35,7 +35,8 @@ public class ChooseRoomPresenter {
                         List<Building>buildings = listHttpData.getData();
                         return new Tree(buildings);
                     }
-                }).subscribeOn(Schedulers.io())
+                })
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Tree>() {
                     @Override

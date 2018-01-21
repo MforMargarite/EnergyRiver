@@ -30,7 +30,7 @@ public class LoopAdapter extends BaseAdapter {
         this.context = context;
         this.res = context.getResources();
         this.clickListener = clickListener;
-        if (list == null) {
+        if (list == null || list.size() == 0) {
             list = new ArrayList<>();
             Loop loop = new Loop();
             loop.setLoopID(-1L);
@@ -63,7 +63,6 @@ public class LoopAdapter extends BaseAdapter {
             TextView content = (TextView) view.findViewById(R.id.content);
             content.setText(res.getText(R.string.no_loop_item));
             content.setPadding(0,(int)res.getDimension(R.dimen.empty_loop_padding),0,(int)res.getDimension(R.dimen.building_list_padding));
-            content.setGravity(Gravity.CENTER);
         }else {
             if (loop.getLoopID() == 0L) {
                 view = LayoutInflater.from(context).inflate(R.layout.cate_control_item, null);
@@ -71,14 +70,14 @@ public class LoopAdapter extends BaseAdapter {
                 ImageView cate_img = (ImageView) view.findViewById(R.id.cate_img);
                 cate_name.setText(loop.getLoopName());
                 cate_img.setImageDrawable(res.getDrawable(Common.cate_icon[Integer.parseInt(loop.getLoopTypeID().toString()) - 1]));
-            } else if (loop.getLoopTypeID() == 2L) {
+            } /*else if (loop.getLoopTypeID() == 2L) {
                 view = LayoutInflater.from(context).inflate(R.layout.air_control_item, null);
                 TextView cate_name = (TextView) view.findViewById(R.id.cate_name);
                 ImageView toggle = (ImageView) view.findViewById(R.id.toggle);
                 toggle.setOnClickListener(clickListener);
                 cate_name.setText(loop.getLoopName());
                 toggle.setTag(loop.getLoopID());
-            } else {
+            } */else {
                 view = LayoutInflater.from(context).inflate(R.layout.detail_control_item, null);
                 TextView cate_name = (TextView) view.findViewById(R.id.cate_name);
                 ToggleButton toggle = (ToggleButton) view.findViewById(R.id.switcher);

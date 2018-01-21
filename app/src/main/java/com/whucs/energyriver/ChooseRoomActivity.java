@@ -88,7 +88,7 @@ public class ChooseRoomActivity extends StateSwitchActivity implements View.OnCl
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         TreeNode<Building> node = (TreeNode<Building>) adapterView.getAdapter().getItem(i);
-        if(node.getData().getIsRoom()){
+        if(node.getData().getRoom()){
             Intent data = new Intent();
             data.putExtra("buildingID",node.getData().getBuildingID());
             data.putExtra("buildingName",tree.getBuildingPath(node.getData(),3));

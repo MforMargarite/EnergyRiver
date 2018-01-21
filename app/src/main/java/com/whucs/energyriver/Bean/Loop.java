@@ -39,6 +39,19 @@ public class Loop {
     private Long userID;        //创建人ID
     private String operation;    //操作
 
+
+    /*2018.1.21 新增 boolean对象  ??? 好像是重复的变量吧...*/
+    private Boolean ableCut;
+    private Boolean admitControl;
+    private Boolean admitCut;
+    private Boolean baseLoop;
+    private Boolean configMeasureWay;
+    private Boolean configMeter;
+    private Boolean intensive;
+    private String isAdmitCutText;
+    private String loopType;
+    private Boolean measure;
+
     public String getLoopCode() {
         return loopCode;
     }
@@ -57,6 +70,7 @@ public class Loop {
 
     public void setIsConfigMeasureWay(Boolean isConfigMeasureWay) {
         this.isConfigMeasureWay = isConfigMeasureWay;
+        configMeasureWay = isConfigMeasureWay;
     }
 
     public void setLoopTypeID(Long loopTypeID) {
@@ -213,6 +227,7 @@ public class Loop {
 
     public void setIsAdmitControl(Boolean isAdmitControl) {
         this.isAdmitControl = isAdmitControl;
+        admitControl = isAdmitControl;
     }
 
     public Boolean getIsBaseLoop() {
@@ -221,6 +236,7 @@ public class Loop {
 
     public void setIsBaseLoop(Boolean isBaseLoop) {
         this.isBaseLoop = isBaseLoop;
+        baseLoop = isBaseLoop;
     }
 
     public Boolean getIsIntensive() {
@@ -229,6 +245,7 @@ public class Loop {
 
     public void setIsIntensive(Boolean isIntensive) {
         this.isIntensive = isIntensive;
+        intensive = isIntensive;
     }
 
     public Long getLoopID() {
@@ -253,6 +270,7 @@ public class Loop {
 
     public void setIsConfigMeter(Boolean isConfigMeter) {
         this.isConfigMeter = isConfigMeter;
+        configMeter = isConfigMeter;
     }
 
     public Boolean getIsAdmitCut() {
@@ -261,6 +279,7 @@ public class Loop {
 
     public void setIsAdmitCut(Boolean isAdmitCut) {
         this.isAdmitCut = isAdmitCut;
+        admitCut = isAdmitCut;
     }
 
     public Boolean getIsAbleCut() {
@@ -269,6 +288,7 @@ public class Loop {
 
     public void setIsAbleCut(Boolean isAbleCut) {
         this.isAbleCut = isAbleCut;
+        ableCut = isAbleCut;
     }
 
     public Boolean getIsMeasure() {
@@ -277,6 +297,7 @@ public class Loop {
 
     public void setIsMeasure(Boolean isMeasure) {
         this.isMeasure = isMeasure;
+        measure = isMeasure;
     }
 
     public String getCreateTime() {
@@ -381,6 +402,7 @@ public class Loop {
 
     public void setAdmitCut(Boolean admitCut) {
         isAdmitCut = admitCut;
+        this.admitCut = admitCut;
     }
 
     public Boolean getAbleCut() {
@@ -389,6 +411,7 @@ public class Loop {
 
     public void setAbleCut(Boolean ableCut) {
         isAbleCut = ableCut;
+        this.ableCut = ableCut;
     }
 
     public Boolean getMeasure() {
@@ -397,6 +420,23 @@ public class Loop {
 
     public void setMeasure(Boolean measure) {
         isMeasure = measure;
+        this.measure = measure;
+    }
+
+    public String getIsAdmitCutText() {
+        return isAdmitCutText;
+    }
+
+    public void setIsAdmitCutText(String isAdmitCutText) {
+        this.isAdmitCutText = isAdmitCutText;
+    }
+
+    public String getLoopType() {
+        return loopType;
+    }
+
+    public void setLoopType(String loopType) {
+        this.loopType = loopType;
     }
 
     @Override
@@ -439,6 +479,16 @@ public class Loop {
                 ", modifyTime='" + modifyTime + '\'' +
                 ", userID=" + userID +
                 ", operation='" + operation + '\'' +
+                ", ableCut=" + ableCut +
+                ", admitControl=" + admitControl +
+                ", admitCut=" + admitCut +
+                ", baseLoop=" + baseLoop +
+                ", configMeasureWay=" + configMeasureWay +
+                ", configMeter=" + configMeter +
+                ", intensive=" + intensive +
+                ", isAdmitCutText='" + isAdmitCutText + '\'' +
+                ", loopType='" + loopType + '\'' +
+                ", measure=" + measure +
                 '}';
     }
 }

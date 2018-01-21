@@ -18,6 +18,7 @@ public interface ControlView {
     Long getBuildingID();
     Long getLoopID();
     String getLoopState();//返回json格式回路状态
+    Integer getLoopOpenStatus();//返回回路状态
 
     void setLoopList(List<Loop> loops);//获取房间下所有回路
     void setBuildingUnit(Building building);//获取当前建筑单元(房间)

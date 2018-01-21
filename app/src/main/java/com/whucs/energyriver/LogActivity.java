@@ -23,6 +23,8 @@ import com.whucs.energyriver.Public.Layout;
 import com.whucs.energyriver.View.LogView;
 import com.whucs.energyriver.Widget.AvatarImageView;
 
+import cn.jpush.android.api.JPushInterface;
+
 public class LogActivity extends AppCompatActivity implements View.OnClickListener,CompoundButton.OnCheckedChangeListener, LogView {
     private EditText username, password;
     private PercentRelativeLayout submit;
@@ -97,7 +99,9 @@ public class LogActivity extends AppCompatActivity implements View.OnClickListen
     public void setUser(User user) {
         try {
             //将用户信息保存至SharedPreference中
-            Common.setUser(this, user,getPassword());
+            Common.setUser(this,user,getPassword());
+            //更新别名
+            JPushInterface.setAlias(this,Integer.parseInt(Common.getID(this)+""),Common.getUserName(this));//将Username设为别名
             //跳转至主界面
             Toast.makeText(LogActivity.this, "登陆成功", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(LogActivity.this, MainActivity.class);

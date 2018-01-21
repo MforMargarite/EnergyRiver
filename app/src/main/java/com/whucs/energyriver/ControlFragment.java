@@ -3,7 +3,6 @@ package com.whucs.energyriver;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -32,6 +31,9 @@ import com.whucs.energyriver.Widget.AirControlDialog;
 import com.whucs.energyriver.Widget.ScrollGridView;
 import com.whucs.energyriver.Widget.ScrollListView;
 import com.whucs.energyriver.Widget.StateSwitchFragment;
+
+import org.json.JSONObject;
+
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,8 +45,9 @@ import java.util.Map;
 public class ControlFragment extends StateSwitchFragment implements View.OnClickListener,ControlView,AdapterView.OnItemClickListener {
     View view ;
     LinearLayout room_info;
-    ScrollGridView scene_info;
+   // ScrollGridView scene_info;
     ScrollListView loopListView;
+    LoopAdapter loopAdapter;
     TextView room;
     MainActivity activity;
 
@@ -59,6 +62,7 @@ public class ControlFragment extends StateSwitchFragment implements View.OnClick
     Long buildingID,loopID;
     String buildingName;
     String loopState;
+    Integer openStatus;//回路的通断状态
     SceneAdapter sceneAdapter;
     ControlPresenter controlPresenter;
     Resources res;
@@ -98,23 +102,24 @@ public class ControlFragment extends StateSwitchFragment implements View.OnClick
         if(!Common.hasAuth(activity))
             showViewByTag("auth");
         else {
+            acAlter = new ACAlter();
+            res = activity.getResources();
+
             room = (TextView) view.findViewById(R.id.room);
+            loopListView = (ScrollListView) view.findViewById(R.id.loop_listView);
             room_info = (LinearLayout) view.findViewById(R.id.room_info);
-            scene_info = (ScrollGridView) view.findViewById(R.id.scene_info);
+            room_info.setOnClickListener(this);
+
+            /*scene_info = (ScrollGridView) view.findViewById(R.id.scene_info);
             int widthSlice = Common.getParentWidth(activity)/9;
             int heightSlice = Common.getParentHeight(activity)/40;
             scene_info.setPadding(widthSlice,heightSlice,widthSlice,heightSlice);
             scene_info.setHorizontalSpacing(widthSlice);
-            loopListView = (ScrollListView) view.findViewById(R.id.loop_listView);
-
-            res = activity.getResources();
-            room_info.setOnClickListener(this);
-
-            acAlter = new ACAlter();
             sceneAdapter = new SceneAdapter(activity,null);
             scene_info.setAdapter(sceneAdapter);
             sceneAdapter.notifyDataSetChanged();
-            scene_info.setOnItemClickListener(this);
+            scene_info.setOnItemClickListener(this);*/
+
             getPageInfo();
         }
     }
@@ -333,8 +338,19 @@ public class ControlFragment extends StateSwitchFragment implements View.OnClick
     }
 
     @Override
+    public Integer getLoopOpenStatus() {
+        try {
+            JSONObject obj = new JSONObject(loopState);
+            openStatus = obj.getBoolean("EquipmentStatus")?1:0;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return openStatus;
+    }
+
+    @Override
     public void setLoopList(List<Loop> loops) {
-        LoopAdapter loopAdapter = new LoopAdapter(activity,loops,this);
+        loopAdapter = new LoopAdapter(activity, loops, this);
         loopListView.setAdapter(loopAdapter);
         loopAdapter.notifyDataSetInvalidated();
         showViewByTag("content");
@@ -345,7 +361,7 @@ public class ControlFragment extends StateSwitchFragment implements View.OnClick
         buildingID = building.getBuildingID();
         room.setText(building.getBuildingName());
         controlPresenter.getLoopInfoByBuildID(activity);
-        controlPresenter.getLoopStateByBuild(activity);
+   //     controlPresenter.getLoopStateByBuild(activity);
         showViewByTag("content");
     }
 
@@ -430,7 +446,7 @@ public class ControlFragment extends StateSwitchFragment implements View.OnClick
                     Long newBuildingID = data.getLongExtra("buildingID", buildingID);
                     String newBuildingName = data.getStringExtra("buildingName");
                     Common.saveBuilding(activity,newBuildingID,newBuildingName);
-                    if (newBuildingID != buildingID) {
+                    if (!newBuildingID.equals(buildingID)) {
                         buildingID = newBuildingID;
                         room.setText(newBuildingName);
                     }

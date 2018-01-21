@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
 import android.util.DisplayMetrics;
-import android.util.Log;
 
 import com.java4less.rchart.gc.ChartColor;
 import com.whucs.energyriver.Bean.SubUser;
@@ -63,6 +62,23 @@ public class Common {
     public static String[] type_colors={ChartColor.ORANGE,ChartColor.YELLOW,ChartColor.BEIGE};
     public static final String[] noticeType = {"用电安全","电能参数","环境安全"};
 
+    private static boolean checkUpdate;
+    private static String latest_version;
+    public static String FIR_TOKEN = "59cc9e00ca87a8027d000125";
+    private static String fir_api_token = "cea43c4fc84e1414f7747711b0d7f5a7";
+
+
+    public static String getFirApiToken(){
+        return fir_api_token;
+    }
+
+    public static String getLatestVersion(){
+        return latest_version;
+    }
+
+    public static String getLatestUrl(){
+        return ROOT+"Upload/Apk/EnergyRiver_"+latest_version+".apk";
+    }
 
     public static Bitmap getAvatar(Context context) {
         if(sharedPreferences == null)
@@ -93,7 +109,6 @@ public class Common {
     public static boolean hasLastAvatar(Context context){
         if(sharedPreferences == null)
             sharedPreferences =  context.getSharedPreferences("data",0);
-        Log.e("what",sharedPreferences.contains("lastAvatar")+"");
         return sharedPreferences.contains("lastAvatar");
     }
 
@@ -105,7 +120,7 @@ public class Common {
         isAuth = sharedPreferences.getBoolean("isVIP",false);//VIP用户
         if(!isAuth)
             isAuth = sharedPreferences.getBoolean("isSubVIP",false);//子用户时VIP用户的判断
-        //isAuth = true;
+      //  isAuth = true;
         return isAuth;
     }
 
@@ -233,6 +248,7 @@ public class Common {
                     .putString("lastAvatar",avatarStr)
                     .apply();
         }
+
         sharedPreferences.edit().putLong("id",user.getData().getUserID())
                 .putString("pwd",pwd)
                 .putString("lastUserName",user.getData().getUsername())
@@ -241,7 +257,8 @@ public class Common {
                 .putString("username",user.getData().getUsername())
                 .putInt("score",user.getUserPoint())
                 .putBoolean("isAdmin",(user.getIsAdmin()>0))
-                .putBoolean("isVIP",(user.getIsVIP()>0))
+                //todo 发现后台传回的数据中没有isVIP 需检查逻辑
+                //.putBoolean("isVIP",(user.getIsVIP()>0))
                 .putStringSet("cookies",cookieSet)
                 .apply();
     }
@@ -377,5 +394,25 @@ public class Common {
         int verify = Integer.parseInt(verify_code);
         return verify == msg_random;
     }
+
+    public static boolean getCheckUpdate(Context context){
+        if (sharedPreferences == null)
+            sharedPreferences = context.getSharedPreferences("data", 0);
+        Long curTime = System.currentTimeMillis();
+        Long lastCheckTime = sharedPreferences.getLong("last_check_time",curTime);
+        if(curTime - lastCheckTime > 3600000*24)//超过一天
+            checkUpdate = true;
+        return checkUpdate;
+    }
+
+    public static void setCheckUpdate(Context context){
+        //进行版本更新检查后 置checkUpdate = false 并更新时间
+        if (sharedPreferences == null)
+            sharedPreferences = context.getSharedPreferences("data", 0);
+        sharedPreferences.edit().putLong("last_check_time",System.currentTimeMillis()).apply();
+        checkUpdate = false;
+    }
+
+
 
 }
