@@ -32,6 +32,7 @@
         android:layout_gravity="center_horizontal"
         android:orientation="horizontal"
         android:padding="4dp"
+        android:layout_marginTop="12dp"
         android:background="@drawable/white_outline">
         <TextView
             android:layout_width="0dp"
@@ -39,7 +40,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/elec_safety"
             android:textColor="@color/white"
-            android:textSize="14sp"
+            android:textSize="12sp"
             android:gravity="center_horizontal"
             android:background="@drawable/right_line"
             android:clickable="true"/>
@@ -48,7 +49,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/elec_param"
             android:textColor="@color/white"
-            android:textSize="14sp"
+            android:textSize="12sp"
             android:gravity="center_horizontal"
             android:background="@drawable/right_line"
             android:clickable="true"/>
@@ -57,14 +58,23 @@
             android:layout_height="wrap_content"
             android:id="@+id/envir_param"
             android:textColor="@color/white"
-            android:textSize="14sp"
+            android:textSize="12sp"
             android:gravity="center_horizontal"
             android:clickable="true"/>
     </LinearLayout>
-    <com.whucs.energyriver.Widget.RefreshListView
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="暂无未读消息"
+            android:textSize="16sp"
+            android:textColor="@color/white"/>
+        <com.whucs.energyriver.Widget.RefreshListView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="16dp"
             android:id="@+id/notices"/>
-
+    </FrameLayout>
 </LinearLayout>

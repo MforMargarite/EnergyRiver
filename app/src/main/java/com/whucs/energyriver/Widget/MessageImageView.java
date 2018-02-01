@@ -12,7 +12,7 @@ import android.widget.ImageView;
 //显示未读消息个数的ImageView 具体实现:ImageView + 右上角用canvas画出消息个数圆圈
 //主要参数: Bitmap src,int num
 public class MessageImageView extends ImageView{
-    int num = 0;
+    String num;
     Paint paint,edgePaint,textPaint;
     public MessageImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -35,17 +35,21 @@ public class MessageImageView extends ImageView{
     }
 
     public void setNum(int num){
-        this.num = num;
+        if(num == 0)
+            this.num = null;
+        else if(num>99)
+            this.num = "99+";
+        else
+            this.num = num+"";
         postInvalidate();
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if(num>0) {
-            String numText = num+"";
+        if(num!=null) {
             Rect rect = new Rect();
-            textPaint.getTextBounds(numText+"",0,numText.length(),rect);
+            textPaint.getTextBounds(num,0,num.length(),rect);
             int r = rect.width()/2+6;//圆的半径
             int width = this.getWidth();
             int center = width-7*r/6-2;
@@ -53,7 +57,7 @@ public class MessageImageView extends ImageView{
             setPadding(0, 5*r/6+2, 5*r/6+2, 0);
             canvas.drawCircle(center,r+2,r,paint);
             canvas.drawCircle(center,r+2,r+1,edgePaint);
-            canvas.drawText(numText,center-3.7f*r/5,4*r/3,textPaint);
+            canvas.drawText(num,center-3.7f*r/5,4*r/3,textPaint);
         }
     }
 

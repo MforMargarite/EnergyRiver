@@ -8,11 +8,12 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.FrameLayout;
+import android.widget.ListView;
 
 import com.whucs.energyriver.R;
 
 
-public class RefreshListView extends ScrollListView {
+public class RefreshListView extends ListView {
     private RefreshInterface refreshListener;
     private FrameLayout refresh_footer;
     private boolean footer_refresh;
@@ -60,6 +61,18 @@ public class RefreshListView extends ScrollListView {
 
     public interface RefreshInterface{
         boolean showPullToRefresh();
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        if(MeasureSpec.getMode(heightMeasureSpec) == MeasureSpec.EXACTLY) {
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        }
+        else {
+            int expandSpec = MeasureSpec.makeMeasureSpec(Integer.MAX_VALUE >> 2,
+                    MeasureSpec.AT_MOST);
+            super.onMeasure(widthMeasureSpec, expandSpec);
+        }
     }
 }
 

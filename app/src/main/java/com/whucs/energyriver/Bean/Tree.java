@@ -9,11 +9,11 @@ public class Tree {
     List<TreeNode>tree;//序列化的树
     TreeNode root;
     TreeNode<Building> parentNode;
-    boolean isContains;
-
+    List<Long> contains;
     //n叉树
     public Tree(List<Building> list){
         tree = new ArrayList<>();
+        contains = new ArrayList<>();
         root = null;
         parentNode = null;
         for (int i=0;i<list.size();i++) {
@@ -45,14 +45,13 @@ public class Tree {
             node.setChild(false);
             node.setVisible(true);
             root = node;
+            contains.add(node.getData().getBuildingID());
         }else {
-            isContains = false;
-            if(root!=null)
-                containsNode(node,root);
-            if(!isContains) {
+            parentNode = null;
+            if(root!=null && !containsNode(node,contains)) {
                 for (Building build : list) {
                     if (build.getBuildingID().equals(node.getData().getUpperBuildingID())) {
-                        if(root!=null)
+                        if (root != null)
                             findNodeByBuild(root, build);
                         if (parentNode == null) {
                             parentNode = new TreeNode<>();
@@ -69,9 +68,11 @@ public class Tree {
                         node.setParent(parentNode);
                         childList.add(node);
                         parentNode.setChildren(childList);
+                        contains.add(node.getData().getBuildingID());
                         parentNode.setChild(false);
                         if (parentNode != root)
                             saveParent(parentNode, parentNode.getParent());
+
                         break;
                     }
                 }
@@ -110,23 +111,8 @@ public class Tree {
         }
     }
 
-    private void containsNode(TreeNode<Building> node,TreeNode<Building> root){
-        if(root.getChildren()!=null) {
-            for (TreeNode<Building> item : root.getChildren()) {
-                if (item.getData().getBuildingID() == node.getData().getBuildingID()) {
-                    isContains = true;
-                    break;
-                }
-            }
-        }
-        if(!isContains) {
-            List<TreeNode>list = root.getChildren();
-            if(list!=null) {
-                for (TreeNode<Building> item : list) {
-                    containsNode(node, item);
-                }
-            }
-        }
+    private boolean containsNode(TreeNode<Building> node,List<Long>contains){
+        return contains.contains(node.getData().getBuildingID());
     }
 
 

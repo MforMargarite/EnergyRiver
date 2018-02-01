@@ -35,9 +35,10 @@ public class LoopAdapter extends BaseAdapter {
             Loop loop = new Loop();
             loop.setLoopID(-1L);
             list.add(loop);
-            this.list = list;
-        }else
-            this.list = convertList(list);
+        }
+        this.list = list;
+        //else
+          //  this.list = convertList(list);
     }
 
     @Override
@@ -93,18 +94,19 @@ public class LoopAdapter extends BaseAdapter {
 
     private List<Loop> convertList(List<Loop> list){
         Long loopType = 0L;
+        List<Long> existType = new ArrayList<>();
         int listSize = list.size();
         for (int i=0;i<listSize;i++) {
             Loop item = list.get(i);
-            if (item.getLoopID()!=0L && !item.getLoopTypeID().equals(loopType)) {
+            if (!existType.contains(item.getLoopTypeID()) && item.getLoopID()!=0L) {
                 //如果item不是回路类型且其回路类型是新的
-                loopType = item.getLoopTypeID();
+                Long curType = item.getLoopTypeID();
+                existType.add(curType);
                 Loop type = new Loop();
                 type.setLoopID(0L);
-                type.setLoopName(Common.types[Integer.parseInt(loopType.toString()) - 1]);
+                type.setLoopName(Common.types[Integer.parseInt(curType.toString()) - 1]);
                 type.setLoopTypeID(loopType);
                 list.add(i, type);
-                listSize = list.size();
             }
         }
         return list;

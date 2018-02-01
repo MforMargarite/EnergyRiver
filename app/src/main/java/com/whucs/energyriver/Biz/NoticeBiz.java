@@ -31,7 +31,7 @@ public class NoticeBiz {
         @GET("system/notice/listByBranchAndTypeUnread")
         Observable<HttpListData<List<Notice>>> getNoticeByType(@Query("userID") Long userID,@Query("type") int type);
 
-        @GET("system/notice/listByBranchAndType")
+        @GET("system/notice/listByBranchAndTypeUnread")
         Observable<HttpListData<List<Notice>>> getNoticeByTypeAndPage(@Query("userID") Long userID,@Query("type") int type,@Query("pageIndex")int pageIndex,@Query("pageSize")int pageSize);
 
     }

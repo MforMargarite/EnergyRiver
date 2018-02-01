@@ -27,7 +27,7 @@ public class ChooseRoomPresenter {
 
 
     public void getBuildingInfo(Context context){
-        chooseRoomView.showWaiting();
+/*        chooseRoomView.showWaiting();
         buildingBiz.getBuildingInfo(context)
                 .map(new Func1<HttpListData<List<Building>>, Tree>() {
                     @Override
@@ -55,6 +55,7 @@ public class ChooseRoomPresenter {
                         chooseRoomView.setBuildingInfo(tree);
                     }
             });
-    }
+*/    }
+
 
 }

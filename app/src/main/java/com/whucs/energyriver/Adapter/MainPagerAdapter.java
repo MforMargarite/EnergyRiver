@@ -6,12 +6,16 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import com.whucs.energyriver.ControlFragment;
 import com.whucs.energyriver.InquiryFragment;
+import com.whucs.energyriver.MainActivity;
+import com.whucs.energyriver.Presenter.ControlPresenter;
 import com.whucs.energyriver.UserFragment;
 
 
 public class MainPagerAdapter extends FragmentStatePagerAdapter {
-    public MainPagerAdapter(FragmentManager fm) {
+    MainActivity activity;
+    public MainPagerAdapter(MainActivity activity,FragmentManager fm) {
         super(fm);
+        this.activity = activity;
     }
 
     @Override
@@ -20,7 +24,9 @@ public class MainPagerAdapter extends FragmentStatePagerAdapter {
             case 0:
                 return new InquiryFragment();
             case 1:
-                return new ControlFragment();
+                ControlFragment controlFragment = new ControlFragment();
+                activity.setOnRoomChangeListener(controlFragment);
+                return controlFragment;
             default:
                 return new UserFragment();
         }

@@ -1,32 +1,32 @@
 package com.whucs.energyriver;
 
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.ListPopupWindow;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.whucs.energyriver.Adapter.MainPagerAdapter;
-import com.whucs.energyriver.Bean.HttpListData;
-import com.whucs.energyriver.Bean.Notice;
+import com.whucs.energyriver.Adapter.RoomAdapter;
+import com.whucs.energyriver.Bean.Building;
 import com.whucs.energyriver.Bean.VersionInfo;
-import com.whucs.energyriver.Biz.NoticeBiz;
 import com.whucs.energyriver.Presenter.MainActivityPresenter;
 import com.whucs.energyriver.Public.Common;
 import com.whucs.energyriver.Public.Layout;
@@ -34,15 +34,12 @@ import com.whucs.energyriver.Service.UpdateService;
 import com.whucs.energyriver.View.MainActivityView;
 import com.whucs.energyriver.Widget.MessageImageView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.jpush.android.api.JPushInterface;
-import rx.Observer;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener,ViewPager.OnPageChangeListener,MainActivityView{
+public class MainActivity extends AppCompatActivity implements View.OnClickListener,AdapterView.OnItemClickListener,ViewPager.OnPageChangeListener,MainActivityView{
     private ViewPager viewPager;
     private ImageView inquiry,control,user,cur_tab;//底部导航
     private Resources res;
@@ -51,11 +48,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private MessageImageView menu;
     private AlertDialog dialog;
 
+    private ListPopupWindow popup;
+    private RoomAdapter listAdapter = null;
+    private List<Building> rooms;
     private LinearLayout pull_to_refresh;
     private TextView refresh_state;
     private int marginTop;
 
     private MainActivityPresenter presenter;
+    private RoomChangeListener listener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +66,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         JPushInterface.init(this);
         //检查版本更新
         checkUpdate();
+        //获取房间信息
+        if(popup == null)
+            initRoomSelect();
+        if(presenter == null)
+            presenter = new MainActivityPresenter(this);
+        presenter.getBuildingInfo(this);
     }
 
     private void initWidget(){
@@ -81,16 +88,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         inquiry.setOnClickListener(this);
         control.setOnClickListener(this);
+        title.setOnClickListener(this);//智能控制 获取房间
         user.setOnClickListener(this);
         menu.setOnClickListener(this);
         viewPager.addOnPageChangeListener(this);
-        viewPager.setAdapter(new MainPagerAdapter(getSupportFragmentManager()));
+        viewPager.setAdapter(new MainPagerAdapter(this,getSupportFragmentManager()));
+
         res = getResources();
+        if(rooms == null)
+            rooms = new ArrayList<>();
+
         setCurrentTab(0);
     }
 
+    public void setOnRoomChangeListener(RoomChangeListener listener){
+        this.listener = listener;
+    }
+
+    private void initRoomSelect(){
+        //初始化选择房间的下拉框
+        popup = new ListPopupWindow(this);
+
+    }
+
+
     private void checkUpdate(){
-        presenter = new MainActivityPresenter(this);
+        if(presenter == null)
+            presenter = new MainActivityPresenter(this);
         if(Common.getCheckUpdate(this)){
             //需要更新
             presenter.getVersionInfo(this);
@@ -103,15 +127,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (view.getId()){
             case R.id.inquiry:
                 setCurrentTab(0);
-                viewPager.setCurrentItem(0,true);
                 break;
             case R.id.control:
                 setCurrentTab(1);
-                viewPager.setCurrentItem(1,true);
                 break;
             case R.id.user:
                 setCurrentTab(2);
-                viewPager.setCurrentItem(2,true);
                 break;
             case R.id.menu:
                 switch (menu.getTag().toString()){
@@ -139,6 +160,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 dialog.cancel();
                 Intent intent = new Intent(this,UpdateService.class);
                 startService(intent);
+                break;
+            case R.id.title:
+                //获取房间
+                popup.show();
                 break;
             default:
                 break;
@@ -173,7 +198,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     menu.setTag("mail");
                     menu.setVisibility(View.VISIBLE);
                     toolbar.setVisibility(View.VISIBLE);
-                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
                 }
                 break;
             case 1:
@@ -181,11 +205,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     clearAllTab();
                     cur_tab = control;
                     cur_tab.setBackgroundColor(res.getColor(R.color.selected_tab_blue));
-                    title.setText(res.getText(R.string.control));
+                    title.setText(Common.getSharedPreference(this).getString("buildingName",res.getText(R.string.control).toString()));
+
                     menu.setImageDrawable(res.getDrawable(R.mipmap.menu));
                     menu.setTag("menu");
                     menu.setVisibility(View.VISIBLE);
-                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                    title.setClickable(true);
                 }
                 break;
             case 2:
@@ -196,46 +221,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     title.setText(res.getText(R.string.self_info));
                     menu.setVisibility(View.GONE);
                     toolbar.setVisibility(View.VISIBLE);
-                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
                 }
                 break;
             default:
                 break;
         }
+        viewPager.setCurrentItem(position,true);
     }
 
     public void setToolbar(int state){
         toolbar.setVisibility(state);
     }
 
-    private void getNoticeUnReadNum(){
-        NoticeBiz noticeBiz = new NoticeBiz();
-        noticeBiz.getNoticeByType(this,Common.getID(this),0)//此处type=-2
-                .subscribeOn(Schedulers.io())
-                .map(new Func1<HttpListData<List<Notice>>, List<Notice>>() {
-                    @Override
-                    public List<Notice> call(HttpListData<List<Notice>> noticeHttpListData) {
-                        return noticeHttpListData.getData();
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<Notice>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.e("what",e.getMessage());
-
-                    }
-
-                    @Override
-                    public void onNext(List<Notice> notices) {
-                        menu.setNum(notices.size());
-                    }
-                });
+    public void setMenuState(int size){
+        menu.setNum(size);
+        menu.invalidate();
     }
 
     private void clearAllTab(){
@@ -246,6 +246,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         control.setBackgroundColor(res.getColor(R.color.tab_blue));
         user.setImageDrawable(origin_menu[2]);
         user.setBackgroundColor(res.getColor(R.color.tab_blue));
+        title.setClickable(false);
     }
 
     @Override
@@ -266,10 +267,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Intent intent = new Intent(this,LogActivity.class);
             startActivity(intent);
             MainActivity.this.finish();
-        }else{
-            if(viewPager.getCurrentItem() == 0){
-                getNoticeUnReadNum();//刷新消息未读数
-            }
         }
         super.onResume();
     }
@@ -321,5 +318,43 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void setBuildingInfo(List<Building> buildings) {
+        if (listAdapter == null) {
+            rooms.addAll(buildings);
+            listAdapter = new RoomAdapter(this,rooms);
+            popup.setAdapter(listAdapter);
+            popup.setAnchorView(title);//锚点View
+            popup.setContentWidth(title.getWidth());
+            popup.setHeight(Common.getParentHeight(this)/3);
+            popup.setDropDownGravity(Gravity.CENTER);
+            popup.setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this,R.color.gradient_end)));
+            popup.setHorizontalOffset((int)res.getDimension(R.dimen.popup));//相对锚点偏移值，正值表示向右偏移
+            popup.setVerticalOffset((int)res.getDimension(R.dimen.building_list_padding));
+            popup.setOnItemClickListener(this);
+        }else{
+            rooms.clear();
+            rooms.addAll(buildings);
+        }
+        listAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void execError(String s) {
+
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        popup.dismiss();
+        Building building = (Building)(adapterView.getAdapter().getItem(i));
+        title.setText(building.getBuildingName());
+        listener.onRoomChange(building.getBuildingID(),building.getBuildingName());
+    }
+
+    interface RoomChangeListener{
+        void onRoomChange(Long buildingID,String buildingName);
     }
 }

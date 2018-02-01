@@ -65,15 +65,16 @@ public class ControlPresenter {
                 });
     }
 
+
     public void getFirstBuildUnit(final Context context){
         controlView.showLoading();
         buildingBiz.getBuildingInfo(context)
-                .map(new Func1<HttpListData<List<Building>>, List<Building>>() {
+               /* .map(new Func1<HttpListData<List<Building>>, List<Building>>() {
                     @Override
                     public List<Building> call(HttpListData<List<Building>> listHttpData) {
                         return listHttpData.getData();
                     }
-                })
+                })*/
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<List<Building>>() {
@@ -89,10 +90,10 @@ public class ControlPresenter {
 
                 @Override
                 public void onNext(List<Building> buildings) {
-                    Building building = TreeUtil.getFirstChildID(buildings);
+                    /*Building building = TreeUtil.getFirstChildID(buildings);
                     Tree tree = new Tree(buildings);
-                    building.setBuildingName(tree.getBuildingPath(building,3));
-                    controlView.setBuildingUnit(building);
+                    building.setBuildingName(tree.getBuildingPath(building,3));*/
+                    controlView.setBuildingUnit(buildings.get(0));
                 }
             });
     }

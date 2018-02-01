@@ -5,15 +5,18 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -28,12 +31,9 @@ import com.whucs.energyriver.Presenter.ControlPresenter;
 import com.whucs.energyriver.Public.Common;
 import com.whucs.energyriver.View.ControlView;
 import com.whucs.energyriver.Widget.AirControlDialog;
-import com.whucs.energyriver.Widget.ScrollGridView;
 import com.whucs.energyriver.Widget.ScrollListView;
 import com.whucs.energyriver.Widget.StateSwitchFragment;
-
 import org.json.JSONObject;
-
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,13 +42,14 @@ import java.util.List;
 import java.util.Map;
 
 
-public class ControlFragment extends StateSwitchFragment implements View.OnClickListener,ControlView,AdapterView.OnItemClickListener {
+public class ControlFragment extends StateSwitchFragment implements MainActivity.RoomChangeListener,View.OnClickListener,ControlView,AdapterView.OnItemClickListener,View.OnTouchListener {
     View view ;
-    LinearLayout room_info;
+   // LinearLayout room_info;
    // ScrollGridView scene_info;
+    ScrollView wrapper;
     ScrollListView loopListView;
     LoopAdapter loopAdapter;
-    TextView room;
+    TextView title;
     MainActivity activity;
 
     ProgressDialog waiting;
@@ -60,12 +61,16 @@ public class ControlFragment extends StateSwitchFragment implements View.OnClick
     TextView curModeView = null;
 
     Long buildingID,loopID;
-    String buildingName;
     String loopState;
     Integer openStatus;//回路的通断状态
     SceneAdapter sceneAdapter;
     ControlPresenter controlPresenter;
     Resources res;
+
+    //下拉刷新参数
+    private float startY;
+    private boolean isShowing = false;
+    private boolean pullToRefresh = false;
 
     @Nullable
     @Override
@@ -81,8 +86,6 @@ public class ControlFragment extends StateSwitchFragment implements View.OnClick
             controlPresenter = new ControlPresenter(this);
         buildingID = Common.getSharedPreference(activity).getLong("buildingID",-1L);
         if(buildingID!=-1L) {
-            buildingName = Common.getSharedPreference(activity).getString("buildingName","");
-            room.setText(buildingName);
             controlPresenter.getLoopInfoByBuildID(activity);
         }else
             controlPresenter.getFirstBuildUnit(activity);
@@ -90,7 +93,13 @@ public class ControlFragment extends StateSwitchFragment implements View.OnClick
 
     @Override
     public void reload(){
-        getPageInfo();
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                getPageInfo();
+            }
+        },1000);
     }
 
     private void initWidget(View view){
@@ -106,21 +115,22 @@ public class ControlFragment extends StateSwitchFragment implements View.OnClick
             acAlter = new ACAlter();
             res = activity.getResources();
 
-            room = (TextView) view.findViewById(R.id.room);
             loopListView = (ScrollListView) view.findViewById(R.id.loop_listView);
-            room_info = (LinearLayout) view.findViewById(R.id.room_info);
-            room_info.setOnClickListener(this);
+            wrapper = (ScrollView) view.findViewById(R.id.wrapper);
+            wrapper.setOnTouchListener(this);
+           /* room_info = (LinearLayout) view.findViewById(R.id.room_info);
+              room_info.setOnClickListener(this);
+              room = (TextView) view.findViewById(R.id.room);
 
-            /*scene_info = (ScrollGridView) view.findViewById(R.id.scene_info);
-            int widthSlice = Common.getParentWidth(activity)/9;
-            int heightSlice = Common.getParentHeight(activity)/40;
-            scene_info.setPadding(widthSlice,heightSlice,widthSlice,heightSlice);
-            scene_info.setHorizontalSpacing(widthSlice);
-            sceneAdapter = new SceneAdapter(activity,null);
-            scene_info.setAdapter(sceneAdapter);
-            sceneAdapter.notifyDataSetChanged();
-            scene_info.setOnItemClickListener(this);*/
-
+              scene_info = (ScrollGridView) view.findViewById(R.id.scene_info);
+              int widthSlice = Common.getParentWidth(activity)/9;
+              int heightSlice = Common.getParentHeight(activity)/40;
+              scene_info.setPadding(widthSlice,heightSlice,widthSlice,heightSlice);
+              scene_info.setHorizontalSpacing(widthSlice);
+              sceneAdapter = new SceneAdapter(activity,null);
+              scene_info.setAdapter(sceneAdapter);
+              sceneAdapter.notifyDataSetChanged();
+              scene_info.setOnItemClickListener(this);*/
             getPageInfo();
         }
     }
@@ -134,6 +144,7 @@ public class ControlFragment extends StateSwitchFragment implements View.OnClick
             }else{
                 activity.setToolbar(View.VISIBLE);
             }
+            activity.setMenuState(0);
         }
     }
 
@@ -162,8 +173,9 @@ public class ControlFragment extends StateSwitchFragment implements View.OnClick
         Intent intent;
         switch (view.getId()){
             case R.id.room_info:
-                intent = new Intent(activity,ChooseRoomActivity.class);
-                startActivityForResult(intent,0);
+                /*intent = new Intent(activity,ChooseRoomActivity.class);
+                startActivityForResult(intent,0);*/
+
                 break;
             case R.id.toggle:
                 //空调控制 显示面板
@@ -311,7 +323,7 @@ public class ControlFragment extends StateSwitchFragment implements View.OnClick
 
     @Override
     public void showLoading() {
-        super.showViewByTag("loading");
+        //super.showViewByTag("loading");
     }
 
     @Override
@@ -367,12 +379,12 @@ public class ControlFragment extends StateSwitchFragment implements View.OnClick
         loopListView.setAdapter(loopAdapter);
         loopAdapter.notifyDataSetInvalidated();
         showViewByTag("content");
+        activity.hidePullToRefresh();
     }
 
     @Override
     public void setBuildingUnit(Building building) {
         buildingID = building.getBuildingID();
-        room.setText(building.getBuildingName());
         controlPresenter.getLoopInfoByBuildID(activity);
    //     controlPresenter.getLoopStateByBuild(activity);
         showViewByTag("content");
@@ -382,6 +394,7 @@ public class ControlFragment extends StateSwitchFragment implements View.OnClick
     public void execError(String msg) {
         showViewByTag("error");
         Toast.makeText(activity,msg,Toast.LENGTH_SHORT).show();
+        activity.hidePullToRefresh();
     }
 
     @Override
@@ -450,7 +463,7 @@ public class ControlFragment extends StateSwitchFragment implements View.OnClick
     }
 
 
-    @Override
+   /* @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch(requestCode){
             case 0://选择房间
@@ -467,6 +480,15 @@ public class ControlFragment extends StateSwitchFragment implements View.OnClick
                 }
                 break;
         }
+    }*/
+
+    @Override
+    public void onRoomChange(Long newBuildingID, String newBuildingName) {
+        Common.saveBuilding(activity,newBuildingID,newBuildingName);
+        if (!newBuildingID.equals(buildingID)) {
+            buildingID = newBuildingID;
+            getPageInfo();
+        }
     }
 
     @Override
@@ -479,4 +501,37 @@ public class ControlFragment extends StateSwitchFragment implements View.OnClick
             Log.e("what","第"+i+"个场景被点击");
         }
     }
+
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        switch(motionEvent.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                startY = motionEvent.getY();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                if(wrapper.getScrollY() == 0) {//已经滑动到顶部
+                    float dist = motionEvent.getY() - startY;
+                    if (dist > 20 && dist <= 220 && !isShowing) {
+                        isShowing = true;
+                        activity.showPullToRefresh((int) dist);
+                    } else if (dist > 220) {
+                        activity.showPullToRefresh(216);
+                        pullToRefresh = true;
+                    }
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                if(pullToRefresh) {
+                    reload();
+                    activity.setRefreshState("正在刷新");
+                }else if(isShowing) {
+                    activity.hidePullToRefresh();
+                    isShowing = false;
+                }
+                break;
+        }
+        return false;
+    }
+
+
 }

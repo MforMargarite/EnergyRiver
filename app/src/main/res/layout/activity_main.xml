@@ -15,10 +15,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:gravity="center_horizontal"
                 android:text="@string/inquiry"
                 android:id="@+id/title"
                 android:textColor="@color/white"
-                android:textSize="16sp"/>
+                android:textSize="16sp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"/>
             <com.whucs.energyriver.Widget.MessageImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -35,7 +38,8 @@
         android:layout_marginTop="@dimen/pull_refresh_initial"
         android:visibility="invisible"
         android:gravity="center_horizontal"
-        android:id="@+id/pull_to_refresh">
+        android:id="@+id/pull_to_refresh"
+        android:clickable="false">
         <ProgressBar
             android:layout_width="24dp"
             android:layout_height="match_parent"

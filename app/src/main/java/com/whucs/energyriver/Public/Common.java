@@ -57,7 +57,7 @@ public class Common {
     public static final String LANDSCAPE = "view/apphome/landscape.html";      //首页-横屏
     public static final String MESSAGE_VERIFY="http://124.172.234.157:8180/";//短信验证码
 
-    public static final String[] types = {"照明","空调","插座"};
+    public static final String[] types = {"照明","空调","插座","总回路","","","其他"};
     public static int[] cate_icon = {R.mipmap.light,R.mipmap.air_condition,R.mipmap.socket};
     public static String[] type_colors={ChartColor.ORANGE,ChartColor.YELLOW,ChartColor.BEIGE};
     public static final String[] noticeType = {"用电安全","电能参数","环境安全"};
@@ -120,7 +120,7 @@ public class Common {
         isAuth = sharedPreferences.getBoolean("isVIP",false);//VIP用户
         if(!isAuth)
             isAuth = sharedPreferences.getBoolean("isSubVIP",false);//子用户时VIP用户的判断
-      //  isAuth = true;
+        isAuth = true;
         return isAuth;
     }
 

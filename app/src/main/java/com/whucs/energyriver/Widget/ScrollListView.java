@@ -3,6 +3,7 @@ package com.whucs.energyriver.Widget;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.widget.ListView;
 
 
@@ -29,6 +30,11 @@ public class ScrollListView extends ListView {
                     MeasureSpec.AT_MOST);
             super.onMeasure(widthMeasureSpec, expandSpec);
         }
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        return false;
     }
 }
 

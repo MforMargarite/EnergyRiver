@@ -77,6 +77,7 @@ public class NotificationActivity extends StateSwitchActivity implements View.On
         back.setOnClickListener(this);
         noticeListView.setRefreshListener(this);
 
+        setTab(cur);
         //按类型获取通知
         presenter = new NoticePresenter(this);
         for(int i=0;i<Common.noticeType.length;i++){
@@ -112,18 +113,59 @@ public class NotificationActivity extends StateSwitchActivity implements View.On
     }
 
     private void changeNoticeType(int type){
+        clearTab(cur);
         cur = type;
+        setTab(cur);
         pageIndex = 0;
         cur_list.clear();
         cur_list.addAll(noticeList.get(cur));
-        if (cur_list.size() == 0 || cur_list.size() < (noticeListView.getLastVisiblePosition()-noticeListView.getFirstVisiblePosition()))
-            noticeListView.removeFooterView(refresh_footer);
+        if(cur_list.size() == 0)
+            noticeListView.setVisibility(View.GONE);
         else {
-            if (noticeListView.getFooterViewsCount() == 0)
-                noticeListView.addFooterView(refresh_footer);
+            noticeListView.setVisibility(View.VISIBLE);
+            if (cur_list.size() == 0 || cur_list.size() < (noticeListView.getLastVisiblePosition() - noticeListView.getFirstVisiblePosition()))
+                noticeListView.removeFooterView(refresh_footer);
+            else {
+                if (noticeListView.getFooterViewsCount() == 0)
+                    noticeListView.addFooterView(refresh_footer);
+            }
+            adapter.notifyDataSetChanged();
         }
-        adapter.notifyDataSetChanged();
         hidePullToRefresh();
+    }
+
+    private void clearTab(int position){
+        switch (position){
+            case 0:
+                elec_safety.setTextColor(res.getColor(R.color.white));
+                elec_safety.setBackgroundDrawable(res.getDrawable(R.drawable.right_line));
+                break;
+            case 1:
+                elec_param.setTextColor(res.getColor(R.color.white));
+                elec_param.setBackgroundDrawable(res.getDrawable(R.drawable.right_line));
+                break;
+            case 2:
+                envir_param.setTextColor(res.getColor(R.color.white));
+                envir_param.setBackgroundColor(res.getColor(R.color.baseColor));
+                break;
+        }
+    }
+
+    private void setTab(int position){
+        switch (position){
+            case 0:
+                elec_safety.setTextColor(res.getColor(R.color.baseColor));
+                elec_safety.setBackgroundColor(res.getColor(R.color.white));
+                break;
+            case 1:
+                elec_param.setTextColor(res.getColor(R.color.baseColor));
+                elec_param.setBackgroundColor(res.getColor(R.color.white));
+                break;
+            case 2:
+                envir_param.setTextColor(res.getColor(R.color.baseColor));
+                envir_param.setBackgroundColor(res.getColor(R.color.white));
+                break;
+        }
     }
 
     @Override
@@ -134,7 +176,8 @@ public class NotificationActivity extends StateSwitchActivity implements View.On
             String text = "";
             if(total>0)
                 text="("+total+")";
-            text = Common.types[type]+text;
+
+            text = Common.noticeType[type]+text;
             switch(type){
                 case 0:
                     elec_safety.setText(text);
@@ -152,11 +195,19 @@ public class NotificationActivity extends StateSwitchActivity implements View.On
                 cur_list.addAll(noticeList.get(cur));
                 if(adapter == null)
                     adapter = new NoticeAdapter(this, cur_list);
-                if(noticeListView.getFooterViewsCount() == 0)
-                    noticeListView.addFooterView(refresh_footer);
+                if (cur_list.size() == 0 || cur_list.size() < (noticeListView.getLastVisiblePosition()-noticeListView.getFirstVisiblePosition()))
+                    noticeListView.removeFooterView(refresh_footer);
+                else {
+                    if (noticeListView.getFooterViewsCount() == 0)
+                        noticeListView.addFooterView(refresh_footer);
+                }
                 noticeListView.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
                 noticeListView.setOnItemClickListener(this);
+                if(cur_list.size() == 0)
+                    noticeListView.setVisibility(View.GONE);
+                else
+                    noticeListView.setVisibility(View.VISIBLE);
             }else{
                 cur_list.clear();
                 cur_list.addAll(noticeList.get(cur));
