@@ -8,9 +8,11 @@ import com.whucs.energyriver.Bean.Building;
 import com.whucs.energyriver.Bean.HttpListData;
 import com.whucs.energyriver.Bean.HttpResult;
 import com.whucs.energyriver.Bean.Loop;
+import com.whucs.energyriver.Bean.LoopStatus;
 import com.whucs.energyriver.Bean.Tree;
 import com.whucs.energyriver.Biz.BuildingBiz;
 import com.whucs.energyriver.Biz.LoopBiz;
+import com.whucs.energyriver.Public.Common;
 import com.whucs.energyriver.Public.TreeUtil;
 import com.whucs.energyriver.View.ControlView;
 import java.util.HashMap;
@@ -32,18 +34,10 @@ public class ControlPresenter {
         this.buildingBiz = new BuildingBiz();
     }
 
-    public void getLoopInfoByBuildID(Context context){
+    //根据房间获取回路
+    /*public void getLoopInfoByBuildID(Context context){
         controlView.showLoading();
         loopBiz.getLoopInfoByBuildID(context,controlView.getBuildingID())
-                /*.map(new Func1<HttpListData<List<Loop>>, List<Loop>>() {
-                    @Override
-                    public List<Loop> call(HttpListData<List<Loop>> listHttpData) {
-                        if(listHttpData.getData().size()!=0)
-                            return listHttpData.getData();
-                        else
-                            return null;
-                    }
-                })*/
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<List<Loop>>() {
@@ -65,16 +59,33 @@ public class ControlPresenter {
                 });
     }
 
+    public void getBuildingInfo(Context context){
+        buildingBiz.getBuildingInfo(context)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<List<Building>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e("what",e.getMessage());
+                        controlView.execError("获取房间信息失败");
+                    }
+
+                    @Override
+                    public void onNext(List<Building> buildings) {
+                        controlView.setBuildingInfo(buildings);
+                    }
+                });
+    }
+
 
     public void getFirstBuildUnit(final Context context){
         controlView.showLoading();
         buildingBiz.getBuildingInfo(context)
-               /* .map(new Func1<HttpListData<List<Building>>, List<Building>>() {
-                    @Override
-                    public List<Building> call(HttpListData<List<Building>> listHttpData) {
-                        return listHttpData.getData();
-                    }
-                })*/
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<List<Building>>() {
@@ -90,23 +101,40 @@ public class ControlPresenter {
 
                 @Override
                 public void onNext(List<Building> buildings) {
-                    /*Building building = TreeUtil.getFirstChildID(buildings);
+                    *//*Building building = TreeUtil.getFirstChildID(buildings);
                     Tree tree = new Tree(buildings);
-                    building.setBuildingName(tree.getBuildingPath(building,3));*/
+                    building.setBuildingName(tree.getBuildingPath(building,3));*//*
                     controlView.setBuildingUnit(buildings.get(0));
                 }
             });
+    }*/
+
+    //根据用户获取对应回路
+    public void getLoopByUser(Context context){
+        controlView.showLoading();
+        loopBiz.getLoopByUser(context, Common.getID(context))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<List<LoopStatus>>() {
+                    @Override
+                    public void onCompleted() {}
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        controlView.execError(e.getMessage());
+                    }
+
+                    @Override
+                    public void onNext(List<LoopStatus> loops) {
+                        controlView.setAllLoopList(loops);
+                    }
+                });
     }
 
     public void updateLoopState(final View view,Context context){
         controlView.showWaiting();
         loopBiz.updateLoop(context,controlView.getLoopID(),controlView.getLoopOpenStatus())
-                /*.map(new Func1<HttpResult, Boolean>() {
-                    @Override
-                    public Boolean call(HttpResult booleanHttpData) {
-                        return booleanHttpData.isResult();
-                    }
-                })*/
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Boolean>() {
@@ -123,6 +151,7 @@ public class ControlPresenter {
 
                     @Override
                     public void onNext(Boolean aBoolean) {
+                        Log.e("what","update:"+controlView.getLoopID()+" "+controlView.getLoopOpenStatus()+" "+aBoolean);
                         controlView.setUpdateResult(view,aBoolean);
                     }
                 });
@@ -146,13 +175,13 @@ public class ControlPresenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        controlView.getStateError();
+                       // controlView.getStateError();
                         controlView.hideWaiting();
                     }
 
                     @Override
                     public void onNext(HashMap<Long, Object> map) {
-                        controlView.setLoopState(map);
+                       // controlView.setLoopState(map);
                         controlView.hideWaiting();
                     }
                 });
@@ -164,7 +193,6 @@ public class ControlPresenter {
                 .map(new Func1<HttpListData<ACCollect>, ACCollect>() {
                     @Override
                     public ACCollect call(HttpListData<ACCollect> acCollectHttpData) {
-                        Log.e("what",acCollectHttpData.getData().toString());
                         return acCollectHttpData.getData();
                     }
                 }).subscribeOn(Schedulers.io())
@@ -191,5 +219,11 @@ public class ControlPresenter {
                 );
     }
 
+    public void getScenes(Context context){
+        //sceneBiz
+    }
 
+    public void getGroupControls(Context context){
+        //sceneBiz
+    }
 }
