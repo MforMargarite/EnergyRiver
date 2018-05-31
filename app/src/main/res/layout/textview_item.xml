@@ -4,6 +4,8 @@
     android:orientation="horizontal"
     android:layout_gravity="center_vertical"
     android:background="@drawable/top_line"
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <TextView
         android:layout_width="match_parent"

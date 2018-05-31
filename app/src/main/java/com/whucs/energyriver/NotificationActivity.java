@@ -41,7 +41,7 @@ public class NotificationActivity extends StateSwitchActivity implements View.On
     NoticePresenter presenter;
     FrameLayout refresh_footer;
     ProgressBar progressBar;
-    TextView hint;
+    TextView hint,no_msg;
 
     Map<Integer,Integer>countMap;//记录类型对应的未读消息数量
     int cur=0;//当前选中的类型
@@ -73,6 +73,7 @@ public class NotificationActivity extends StateSwitchActivity implements View.On
         refresh_footer = (FrameLayout) LayoutInflater.from(this).inflate(R.layout.refresh_footer,null);
         progressBar = (ProgressBar) refresh_footer.findViewById(R.id.progressbar);
         hint = (TextView) refresh_footer.findViewById(R.id.load_finish);
+        no_msg = (TextView) view.findViewById(R.id.no_msg);
         back = (ImageView) view.findViewById(R.id.back);
         back.setOnClickListener(this);
         noticeListView.setRefreshListener(this);
@@ -119,10 +120,13 @@ public class NotificationActivity extends StateSwitchActivity implements View.On
         pageIndex = 0;
         cur_list.clear();
         cur_list.addAll(noticeList.get(cur));
-        if(cur_list.size() == 0)
+        if(cur_list.size() == 0) {
             noticeListView.setVisibility(View.GONE);
+            no_msg.setVisibility(View.VISIBLE);
+        }
         else {
             noticeListView.setVisibility(View.VISIBLE);
+            no_msg.setVisibility(View.INVISIBLE);
             if (cur_list.size() == 0 || cur_list.size() < (noticeListView.getLastVisiblePosition() - noticeListView.getFirstVisiblePosition()))
                 noticeListView.removeFooterView(refresh_footer);
             else {
@@ -177,7 +181,7 @@ public class NotificationActivity extends StateSwitchActivity implements View.On
             if(total>0)
                 text="("+total+")";
 
-            text = Common.noticeType[type]+text;
+            text = Common.noticeType[type]+"\n"+text;
             switch(type){
                 case 0:
                     elec_safety.setText(text);
@@ -190,27 +194,30 @@ public class NotificationActivity extends StateSwitchActivity implements View.On
                     break;
             }
         }
+
         if(type == cur) {
+            cur_list.clear();
+            cur_list.addAll(noticeList.get(cur));
             if(cur_list.size() == 0) {
-                cur_list.addAll(noticeList.get(cur));
-                if(adapter == null)
+                noticeListView.setVisibility(View.GONE);
+                no_msg.setVisibility(View.VISIBLE);
+            }
+            else {
+                noticeListView.setVisibility(View.VISIBLE);
+                no_msg.setVisibility(View.INVISIBLE);
+                //初始化adapter
+                if(adapter == null) {
                     adapter = new NoticeAdapter(this, cur_list);
-                if (cur_list.size() == 0 || cur_list.size() < (noticeListView.getLastVisiblePosition()-noticeListView.getFirstVisiblePosition()))
+                    noticeListView.setAdapter(adapter);
+                    noticeListView.setOnItemClickListener(this);
+                }
+                //添加/移除footer判断
+                if (noticeListView.getFooterViewsCount()>0 && cur_list.size() == 0 || cur_list.size() < (noticeListView.getLastVisiblePosition()-noticeListView.getFirstVisiblePosition()))
                     noticeListView.removeFooterView(refresh_footer);
                 else {
                     if (noticeListView.getFooterViewsCount() == 0)
                         noticeListView.addFooterView(refresh_footer);
                 }
-                noticeListView.setAdapter(adapter);
-                adapter.notifyDataSetChanged();
-                noticeListView.setOnItemClickListener(this);
-                if(cur_list.size() == 0)
-                    noticeListView.setVisibility(View.GONE);
-                else
-                    noticeListView.setVisibility(View.VISIBLE);
-            }else{
-                cur_list.clear();
-                cur_list.addAll(noticeList.get(cur));
                 adapter.notifyDataSetChanged();
             }
             showViewByTag("content");

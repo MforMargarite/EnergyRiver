@@ -34,29 +34,23 @@ import com.whucs.energyriver.Service.UpdateService;
 import com.whucs.energyriver.View.MainActivityView;
 import com.whucs.energyriver.Widget.MessageImageView;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import cn.jpush.android.api.JPushInterface;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener,AdapterView.OnItemClickListener,ViewPager.OnPageChangeListener,MainActivityView{
+public class MainActivity extends AppCompatActivity implements View.OnClickListener,ViewPager.OnPageChangeListener,MainActivityView{
     private ViewPager viewPager;
     private ImageView inquiry,control,user,cur_tab;//底部导航
     private Resources res;
     private Toolbar toolbar;
-    private TextView title;
     private MessageImageView menu;
     private AlertDialog dialog;
-
-    private ListPopupWindow popup;
-    private RoomAdapter listAdapter = null;
-    private List<Building> rooms;
+    private TextView title;
     private LinearLayout pull_to_refresh;
     private TextView refresh_state;
     private int marginTop;
 
     private MainActivityPresenter presenter;
-    private RoomChangeListener listener;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,12 +60,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         JPushInterface.init(this);
         //检查版本更新
         checkUpdate();
-        //获取房间信息
-        if(popup == null)
-            initRoomSelect();
+
         if(presenter == null)
             presenter = new MainActivityPresenter(this);
-        presenter.getBuildingInfo(this);
     }
 
     private void initWidget(){
@@ -88,33 +79,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         inquiry.setOnClickListener(this);
         control.setOnClickListener(this);
-        title.setOnClickListener(this);//智能控制 获取房间
         user.setOnClickListener(this);
         menu.setOnClickListener(this);
         viewPager.addOnPageChangeListener(this);
         viewPager.setAdapter(new MainPagerAdapter(this,getSupportFragmentManager()));
 
         res = getResources();
-        if(rooms == null)
-            rooms = new ArrayList<>();
-
         setCurrentTab(0);
     }
-
-    public void setOnRoomChangeListener(RoomChangeListener listener){
-        this.listener = listener;
-    }
-
-    private void initRoomSelect(){
-        //初始化选择房间的下拉框
-        popup = new ListPopupWindow(this);
-
-    }
-
 
     private void checkUpdate(){
         if(presenter == null)
             presenter = new MainActivityPresenter(this);
+
+        Log.e("what","need update"+Common.getCheckUpdate(this));
         if(Common.getCheckUpdate(this)){
             //需要更新
             presenter.getVersionInfo(this);
@@ -140,10 +118,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         Intent intent = new Intent(this,RankActivity.class);
                         startActivity(intent);
                         break;
-                    case "menu":
-                        Intent intention = new Intent(this,SceneActivity.class);
-                        startActivity(intention);
-                        break;
                     case "mail":
                         Intent mail = new Intent(this,NotificationActivity.class);
                         startActivity(mail);
@@ -160,10 +134,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 dialog.cancel();
                 Intent intent = new Intent(this,UpdateService.class);
                 startService(intent);
-                break;
-            case R.id.title:
-                //获取房间
-                popup.show();
                 break;
             default:
                 break;
@@ -205,12 +175,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     clearAllTab();
                     cur_tab = control;
                     cur_tab.setBackgroundColor(res.getColor(R.color.selected_tab_blue));
-                    title.setText(Common.getSharedPreference(this).getString("buildingName",res.getText(R.string.control).toString()));
-
-                    menu.setImageDrawable(res.getDrawable(R.mipmap.menu));
-                    menu.setTag("menu");
-                    menu.setVisibility(View.VISIBLE);
-                    title.setClickable(true);
+                    title.setText(res.getText(R.string.control).toString());
+                    menu.setVisibility(View.GONE);
                 }
                 break;
             case 2:
@@ -233,9 +199,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         toolbar.setVisibility(state);
     }
 
-    public void setMenuState(int size){
-        menu.setNum(size);
-        menu.invalidate();
+    public void setMenuNum(int size){
+        if(viewPager.getCurrentItem() == 0) {
+            menu.setNum(size);
+            menu.invalidate();
+        }
+    }
+    public void setMenuState(boolean openStatus){
+        if(!openStatus) {
+            menu.setNum(0);
+            menu.invalidate();
+        }
     }
 
     private void clearAllTab(){
@@ -246,7 +220,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         control.setBackgroundColor(res.getColor(R.color.tab_blue));
         user.setImageDrawable(origin_menu[2]);
         user.setBackgroundColor(res.getColor(R.color.tab_blue));
-        title.setClickable(false);
     }
 
     @Override
@@ -274,8 +247,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void showPullToRefresh(int padding){
         LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) pull_to_refresh.getLayoutParams();
         marginTop = (int) res.getDimension(R.dimen.pull_refresh_initial);
-        if(padding>marginTop)
-            pull_to_refresh.setVisibility(View.VISIBLE);
+        /*if(padding>marginTop)
+            pull_to_refresh.setVisibility(View.VISIBLE);*/
+        pull_to_refresh.setVisibility(View.VISIBLE);
         lp.setMargins(0,marginTop+padding,0,0);
         pull_to_refresh.setLayoutParams(lp);
     }
@@ -301,6 +275,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String cur_version = manager.getPackageInfo(getApplication().getPackageName(),0).versionName;
             if(info.getVersionShort().compareTo(cur_version)>0){//需要更新
                 //显示更新窗口
+                Common.latest_version = info.getVersionShort();
                 if(dialog == null) {
                     View version_update = LayoutInflater.from(this).inflate(R.layout.version_update, null);
                     TextView cancel = (TextView) version_update.findViewById(R.id.cancel);
@@ -321,40 +296,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    public void setBuildingInfo(List<Building> buildings) {
-        if (listAdapter == null) {
-            rooms.addAll(buildings);
-            listAdapter = new RoomAdapter(this,rooms);
-            popup.setAdapter(listAdapter);
-            popup.setAnchorView(title);//锚点View
-            popup.setContentWidth(title.getWidth());
-            popup.setHeight(Common.getParentHeight(this)/3);
-            popup.setDropDownGravity(Gravity.CENTER);
-            popup.setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this,R.color.gradient_end)));
-            popup.setHorizontalOffset((int)res.getDimension(R.dimen.popup));//相对锚点偏移值，正值表示向右偏移
-            popup.setVerticalOffset((int)res.getDimension(R.dimen.building_list_padding));
-            popup.setOnItemClickListener(this);
-        }else{
-            rooms.clear();
-            rooms.addAll(buildings);
-        }
-        listAdapter.notifyDataSetChanged();
-    }
-
-    @Override
     public void execError(String s) {
 
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        popup.dismiss();
-        Building building = (Building)(adapterView.getAdapter().getItem(i));
-        title.setText(building.getBuildingName());
-        listener.onRoomChange(building.getBuildingID(),building.getBuildingName());
-    }
 
-    interface RoomChangeListener{
-        void onRoomChange(Long buildingID,String buildingName);
-    }
+
+
 }

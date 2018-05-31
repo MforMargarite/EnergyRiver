@@ -1,14 +1,9 @@
 package com.whucs.energyriver.Public;
 
-
-import android.content.Context;
 import android.widget.EditText;
-import android.widget.Toast;
-
-import com.whucs.energyriver.R;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 
 public class ValidStandard {
     public static boolean isMobile(String mobile){

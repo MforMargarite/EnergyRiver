@@ -40,7 +40,7 @@ public class Loop {
     private String operation;    //操作
 
 
-    /*2018.1.21 新增 boolean对象  ??? 好像是重复的变量吧...*/
+    /*2018.1.21 新增 boolean对象  */
     private Boolean ableCut;
     private Boolean admitControl;
     private Boolean admitCut;

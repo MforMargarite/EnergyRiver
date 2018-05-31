@@ -6,6 +6,7 @@ import com.whucs.energyriver.Bean.ACCollect;
 import com.whucs.energyriver.Bean.HttpListData;
 import com.whucs.energyriver.Bean.HttpResult;
 import com.whucs.energyriver.Bean.Loop;
+import com.whucs.energyriver.Bean.LoopStatus;
 import com.whucs.energyriver.Public.Common;
 
 import java.util.HashMap;
@@ -25,33 +26,29 @@ public class LoopBiz {
     }
 
     interface LoopService {
-        /*@GET("loopManage/getLoopInfoByBuildSortByType")
-        Observable<HttpListData<List<Loop>>> getLoopInfoByBuildID(@Query("buildingID") Long buildingID);*/
-
         @GET("branch/getControlLoop")
         Observable<List<Loop>> getLoopInfoByBuildID(@Query("buildingID") Long buildingID);
-
-      /*@GET("monitor/updateLoopStateByLoopID")
-        Observable<HttpResult> updateLoop (@Query("userID")Long userID,@Query("loopID") Long loopID, @Query("loopState") String loopState);*/
 
         @GET("monitor/updateOpenStatusByLoopIDPhone")
         Observable<Boolean> updateLoop (@Query("loopID") Long loopID, @Query("openStatus") Integer loopState);
 
+        //建筑ID->回路状态
         @GET("monitor/getLoopStateByBuilding")
         Observable<HttpListData<HashMap<Long,Object>>> getLoopStateByBuilding (@Query("buildingID") Long buildingID);
 
+        //回路ID->回路状态
         @GET("monitor/getLoopStateByLoopID")
         Observable<HttpListData<ACCollect>> getAirLoopStateByID (@Query("loopID") Long loopID);
+
+        //用户ID->对应回路
+        @GET("scene/getIsAdmitCutLoopInfo")
+        Observable<List<LoopStatus>>getLoopByUser(@Query("UserId") Long userID);
 
     }
 
     public Observable<List<Loop>> getLoopInfoByBuildID(Context context, Long buildingID){
         return getLoopService(context).getLoopInfoByBuildID(buildingID);
     }
-
-    /*public Observable<HttpResult> updateLoop (Context context, Long userID,Long buildingID, String loopState){
-        return getLoopService(context).updateLoop(userID,buildingID,loopState);
-    }*/
 
     public Observable<Boolean> updateLoop (Context context,Long buildingID,Integer openStatus){
         return getLoopService(context).updateLoop(buildingID,openStatus);
@@ -63,6 +60,10 @@ public class LoopBiz {
 
     public Observable<HttpListData<ACCollect>> getAirLoopStateByID (Context context, Long loopID){
         return getLoopService(context).getAirLoopStateByID(loopID);
+    }
+
+    public Observable<List<LoopStatus>>getLoopByUser(Context context, Long userID){
+        return getLoopService(context).getLoopByUser(userID);
     }
 
 

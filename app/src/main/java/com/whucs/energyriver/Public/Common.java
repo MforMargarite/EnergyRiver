@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
 import android.util.DisplayMetrics;
+import android.util.Log;
 
 import com.java4less.rchart.gc.ChartColor;
 import com.whucs.energyriver.Bean.SubUser;
@@ -43,12 +44,12 @@ public class Common {
 
     private static SharedPreferences sharedPreferences;
     private static Retrofit retrofit,msgRetrofit;
-    public static final String[] loops = {"{\"loopID\":1,\"loopTypeID\":1,\"loopName\":\"照明回路01\",\"openStatus\":false}",
-            "{\"loopID\":2,\"loopTypeID\":1,\"loopName\":\"照明回路02\",\"openStatus\":false}",
-            "{\"loopID\":3,\"loopTypeID\":2,\"loopName\":\"空调回路01\",\"openStatus\":false}",
-            "{\"loopID\":4,\"loopTypeID\":3,\"loopName\":\"插座回路01\",\"openStatus\":true}",
-            "{\"loopID\":5,\"loopTypeID\":3,\"loopName\":\"插座回路02\",\"openStatus\":false}",
-            "{\"loopID\":6,\"loopTypeID\":3,\"loopName\":\"插座回路03\",\"openStatus\":true}"};
+    public static final String[] loops = {"{\"loopID\":1,\"loopName\":\"照明回路01\",\"openStatus\":false}",
+            "{\"loopID\":2,\"loopName\":\"照明回路02\",\"openStatus\":false}",
+            "{\"loopID\":3,\"loopName\":\"空调回路01\",\"openStatus\":false}",
+            "{\"loopID\":4,\"loopName\":\"插座回路01\",\"openStatus\":true}",
+            "{\"loopID\":5,\"loopName\":\"插座回路02\",\"openStatus\":false}",
+            "{\"loopID\":6,\"loopName\":\"插座回路03\",\"openStatus\":true}"};
 
     public static final String ROOT = "http://106.15.35.178:8008/EnergyRiver/";
     public static final String BILL = "view/bill/bill_details_mobile.html";               //能耗账单详情
@@ -63,8 +64,7 @@ public class Common {
     public static final String[] noticeType = {"用电安全","电能参数","环境安全"};
 
     private static boolean checkUpdate;
-    private static String latest_version;
-    public static String FIR_TOKEN = "59cc9e00ca87a8027d000125";
+    public static String latest_version;
     private static String fir_api_token = "cea43c4fc84e1414f7747711b0d7f5a7";
 
 
@@ -400,7 +400,7 @@ public class Common {
             sharedPreferences = context.getSharedPreferences("data", 0);
         Long curTime = System.currentTimeMillis();
         Long lastCheckTime = sharedPreferences.getLong("last_check_time",curTime);
-        if(curTime - lastCheckTime > 3600000*24)//超过一天
+        if(curTime.equals(lastCheckTime) || curTime - lastCheckTime > 3600000*24)//超过一天
             checkUpdate = true;
         return checkUpdate;
     }

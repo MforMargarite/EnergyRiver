@@ -1,7 +1,6 @@
 package com.whucs.energyriver;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
+
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -15,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,51 +23,49 @@ import com.whucs.energyriver.Adapter.LoopAdapter;
 import com.whucs.energyriver.Adapter.SceneAdapter;
 import com.whucs.energyriver.Bean.ACAlter;
 import com.whucs.energyriver.Bean.ACCollect;
-import com.whucs.energyriver.Bean.Building;
-import com.whucs.energyriver.Bean.Loop;
+import com.whucs.energyriver.Bean.LoopStatus;
+import com.whucs.energyriver.Bean.Scene;
 import com.whucs.energyriver.Presenter.ControlPresenter;
 import com.whucs.energyriver.Public.Common;
 import com.whucs.energyriver.View.ControlView;
 import com.whucs.energyriver.Widget.AirControlDialog;
+import com.whucs.energyriver.Widget.SceneView;
+import com.whucs.energyriver.Widget.ScrollGridView;
 import com.whucs.energyriver.Widget.ScrollListView;
 import com.whucs.energyriver.Widget.StateSwitchFragment;
-import org.json.JSONObject;
-import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 
-public class ControlFragment extends StateSwitchFragment implements MainActivity.RoomChangeListener,View.OnClickListener,ControlView,AdapterView.OnItemClickListener,View.OnTouchListener {
-    View view ;
-   // LinearLayout room_info;
-   // ScrollGridView scene_info;
-    ScrollView wrapper;
-    ScrollListView loopListView;
-    LoopAdapter loopAdapter;
-    TextView title;
+public class ControlFragment extends StateSwitchFragment implements View.OnClickListener,ControlView,AdapterView.OnItemClickListener,View.OnTouchListener {
+    View view;
     MainActivity activity;
+    Resources res;
+    TextView title;
+    ScrollView wrapper;
+    ImageView scene_edit;
+    ScrollGridView scene_info;
+    ImageView group_edit;
+    ScrollGridView group_control;
+    ScrollListView loopListView;
 
-    ProgressDialog waiting;
+    SceneAdapter sceneAdapter,groupControlAdapter;
+    LoopAdapter loopAdapter;
+    List<Scene>sceneList,groupControlList;
+    List<LoopStatus>loopList;
+    ControlPresenter controlPresenter;
+
+    //空调智能控制 组件
     AirControlDialog dialog;
     EditText setTemp;
-    ACAlter acAlter;
-    ACCollect acCollect;
     TextView curSpeedView = null;
     TextView curModeView = null;
-
-    Long buildingID,loopID;
-    String loopState;
-    Integer openStatus;//回路的通断状态
-    SceneAdapter sceneAdapter;
-    ControlPresenter controlPresenter;
-    Resources res;
+    ACAlter acAlter;
 
     //下拉刷新参数
     private float startY;
     private boolean isShowing = false;
+    private boolean readyForRefresh = true;
     private boolean pullToRefresh = false;
 
     @Nullable
@@ -81,14 +77,13 @@ public class ControlFragment extends StateSwitchFragment implements MainActivity
         return view;
     }
 
+    //加载页面：获取场景、群组和所有回路
     private void getPageInfo(){
         if(controlPresenter == null)
             controlPresenter = new ControlPresenter(this);
-        buildingID = Common.getSharedPreference(activity).getLong("buildingID",-1L);
-        if(buildingID!=-1L) {
-            controlPresenter.getLoopInfoByBuildID(activity);
-        }else
-            controlPresenter.getFirstBuildUnit(activity);
+        controlPresenter.getScenes(activity);
+        controlPresenter.getGroupControls(activity);
+        controlPresenter.getLoopByUser(activity);
     }
 
     @Override
@@ -106,31 +101,33 @@ public class ControlFragment extends StateSwitchFragment implements MainActivity
         activity = (MainActivity) getActivity();
         //调用父类装入View content的方法,并加入权限页
         iniAdapter(view);
-        addState("auth",getAuthView());
         //判断是否有权限使用控制功能
         if(!Common.hasAuth(activity)) {
+            addState("auth",getAuthView());
             showViewByTag("auth");
         }
         else {
             acAlter = new ACAlter();
             res = activity.getResources();
-
+            //场景
+            int widthSlice = Common.getParentWidth(activity)/9;
+            int heightSlice = Common.getParentHeight(activity)/40;
+            scene_info = (ScrollGridView) view.findViewById(R.id.scene_info);
+            scene_info.setPadding(widthSlice,heightSlice,widthSlice,heightSlice);
+            scene_info.setHorizontalSpacing(widthSlice);
+            scene_edit = (ImageView) view.findViewById(R.id.scene_edit);
+            scene_edit.setOnClickListener(this);
+            //组控
+            group_control = (ScrollGridView) view.findViewById(R.id.group_control);
+            group_control.setPadding(widthSlice,heightSlice,widthSlice,heightSlice);
+            group_control.setHorizontalSpacing(widthSlice);
+            group_edit = (ImageView) view.findViewById(R.id.group_edit);
+            group_edit.setOnClickListener(this);
+            //回路列表
             loopListView = (ScrollListView) view.findViewById(R.id.loop_listView);
             wrapper = (ScrollView) view.findViewById(R.id.wrapper);
             wrapper.setOnTouchListener(this);
-           /* room_info = (LinearLayout) view.findViewById(R.id.room_info);
-              room_info.setOnClickListener(this);
-              room = (TextView) view.findViewById(R.id.room);
-
-              scene_info = (ScrollGridView) view.findViewById(R.id.scene_info);
-              int widthSlice = Common.getParentWidth(activity)/9;
-              int heightSlice = Common.getParentHeight(activity)/40;
-              scene_info.setPadding(widthSlice,heightSlice,widthSlice,heightSlice);
-              scene_info.setHorizontalSpacing(widthSlice);
-              sceneAdapter = new SceneAdapter(activity,null);
-              scene_info.setAdapter(sceneAdapter);
-              sceneAdapter.notifyDataSetChanged();
-              scene_info.setOnItemClickListener(this);*/
+            //加载数据
             getPageInfo();
         }
     }
@@ -144,7 +141,7 @@ public class ControlFragment extends StateSwitchFragment implements MainActivity
             }else{
                 activity.setToolbar(View.VISIBLE);
             }
-            activity.setMenuState(0);
+            activity.setMenuState(false);
         }
     }
 
@@ -156,10 +153,10 @@ public class ControlFragment extends StateSwitchFragment implements MainActivity
         auth_cancel.setOnClickListener(this);
         auth_ensure.setOnClickListener(this);
 
-        List<Loop>loops = new ArrayList<>();
+        List<LoopStatus>loops = new ArrayList<>();
         Gson gson = new Gson();
         for (String loop:Common.loops) {
-            loops.add(gson.fromJson(loop,Loop.class));
+            loops.add(gson.fromJson(loop,LoopStatus.class));
         }
         ScrollListView loopListView = (ScrollListView) view.findViewById(R.id.loop_listView);
         LoopAdapter loopAdapter = new LoopAdapter(activity,loops,this);
@@ -169,23 +166,62 @@ public class ControlFragment extends StateSwitchFragment implements MainActivity
     }
 
     @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        switch(motionEvent.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                if(pullToRefresh)
+                    return true;
+                startY = motionEvent.getY();
+                readyForRefresh = isTop(wrapper);
+                break;
+            case MotionEvent.ACTION_MOVE:
+                if(pullToRefresh)
+                    return true;
+                else if(readyForRefresh) {//已经滑动到顶部
+                    float dist = motionEvent.getY() - startY;
+                    if(dist>0) {
+                        if (dist > 216) {
+                            activity.showPullToRefresh(216);
+                            pullToRefresh = true;
+                        } else {
+                            activity.showPullToRefresh((int) dist);
+                            isShowing = true;
+                        }
+                        return true;
+                    }else{
+                        if(isShowing)
+                            return true;
+                    }
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                if(pullToRefresh) {
+                    reload();
+                    activity.setRefreshState("正在刷新");
+                }else if(isShowing) {
+                    activity.hidePullToRefresh();
+                    isShowing = false;
+                }
+                break;
+        }
+        return false;
+    }
+
+    private boolean isTop(ScrollView wrapper){
+        return wrapper.getScrollY() == 0;
+    }
+
+    @Override
     public void onClick(View view) {
         Intent intent;
         switch (view.getId()){
-            case R.id.room_info:
-                /*intent = new Intent(activity,ChooseRoomActivity.class);
-                startActivityForResult(intent,0);*/
-
-                break;
             case R.id.toggle:
                 //空调控制 显示面板
-                loopID = Long.parseLong(view.getTag().toString());
-                controlPresenter.getAirState(activity,loopID);
+              //  controlPresenter.getAirState(activity,loopID);
                 break;
             case R.id.switcher:
                 ToggleButton switcher = (ToggleButton)view;
-                loopID = Long.parseLong(switcher.getTag().toString());
-                loopState = "{'EquipmentStatus':"+(switcher.isChecked()?1:0)+"}";
+                switcher.setTag(R.id.state,switcher.isChecked()?1:0);
                 controlPresenter.updateLoopState(switcher,activity);
                 break;
             case R.id.to_low:
@@ -218,9 +254,9 @@ public class ControlFragment extends StateSwitchFragment implements MainActivity
                 break;
             case R.id.ensure:
                 acAlter.setSetTemp(Float.parseFloat(setTemp.getText().toString()));
-                loopState = new Gson().toJson(acAlter);
+                //loopState = new Gson().toJson(acAlter);
                 controlPresenter.updateLoopState(view,activity);
-                acAlter = new ACAlter();
+                acAlter.clear();
                 break;
             case R.id.cancel:
                 if(dialog!=null)
@@ -229,11 +265,21 @@ public class ControlFragment extends StateSwitchFragment implements MainActivity
             case R.id.auth_ensure:
                 //跳转至缴费页面
                 //intent = new Intent(activity,BillActivity.class);
-               // startActivity(intent);
+                // startActivity(intent);
                 break;
             case R.id.auth_cancel:
                 //跳转至能耗概况tab
                 activity.setCurrentTab(0);
+                break;
+            case R.id.scene_edit:
+                intent = new Intent(activity,SceneActivity.class);
+                intent.putExtra("type",1);
+                startActivity(intent);
+                break;
+            case R.id.group_edit:
+                intent = new Intent(activity,SceneActivity.class);
+                intent.putExtra("type",2);
+                startActivity(intent);
                 break;
             default:
                 break;
@@ -322,72 +368,13 @@ public class ControlFragment extends StateSwitchFragment implements MainActivity
     }
 
     @Override
-    public void showLoading() {
-        //super.showViewByTag("loading");
-    }
-
-    @Override
-    public void showWaiting() {
-        if(waiting == null){
-            waiting = new ProgressDialog(activity);
-        }
-        waiting.show();
-        waiting.setContentView(R.layout.progress_dialog);
-
+    public void showHint(String hint) {
+        Toast.makeText(activity,hint,Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void hideWaiting() {
-        if(waiting.isShowing())
-            waiting.dismiss();
-    }
-
-    @Override
-    public Long getBuildingID() {
-        return buildingID;
-    }
-
-    @Override
-    public Long getLoopID() {
-        return loopID;
-    }
-
-    @Override
-    public String getLoopState() {
-        try {
-            loopState = URLEncoder.encode(loopState, "UTF-8");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return loopState;
-    }
-
-    @Override
-    public Integer getLoopOpenStatus() {
-        try {
-            JSONObject obj = new JSONObject(loopState);
-            openStatus = obj.getBoolean("EquipmentStatus")?1:0;
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return openStatus;
-    }
-
-    @Override
-    public void setLoopList(List<Loop> loops) {
-        loopAdapter = new LoopAdapter(activity, loops, this);
-        loopListView.setAdapter(loopAdapter);
-        loopAdapter.notifyDataSetInvalidated();
-        showViewByTag("content");
-        activity.hidePullToRefresh();
-    }
-
-    @Override
-    public void setBuildingUnit(Building building) {
-        buildingID = building.getBuildingID();
-        controlPresenter.getLoopInfoByBuildID(activity);
-   //     controlPresenter.getLoopStateByBuild(activity);
-        showViewByTag("content");
+        Log.e("what","hiding");
     }
 
     @Override
@@ -397,20 +384,80 @@ public class ControlFragment extends StateSwitchFragment implements MainActivity
         activity.hidePullToRefresh();
     }
 
+
     @Override
-    public void setUpdateResult(View view,Boolean updated) {
-        if(!updated){
-            switch (view.getId()){
-                case R.id.switcher:
-                    ToggleButton switcher = (ToggleButton)view;
-                    switcher.setChecked(!switcher.isChecked());
-                    Toast.makeText(activity,"状态更新失败",Toast.LENGTH_SHORT).show();
-                    break;
-                default:
-                    break;
-            }
+    public void setSceneList(List<Scene> scenes) {
+        if(sceneList == null)
+            sceneList = new ArrayList<>();
+        sceneList.clear();
+        sceneList.addAll(scenes);
+        if(sceneAdapter == null) {
+            sceneAdapter = new SceneAdapter(activity, sceneList);
+            scene_info.setAdapter(sceneAdapter);
+            scene_info.setOnItemClickListener(this);
         }else
-            Toast.makeText(activity,"更新成功",Toast.LENGTH_SHORT).show();
+            sceneAdapter.notifyDataSetInvalidated();
+    }
+
+    @Override
+    public void setGroupControlList(List<Scene> scenes) {
+        if(groupControlList == null)
+            groupControlList = new ArrayList<>();
+        groupControlList.clear();
+        groupControlList.addAll(scenes);
+        if(groupControlAdapter == null) {
+            groupControlAdapter = new SceneAdapter(activity, groupControlList);
+            group_control.setAdapter(groupControlAdapter);
+            group_control.setOnItemClickListener(this);
+        }else
+            groupControlAdapter.notifyDataSetInvalidated();
+    }
+
+    @Override
+    public void setAllLoopList(List<LoopStatus> loops) {
+        if(loopList == null)
+            loopList = new ArrayList<>();
+        loopList.clear();
+        loopList.addAll(loops);
+        if(loopAdapter == null) {
+            loopAdapter = new LoopAdapter(activity, loopList, this);
+            loopListView.setAdapter(loopAdapter);
+        }else
+            loopAdapter.notifyDataSetInvalidated();
+        showViewByTag("content");
+        activity.hidePullToRefresh();
+        pullToRefresh = false;
+    }
+
+    @Override
+    public void setUpdateResult(View view,String type,Boolean updated) {
+        switch (view.getId()){
+            case R.id.switcher:
+                if(!updated) {
+                    ToggleButton switcher = (ToggleButton) view;
+                    switcher.setChecked(!switcher.isChecked());
+                    Toast.makeText(activity, "状态更新失败", Toast.LENGTH_SHORT).show();
+                }else
+                    Toast.makeText(activity,"更新成功",Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.scenes:
+                if(updated) {
+                    //更新成功 切换场景显示
+                    if(type.equals("场景")) {
+                        controlPresenter.getScenes(activity);
+                        Toast.makeText(activity,"已切换至"+view.getTag(R.id.scene_name)+type+"模式",Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        controlPresenter.getGroupControls(activity);
+                        String openOrClose = Integer.parseInt(view.getTag(R.id.state).toString())>0?"关闭":"开启";
+                        Toast.makeText(activity,"已"+openOrClose+view.getTag(R.id.scene_name)+type+"模式",Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+                break;
+            default:
+                break;
+        }
         if(dialog!=null)
             if(dialog.isShowing())
                 dialog.dismiss();
@@ -422,116 +469,30 @@ public class ControlFragment extends StateSwitchFragment implements MainActivity
             case R.id.switcher:
                 ToggleButton switcher = (ToggleButton)view;
                 switcher.setChecked(!switcher.isChecked());
+                Toast.makeText(activity,"更新失败,请检查网络后重试",Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.scenes:
+                Toast.makeText(activity,"更新场景或组控状态失败,请检查网络后重试",Toast.LENGTH_SHORT).show();
                 break;
             default:
                 break;
         }
-        Toast.makeText(activity,"更新失败,请检查网络后重试",Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    public void setLoopState(HashMap<Long, Object> map) {
-        Iterator<Map.Entry<Long,Object>>it = map.entrySet().iterator();
-        while(it.hasNext()){
-            Map.Entry<Long,Object>entry = it.next();
-            ToggleButton switcher = (ToggleButton) view.findViewWithTag(entry.getKey());
-            int status = Integer.parseInt(entry.getValue().toString());
-            switcher.setChecked(status>0);
-        }
-    }
-
-    @Override
-    public void getStateError() {
-        Toast.makeText(activity,"获取回路状态失败",Toast.LENGTH_SHORT).show();
-        //所有按钮不可点击
-    }
-
-    @Override
-    public void setACCollect(ACCollect acCollect) {
-        this.acCollect = acCollect;
-        dialog = new AirControlDialog(activity);
-        dialog.setView(new EditText(activity));
-        dialog.show();
-        initDialog(acCollect);
-    }
-
-    @Override
-    public void getACError() {
-        Toast.makeText(activity,"获取空调状态失败,暂不允许控制,请检查网络后重试",Toast.LENGTH_SHORT).show();
-        if(dialog!=null && dialog.isShowing())
-            dialog.dismiss();
-    }
-
-
-   /* @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch(requestCode){
-            case 0://选择房间
-                if(resultCode == Activity.RESULT_OK) {
-                    //选择了数据
-                    Long newBuildingID = data.getLongExtra("buildingID", buildingID);
-                    String newBuildingName = data.getStringExtra("buildingName");
-                    Common.saveBuilding(activity,newBuildingID,newBuildingName);
-                    if (!newBuildingID.equals(buildingID)) {
-                        buildingID = newBuildingID;
-                        room.setText(newBuildingName);
-                    }
-                    controlPresenter.getLoopInfoByBuildID(activity);
-                }
-                break;
-        }
-    }*/
-
-    @Override
-    public void onRoomChange(Long newBuildingID, String newBuildingName) {
-        Common.saveBuilding(activity,newBuildingID,newBuildingName);
-        if (!newBuildingID.equals(buildingID)) {
-            buildingID = newBuildingID;
-            getPageInfo();
-        }
-    }
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        if(sceneAdapter.getItemId(i) == -1){
-            Intent intent = new Intent(activity,AddSceneActivity.class);
-            startActivity(intent);
-        }else{
-            //选中当前场景 并更新数据库
-            Log.e("what","第"+i+"个场景被点击");
-        }
-    }
-
-    @Override
-    public boolean onTouch(View view, MotionEvent motionEvent) {
-        switch(motionEvent.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                startY = motionEvent.getY();
+        //若需要切换场景 则执行更新状态操作
+        switch (adapterView.getId()) {
+            case R.id.scene_info:
+                ToggleButton toggle = (ToggleButton) view.findViewById(R.id.switcher);
+                if(Integer.parseInt(toggle.getTag(R.id.state).toString()) == 0)
+                    controlPresenter.updateScene(view, "场景", activity);
                 break;
-            case MotionEvent.ACTION_MOVE:
-                if(wrapper.getScrollY() == 0) {//已经滑动到顶部
-                    float dist = motionEvent.getY() - startY;
-                    if (dist > 20 && dist <= 220 && !isShowing) {
-                        isShowing = true;
-                        activity.showPullToRefresh((int) dist);
-                    } else if (dist > 220) {
-                        activity.showPullToRefresh(216);
-                        pullToRefresh = true;
-                    }
-                }
-                break;
-            case MotionEvent.ACTION_UP:
-                if(pullToRefresh) {
-                    reload();
-                    activity.setRefreshState("正在刷新");
-                }else if(isShowing) {
-                    activity.hidePullToRefresh();
-                    isShowing = false;
-                }
+            case R.id.group_control:
+                controlPresenter.updateGroupControl(view, "组控", activity);
                 break;
         }
-        return false;
     }
-
 
 }

@@ -29,6 +29,7 @@ public class MainActivityPresenter {
         this.buildingBiz = new BuildingBiz();
     }
 
+
     public void getVersionInfo(Context context){
         mainActivityBiz.getVersionInfo(context)
                 .subscribeOn(Schedulers.io())
@@ -53,26 +54,5 @@ public class MainActivityPresenter {
 
 
 
-    public void getBuildingInfo(Context context){
-        buildingBiz.getBuildingInfo(context)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<Building>>() {
-                    @Override
-                    public void onCompleted() {
 
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.e("what",e.getMessage());
-                        mainActivityView.execError("获取房间信息失败");
-                    }
-
-                    @Override
-                    public void onNext(List<Building> buildings) {
-                        mainActivityView.setBuildingInfo(buildings);
-                    }
-                });
-    }
 }

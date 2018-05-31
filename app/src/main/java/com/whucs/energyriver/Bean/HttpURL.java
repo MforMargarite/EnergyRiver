@@ -1,9 +1,9 @@
 package com.whucs.energyriver.Bean;
 
-public class HttpURL {
+public class HttpURL<T> {
     int code;
     boolean result;
-    String data;
+    T data;
 
     public int getCode() {
         return code;
@@ -21,11 +21,11 @@ public class HttpURL {
         this.result = result;
     }
 
-    public String getData() {
+    public T getData() {
         return data;
     }
 
-    public void setData(String data) {
+    public void setData(T data) {
         this.data = data;
     }
 

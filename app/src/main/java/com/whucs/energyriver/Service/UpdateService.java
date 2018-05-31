@@ -12,6 +12,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.whucs.energyriver.Public.Common;
@@ -39,6 +40,8 @@ public class UpdateService extends Service {
 
     private void initDownManager() {
         final File rootFile = new File(File.separator+ Environment.getExternalStorageDirectory()+File.separator+"EnergyRiver"+File.separator);
+        Log.e("what",rootFile.getAbsolutePath());
+        Log.e("what",Common.getLatestUrl());
         if (!rootFile.exists()) {
             rootFile.mkdir();
         }

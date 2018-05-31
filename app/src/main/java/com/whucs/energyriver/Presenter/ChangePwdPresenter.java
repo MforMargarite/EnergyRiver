@@ -35,8 +35,9 @@ public class ChangePwdPresenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        changePwdView.execError(e.getMessage());
+                        changePwdView.execError("密码修改失败，请稍后重试");
                         changePwdView.hideWaiting();
+                        Log.e("what",e.getMessage());
                     }
 
                     @Override
@@ -49,7 +50,7 @@ public class ChangePwdPresenter {
                                 changePwdView.execError(result.getMessage());
                         }catch (Exception e){
                             e.printStackTrace();
-                            changePwdView.execError("密码修改失败,请检查网络后重试");
+                            changePwdView.execError("密码修改失败,请稍后重试");
                         }
                     }
                 });

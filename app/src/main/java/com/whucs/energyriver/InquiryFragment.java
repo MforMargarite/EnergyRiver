@@ -129,7 +129,7 @@ public class InquiryFragment extends StateSwitchFragment implements View.OnTouch
 
                     @Override
                     public void onNext(List<Notice> notices) {
-                        activity.setMenuState(notices.size());
+                        activity.setMenuNum(notices.size());
                     }
                 });
     }

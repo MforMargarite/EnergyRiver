@@ -1,18 +1,13 @@
 package com.whucs.energyriver.Adapter;
 
 import android.content.Context;
-import android.content.res.Resources;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.TextView;
 
-import com.whucs.energyriver.Bean.Bill;
 import com.whucs.energyriver.Bean.Scene;
 import com.whucs.energyriver.R;
-import com.whucs.energyriver.Widget.CircleView;
+import com.whucs.energyriver.Widget.SceneView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,18 +16,11 @@ import java.util.List;
 public class SceneAdapter extends BaseAdapter{
     private Context context;
     private List<Scene>sceneList;
-    private Resources res;
 
     public SceneAdapter(Context context, List<Scene> sceneList) {
         this.context = context;
-        this.res = context.getResources();
         if(sceneList == null)
             sceneList = new ArrayList<>();
-        //添加 + 作为场景添加按钮 判断条件：sceneID == -1
-        Scene scene = new Scene();
-        scene.setID(-1L);
-        sceneList.add(scene);
-        //初始化
         this.sceneList = sceneList;
     }
 
@@ -48,7 +36,7 @@ public class SceneAdapter extends BaseAdapter{
 
     @Override
     public long getItemId(int i) {
-        return sceneList.get(i).getID();
+        return sceneList.get(i).getSceneID();
     }
 
     @Override
@@ -56,24 +44,22 @@ public class SceneAdapter extends BaseAdapter{
         ViewHolder holder;
         Scene scene = sceneList.get(i);
         if(view == null){
-            view = new CircleView(context);
+            view = new SceneView(context);
             holder = new ViewHolder();
-            holder.scene = (CircleView) view;
+            holder.scene = (SceneView) view;
             view.setTag(holder);
         }else
             holder = (ViewHolder) view.getTag();
-        if(scene.getID() == -1L) {
-            holder.scene.setText("+");
-        }else{
-            holder.scene.setText(scene.getName());
-        }
+        holder.scene.setId(R.id.scenes);
+        holder.scene.setSceneInfo(scene.getSceneName(),scene.getOpen());
+        holder.scene.setTag(R.id.identity,scene.getSceneID());
+        holder.scene.setTag(R.id.scene_name,scene.getSceneName());
+        holder.scene.setTag(R.id.state,scene.getOpen()?1:0);
         return view;
     }
 
-
-
     class ViewHolder{
-        CircleView scene;
+        SceneView scene;
     }
 
 }

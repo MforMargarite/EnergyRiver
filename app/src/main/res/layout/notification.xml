@@ -37,7 +37,7 @@
         <TextView
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:id="@+id/elec_safety"
             android:textColor="@color/white"
             android:textSize="12sp"
@@ -46,7 +46,7 @@
             android:clickable="true"/>
         <TextView android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:id="@+id/elec_param"
             android:textColor="@color/white"
             android:textSize="12sp"
@@ -55,7 +55,7 @@
             android:clickable="true"/>
         <TextView android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:id="@+id/envir_param"
             android:textColor="@color/white"
             android:textSize="12sp"
@@ -70,7 +70,9 @@
             android:gravity="center"
             android:text="暂无未读消息"
             android:textSize="16sp"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white"
+            android:id="@+id/no_msg"
+            android:visibility="invisible"/>
         <com.whucs.energyriver.Widget.RefreshListView
             android:layout_width="match_parent"
             android:layout_height="match_parent"

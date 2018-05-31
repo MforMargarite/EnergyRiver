@@ -49,8 +49,6 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".AddSceneActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".EditSceneActivity"
-            android:screenOrientation="portrait"/>
         <activity android:name=".SceneActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".ChooseRoomActivity"
@@ -77,6 +75,8 @@
 
         <!-- Required SDK核心功能-->
         <receiver android:name="cn.jpush.android.service.AlarmReceiver" />
+
+        <service android:name=".Service.UpdateService"/>
 
         <service
             android:name="cn.jpush.android.service.PushService"

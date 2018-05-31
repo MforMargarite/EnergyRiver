@@ -13,6 +13,7 @@ import android.widget.ImageView;
 //主要参数: Bitmap src,int num
 public class MessageImageView extends ImageView{
     String num;
+    int actual_num;
     Paint paint,edgePaint,textPaint;
     public MessageImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -41,6 +42,7 @@ public class MessageImageView extends ImageView{
             this.num = "99+";
         else
             this.num = num+"";
+        actual_num = num;
         postInvalidate();
     }
 
@@ -49,15 +51,28 @@ public class MessageImageView extends ImageView{
         super.onDraw(canvas);
         if(num!=null) {
             Rect rect = new Rect();
-            textPaint.getTextBounds(num,0,num.length(),rect);
-            int r = rect.width()/2+6;//圆的半径
-            int width = this.getWidth();
-            int center = width-7*r/6-2;
+            textPaint.getTextBounds(num, 0, num.length(), rect);
+            int r;
+            if (actual_num > 9){
+                r = rect.width() / 2 + 6;//圆的半径
 
-            setPadding(0, 5*r/6+2, 5*r/6+2, 0);
-            canvas.drawCircle(center,r+2,r,paint);
-            canvas.drawCircle(center,r+2,r+1,edgePaint);
-            canvas.drawText(num,center-3.7f*r/5,4*r/3,textPaint);
+                int width = this.getWidth();
+                int center = width - 7 * r / 6 - 2;
+
+                setPadding(0, 5 * r / 6 + 2, 5 * r / 6 + 2, 0);
+                canvas.drawCircle(center, r + 2, r, paint);
+                canvas.drawCircle(center, r + 2, r + 1, edgePaint);
+                canvas.drawText(num, center - 3.7f * r / 5, 4 * r / 3, textPaint);
+            }else{
+                r = rect.width() / 2 + 12;
+                int width = this.getWidth();
+                int center = width - 7 * r / 6 - 2;
+
+                setPadding(0, 5 * r / 6 + 2, 5 * r / 6 + 2, 0);
+                canvas.drawCircle(center, r + 2, r, paint);
+                canvas.drawCircle(center, r + 2, r + 1, edgePaint);
+                canvas.drawText(num, center - 1.8f * r / 5, 4.2f * r / 3, textPaint);
+            }
         }
     }
 

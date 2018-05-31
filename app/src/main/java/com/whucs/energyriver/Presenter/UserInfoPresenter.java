@@ -45,8 +45,9 @@ public class UserInfoPresenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        userInfoView.execError(e.getMessage());
+                        userInfoView.execError("头像更新失败，请稍后重试");
                         userInfoView.hideWaiting();
+                        Log.e("what",e.getMessage());
                     }
 
                     @Override
@@ -54,7 +55,7 @@ public class UserInfoPresenter {
                         if(result){
                             userInfoView.updateURLSuccess(userInfoView.getAvatarData());
                         }else
-                            userInfoView.execError("头像更新失败,请检查网络后重试");
+                            userInfoView.execError("头像更新失败,请稍后重试");
                     }
                 });
     }
@@ -78,8 +79,9 @@ public class UserInfoPresenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        userInfoView.execError(e.getMessage());
+                        userInfoView.execError("用户名更新失败,请稍后重试");
                         userInfoView.hideWaiting();
+                        Log.e("what",e.getMessage());
                     }
 
                     @Override
@@ -87,7 +89,7 @@ public class UserInfoPresenter {
                         if(result){
                             userInfoView.uploadUsernameSuccess();
                         }else
-                            userInfoView.execError("用户名更新失败,请检查网络后重试");
+                            userInfoView.execError("用户名更新失败,请稍后重试");
                     }
                 });
     }
@@ -113,17 +115,18 @@ public class UserInfoPresenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        userInfoView.execError(e.getMessage());
+                        userInfoView.execError("上传头像至服务器失败,请稍后重试");
                         userInfoView.hideWaiting();
+                        Log.e("what",e.getMessage());
                     }
 
                     @Override
                     public void onNext(HttpURL result) {
                       //  Log.e("what",result.toString());
                         if(result.isResult()){
-                            userInfoView.uploadAvatarSuccess(result.getData());
+                            userInfoView.uploadAvatarSuccess(result.getData().toString());
                         }else
-                            userInfoView.execError("上传头像至服务器失败,请检查网络后重试");
+                            userInfoView.execError("上传头像至服务器失败,请稍后重试");
                     }
                 });
     }
@@ -141,8 +144,9 @@ public class UserInfoPresenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        userInfoView.execError(e.getMessage());
+                        userInfoView.execError("手机号修改失败,请稍后重试");
                         userInfoView.hideWaiting();
+                        Log.e("what",e.getMessage());
                     }
 
                     @Override
@@ -151,10 +155,10 @@ public class UserInfoPresenter {
                             if (result.getCode() == 200) {
                                 userInfoView.changeMobileSuccess();
                             } else
-                                userInfoView.execError("手机号修改失败,请检查网络后重试");
+                                userInfoView.execError("手机号修改失败,请稍后重试");
                         }catch (Exception e){
                             e.printStackTrace();
-                            userInfoView.execError("手机号修改失败,请检查网络后重试");
+                            userInfoView.execError("手机号修改失败,请稍后重试");
                         }
                     }
                 });

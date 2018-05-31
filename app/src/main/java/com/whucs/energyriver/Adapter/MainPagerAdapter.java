@@ -25,7 +25,6 @@ public class MainPagerAdapter extends FragmentStatePagerAdapter {
                 return new InquiryFragment();
             case 1:
                 ControlFragment controlFragment = new ControlFragment();
-                activity.setOnRoomChangeListener(controlFragment);
                 return controlFragment;
             default:
                 return new UserFragment();

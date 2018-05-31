@@ -3,20 +3,29 @@ package com.whucs.energyriver.Presenter;
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
+import android.widget.ToggleButton;
+
 import com.whucs.energyriver.Bean.ACCollect;
 import com.whucs.energyriver.Bean.Building;
 import com.whucs.energyriver.Bean.HttpListData;
 import com.whucs.energyriver.Bean.HttpResult;
 import com.whucs.energyriver.Bean.Loop;
 import com.whucs.energyriver.Bean.LoopStatus;
+import com.whucs.energyriver.Bean.Scene;
 import com.whucs.energyriver.Bean.Tree;
 import com.whucs.energyriver.Biz.BuildingBiz;
 import com.whucs.energyriver.Biz.LoopBiz;
+import com.whucs.energyriver.Biz.SceneBiz;
 import com.whucs.energyriver.Public.Common;
 import com.whucs.energyriver.Public.TreeUtil;
+import com.whucs.energyriver.R;
 import com.whucs.energyriver.View.ControlView;
+import com.whucs.energyriver.View.SceneView;
+
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
@@ -26,21 +35,20 @@ import rx.schedulers.Schedulers;
 public class ControlPresenter {
     private ControlView controlView;
     private LoopBiz loopBiz;
-    private BuildingBiz buildingBiz;
+    private SceneBiz sceneBiz;
 
     public ControlPresenter(ControlView controlView){
         this.controlView = controlView;
         this.loopBiz = new LoopBiz();
-        this.buildingBiz = new BuildingBiz();
+        this.sceneBiz = new SceneBiz();
     }
 
-    //根据房间获取回路
-    /*public void getLoopInfoByBuildID(Context context){
-        controlView.showLoading();
-        loopBiz.getLoopInfoByBuildID(context,controlView.getBuildingID())
+    //根据用户获取场景
+    public void getScenes(Context context){
+        sceneBiz.getScenes(context,Common.getID(context))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<Loop>>() {
+                .subscribe(new Observer<List<Scene>>() {
                     @Override
                     public void onCompleted() {
 
@@ -48,22 +56,22 @@ public class ControlPresenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        e.printStackTrace();
-                        controlView.execError(e.getMessage());
+                        controlView.execError("获取场景列表失败,请检查网络后重试");
                     }
 
                     @Override
-                    public void onNext(List<Loop> loops) {
-                        controlView.setLoopList(loops);
+                    public void onNext(List<Scene> scenes) {
+                        controlView.setSceneList(scenes);
                     }
                 });
     }
 
-    public void getBuildingInfo(Context context){
-        buildingBiz.getBuildingInfo(context)
+    //根据用户获取组控
+    public void getGroupControls(Context context){
+        sceneBiz.getGroupControls(context,Common.getID(context))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<Building>>() {
+                .subscribe(new Observer<List<Scene>>() {
                     @Override
                     public void onCompleted() {
 
@@ -71,47 +79,75 @@ public class ControlPresenter {
 
                     @Override
                     public void onError(Throwable e) {
+                        controlView.execError("获取组控列表失败,请检查网络后重试");
+                    }
+
+                    @Override
+                    public void onNext(List<Scene> scenes) {
+                        controlView.setGroupControlList(scenes);
+                    }
+                });
+    }
+
+    //根据sceneID更新场景状态
+    public void updateScene(final View view,final String type,Context context){
+        //controlView.showHint("场景状态切换中...");
+        ToggleButton toggle = (ToggleButton) view.findViewById(R.id.switcher);
+        final Long sceneID = Long.parseLong(toggle.getTag(R.id.identity).toString());
+        sceneBiz.updateScene(context,sceneID)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Map<String,Boolean>>() {
+                    @Override
+                    public void onCompleted() {
+                        controlView.hideWaiting();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        controlView.hideWaiting();
+                        controlView.updateError(view);
                         Log.e("what",e.getMessage());
-                        controlView.execError("获取房间信息失败");
                     }
 
                     @Override
-                    public void onNext(List<Building> buildings) {
-                        controlView.setBuildingInfo(buildings);
+                    public void onNext(Map<String,Boolean> map) {
+                        Log.e("what","scene update result: "+map.get("result"));
+                        controlView.setUpdateResult(view,type,map.get("result"));
                     }
                 });
     }
 
-
-    public void getFirstBuildUnit(final Context context){
-        controlView.showLoading();
-        buildingBiz.getBuildingInfo(context)
+    public void updateGroupControl(final View view,final String type,Context context){
+        //controlView.showHint("组控状态切换中...");
+        ToggleButton toggle = (ToggleButton) view.findViewById(R.id.switcher);
+        final Integer status = Integer.parseInt(toggle.getTag(R.id.state).toString());
+        final Long sceneID = Long.parseLong(toggle.getTag(R.id.identity).toString());
+        sceneBiz.updateGroupControl(context,sceneID,1-status)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<Building>>() {
-                @Override
-                public void onCompleted() {
+                .subscribe(new Observer<Map<String,Boolean>>() {
+                    @Override
+                    public void onCompleted() {
+                        controlView.hideWaiting();
+                    }
 
-                }
+                    @Override
+                    public void onError(Throwable e) {
+                        controlView.hideWaiting();
+                        controlView.updateError(view);
+                    }
 
-                @Override
-                public void onError(Throwable e) {
-                    controlView.execError(e.getMessage());
-                }
+                    @Override
+                    public void onNext(Map<String,Boolean> map) {
+                        controlView.setUpdateResult(view,type,map.get("result"));
+                    }
+                });
+    }
 
-                @Override
-                public void onNext(List<Building> buildings) {
-                    *//*Building building = TreeUtil.getFirstChildID(buildings);
-                    Tree tree = new Tree(buildings);
-                    building.setBuildingName(tree.getBuildingPath(building,3));*//*
-                    controlView.setBuildingUnit(buildings.get(0));
-                }
-            });
-    }*/
 
     //根据用户获取对应回路
     public void getLoopByUser(Context context){
-        controlView.showLoading();
         loopBiz.getLoopByUser(context, Common.getID(context))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -122,7 +158,8 @@ public class ControlPresenter {
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
-                        controlView.execError(e.getMessage());
+                        controlView.execError("获取可控回路失败，请刷新重试");
+                        Log.e("what",e.getMessage());
                     }
 
                     @Override
@@ -132,9 +169,12 @@ public class ControlPresenter {
                 });
     }
 
+    //更新回路状态
     public void updateLoopState(final View view,Context context){
-        controlView.showWaiting();
-        loopBiz.updateLoop(context,controlView.getLoopID(),controlView.getLoopOpenStatus())
+        controlView.showHint("回路状态切换中...");
+        final Long loopID = Long.parseLong(view.getTag(R.id.identity).toString());
+        final Integer status = Integer.parseInt(view.getTag(R.id.state).toString());
+        loopBiz.updateLoop(context,loopID,status)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Boolean>() {
@@ -151,79 +191,10 @@ public class ControlPresenter {
 
                     @Override
                     public void onNext(Boolean aBoolean) {
-                        Log.e("what","update:"+controlView.getLoopID()+" "+controlView.getLoopOpenStatus()+" "+aBoolean);
-                        controlView.setUpdateResult(view,aBoolean);
+                       controlView.setUpdateResult(view,null,aBoolean);
                     }
                 });
     }
 
-    public void getLoopStateByBuild(Context context){
-        controlView.showWaiting();
-        loopBiz.getLoopStateByBuilding(context,controlView.getBuildingID())
-                .map(new Func1<HttpListData<HashMap<Long,Object>>, HashMap<Long,Object>>() {
-                    @Override
-                    public HashMap<Long,Object> call(HttpListData<HashMap<Long, Object>> hashMapHttpData) {
-                        return hashMapHttpData.getData();
-                    }
-                }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<HashMap<Long, Object>>() {
-                    @Override
-                    public void onCompleted() {
 
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                       // controlView.getStateError();
-                        controlView.hideWaiting();
-                    }
-
-                    @Override
-                    public void onNext(HashMap<Long, Object> map) {
-                       // controlView.setLoopState(map);
-                        controlView.hideWaiting();
-                    }
-                });
-    }
-
-    public void getAirState(Context context,Long loopID){
-        controlView.showWaiting();
-        loopBiz.getAirLoopStateByID(context,loopID)
-                .map(new Func1<HttpListData<ACCollect>, ACCollect>() {
-                    @Override
-                    public ACCollect call(HttpListData<ACCollect> acCollectHttpData) {
-                        return acCollectHttpData.getData();
-                    }
-                }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ACCollect>() {
-                               @Override
-                               public void onCompleted() {
-
-                               }
-
-                               @Override
-                               public void onError(Throwable e) {
-                                    Log.e("what",e.getMessage());
-                                   controlView.getACError();
-                                   controlView.hideWaiting();
-                               }
-
-                               @Override
-                               public void onNext(ACCollect acCollect) {
-                                    controlView.setACCollect(acCollect);
-                                    controlView.hideWaiting();
-                               }
-                           }
-                );
-    }
-
-    public void getScenes(Context context){
-        //sceneBiz
-    }
-
-    public void getGroupControls(Context context){
-        //sceneBiz
-    }
 }

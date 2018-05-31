@@ -90,9 +90,14 @@
     <string name="no_type_addition">(不存在基础回路)</string>
     <!--智能控制-->
     <string name="scene_mode">场景模式</string>
+    <string name="group_control_mode">组控模式</string>
+    <string name="scene_control">场景控制</string>
+    <string name="group_control">群组控制</string>
     <string name="save">保存</string>
-    <string name="edit_scene">编辑场景</string>
     <string name="add_scene">新增场景</string>
+        <string name="scene_name_input">请输入场景名称</string>
+    <string name="add_group">新增组控</string>
+        <string name="group_name_input">请输入组控名称</string>
     <string name="choose_room">选择房间</string>
     <string name="scene_name">场景名称</string>
     <string name="edit_device">请设定设备在该模式下的状态</string>
@@ -125,4 +130,6 @@
     <string name="buy_VIP">请点击确认购买VIP用户功能</string>
     <string name="auth_cancel">取&#160;&#160;消</string>
     <string name="auth_ensure">确&#160;&#160;认</string>
+    <string name="add">新增</string>
+    <string name="delete">删除</string>
 </resources>

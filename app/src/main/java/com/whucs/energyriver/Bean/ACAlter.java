@@ -1,6 +1,9 @@
 package com.whucs.energyriver.Bean;
 
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+
 public class ACAlter {
     Long acaID;
     Long eID;
@@ -108,13 +111,27 @@ public class ACAlter {
                 ", ResponseStatus=" + ResponseStatus +
                 '}';
     }
-/*
-    public void unset()throws Exception{
-        Method[] methods = this.getClass().getDeclaredMethods();
-        for (Method method:methods) {
-            if(method.toString().contains("set")){
-                method.invoke(this,null);
+
+    public void clear(){
+        try {
+            Field[] attrs = this.getClass().getDeclaredFields();
+            for (Field attr : attrs) {
+                String firstUpper = attr.toString().substring(0, 1).toUpperCase();
+                String concat = firstUpper + attr.toString().substring(1);
+                Method m = this.getClass().getDeclaredMethod("set" + concat);
+                switch (attr.getType().toString()) {
+                    case "class java.lang.Integer":
+                        m.invoke(0, attr);
+                        break;
+                    default: m.invoke(null, attr);
+                        break;
+                }
             }
+        }catch (Exception e){
+            acaID = null;eID = null;
+            SetTemp = null;MaxTemp = null;MinTemp = null;
+            speed = 0;mode = 0;EquipmentStatus = 0;ResponseStatus = 0;
+            UpdateTime = null;
         }
-    }*/
+    }
 }
