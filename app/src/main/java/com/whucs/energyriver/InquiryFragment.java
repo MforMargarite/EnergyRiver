@@ -2,7 +2,6 @@ package com.whucs.energyriver;
 
 
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -15,16 +14,13 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-
 import com.whucs.energyriver.Bean.HttpListData;
 import com.whucs.energyriver.Bean.Notice;
 import com.whucs.energyriver.Biz.NoticeBiz;
 import com.whucs.energyriver.Public.Common;
 import com.whucs.energyriver.Public.NetworkUtils;
 import com.whucs.energyriver.Widget.StateSwitchFragment;
-
 import java.util.List;
-
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
@@ -41,6 +37,7 @@ public class InquiryFragment extends StateSwitchFragment implements View.OnTouch
     private float startY;
     private boolean isShowing = false;
     private boolean pullToRefresh = false;
+    private boolean readyForRefresh = true;
     private WebViewClient webClient;
 
     @Nullable
@@ -179,24 +176,32 @@ public class InquiryFragment extends StateSwitchFragment implements View.OnTouch
         return url;
     }
 
-
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
         switch(motionEvent.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                if(pullToRefresh)
+                    return true;
                 startY = motionEvent.getY();
+                readyForRefresh = isTop(webView);
                 break;
             case MotionEvent.ACTION_MOVE:
-                if(webView.getScrollY() == 0) {//已经滑动到顶部
+                if(pullToRefresh)
+                    return true;
+                else if(readyForRefresh) {//已经滑动到顶部
                     float dist = motionEvent.getY() - startY;
-                    if (dist > 20 && dist <= 220) {
-                        isShowing = true;
-                        activity.showPullToRefresh((int) dist);
+                    if(dist>0) {
+                        if (dist > 216) {
+                            activity.showPullToRefresh(216);
+                            pullToRefresh = true;
+                        } else {
+                            activity.showPullToRefresh((int) dist);
+                            isShowing = true;
+                        }
                         return true;
-                    } else if (dist > 220) {
-                        activity.showPullToRefresh(216);
-                        pullToRefresh = true;
-                        return true;
+                    }else{
+                        if(isShowing)
+                            return true;
                     }
                 }
                 break;
@@ -204,7 +209,6 @@ public class InquiryFragment extends StateSwitchFragment implements View.OnTouch
                 if(pullToRefresh) {
                     webView.loadUrl(getInquiryURL());
                     activity.setRefreshState("正在刷新");
-                    return true;
                 }else if(isShowing) {
                     activity.hidePullToRefresh();
                     isShowing = false;
@@ -212,6 +216,10 @@ public class InquiryFragment extends StateSwitchFragment implements View.OnTouch
                 break;
         }
         return false;
+    }
+
+    private boolean isTop(WebView view){
+        return view.getScrollY() == 0;
     }
 
 }

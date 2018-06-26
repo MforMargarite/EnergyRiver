@@ -92,8 +92,7 @@ public class ControlPresenter {
     //根据sceneID更新场景状态
     public void updateScene(final View view,final String type,Context context){
         //controlView.showHint("场景状态切换中...");
-        ToggleButton toggle = (ToggleButton) view.findViewById(R.id.switcher);
-        final Long sceneID = Long.parseLong(toggle.getTag(R.id.identity).toString());
+        final Long sceneID = Long.parseLong(view.getTag(R.id.identity).toString());
         sceneBiz.updateScene(context,sceneID)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -120,9 +119,8 @@ public class ControlPresenter {
 
     public void updateGroupControl(final View view,final String type,Context context){
         //controlView.showHint("组控状态切换中...");
-        ToggleButton toggle = (ToggleButton) view.findViewById(R.id.switcher);
-        final Integer status = Integer.parseInt(toggle.getTag(R.id.state).toString());
-        final Long sceneID = Long.parseLong(toggle.getTag(R.id.identity).toString());
+        final Integer status = Integer.parseInt(view.getTag(R.id.state).toString());
+        final Long sceneID = Long.parseLong(view.getTag(R.id.identity).toString());
         sceneBiz.updateGroupControl(context,sceneID,1-status)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

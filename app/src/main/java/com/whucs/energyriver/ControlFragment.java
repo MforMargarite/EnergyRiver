@@ -29,7 +29,6 @@ import com.whucs.energyriver.Presenter.ControlPresenter;
 import com.whucs.energyriver.Public.Common;
 import com.whucs.energyriver.View.ControlView;
 import com.whucs.energyriver.Widget.AirControlDialog;
-import com.whucs.energyriver.Widget.SceneView;
 import com.whucs.energyriver.Widget.ScrollGridView;
 import com.whucs.energyriver.Widget.ScrollListView;
 import com.whucs.energyriver.Widget.StateSwitchFragment;
@@ -485,8 +484,7 @@ public class ControlFragment extends StateSwitchFragment implements View.OnClick
         //若需要切换场景 则执行更新状态操作
         switch (adapterView.getId()) {
             case R.id.scene_info:
-                ToggleButton toggle = (ToggleButton) view.findViewById(R.id.switcher);
-                if(Integer.parseInt(toggle.getTag(R.id.state).toString()) == 0)
+                if(Integer.parseInt(view.getTag(R.id.state).toString()) == 0)
                     controlPresenter.updateScene(view, "场景", activity);
                 break;
             case R.id.group_control:
@@ -495,4 +493,13 @@ public class ControlFragment extends StateSwitchFragment implements View.OnClick
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(controlPresenter == null)
+            controlPresenter = new ControlPresenter(this);
+        controlPresenter.getScenes(activity);
+        controlPresenter.getGroupControls(activity);
+        controlPresenter.getLoopByUser(activity);
+    }
 }

@@ -63,8 +63,6 @@ public class AddSceneActivity extends AppCompatActivity implements SceneEditView
         post_scene.put("BranchId",Common.getBranchID(this));
         post_scene.put("SceneType",type);
 
-        presenter = new ScenePresenter(this);
-        presenter.getControlLoops(this);
     }
 
 
@@ -112,13 +110,23 @@ public class AddSceneActivity extends AppCompatActivity implements SceneEditView
     public void postSuccess() {
         String typeStr = type==1?"场景":"组控";
         Toast.makeText(this,"新增"+typeStr+"成功",Toast.LENGTH_SHORT).show();
-       // this.finish();
-        //activityResult
+        Intent intent = new Intent();
+        intent.putExtra("type",type);
+        this.setResult(RESULT_OK,intent);
+        this.finish();
     }
 
     @Override
     public void postError() {
         String typeStr = type==1?"场景":"组控";
         Toast.makeText(this,"新增"+typeStr+"失败",Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(presenter == null)
+            presenter = new ScenePresenter(this);
+        presenter.getControlLoops(this);
     }
 }

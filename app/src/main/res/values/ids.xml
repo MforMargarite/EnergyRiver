@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item type="id" name="state"/>
+    <item type="id" name="identity"/>
+    <item type="id" name="scenes"/>
+    <item type="id" name="position"/>
+</resources>

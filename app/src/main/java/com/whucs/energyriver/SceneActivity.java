@@ -93,9 +93,11 @@ public class SceneActivity extends StateSwitchActivity implements View.OnClickLi
             case R.id.add:
                 Intent intent = new Intent(this,AddSceneActivity.class);
                 intent.putExtra("type",type);
-                startActivity(intent);
+                startActivityForResult(intent,1);
                 break;
             case R.id.delete:
+                if(oneMoreEnsure.isShowing())
+                    oneMoreEnsure.dismiss();
                 //执行删除动作
                 presenter.delSceneById(SceneActivity.this,curView,curPosition);
                 curView.setSelected(false);
@@ -103,6 +105,8 @@ public class SceneActivity extends StateSwitchActivity implements View.OnClickLi
                 curPosition = -1;
                 break;
             case R.id.cancel:
+                if(oneMoreEnsure.isShowing())
+                    oneMoreEnsure.dismiss();
                 break;
         }
     }
@@ -160,16 +164,36 @@ public class SceneActivity extends StateSwitchActivity implements View.OnClickLi
     }
 
     private boolean oneMoreEnsure(){
-        View contentView = LayoutInflater.from(this).inflate(R.layout.del_pop_window, null);
-        // 设置按钮的点击事件
-        TextView delete = (TextView) contentView.findViewById(R.id.delete);
-        TextView cancel = (TextView) contentView.findViewById(R.id.cancel);
-        cancel.setOnClickListener(this);
-        delete.setOnClickListener(this);
-        oneMoreEnsure = new PopupWindow(contentView,
-                PercentRelativeLayout.LayoutParams.MATCH_PARENT, PercentRelativeLayout.LayoutParams.MATCH_PARENT, true);
-        oneMoreEnsure.setTouchable(true);
+        if(oneMoreEnsure == null) {
+            View contentView = LayoutInflater.from(this).inflate(R.layout.del_pop_window, null);
+            // 设置按钮的点击事件
+            TextView delete = (TextView) contentView.findViewById(R.id.delete);
+            TextView cancel = (TextView) contentView.findViewById(R.id.cancel);
+            cancel.setOnClickListener(this);
+            delete.setOnClickListener(this);
+            oneMoreEnsure = new PopupWindow(contentView,
+                    PercentRelativeLayout.LayoutParams.MATCH_PARENT, PercentRelativeLayout.LayoutParams.MATCH_PARENT, true);
+            oneMoreEnsure.setTouchable(true);
+        }
         oneMoreEnsure.showAtLocation(view, Gravity.CENTER_VERTICAL,0,0);
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch(requestCode){
+            case 1:
+                if(resultCode == RESULT_OK){
+                    int type = data.getIntExtra("type",1);
+                    if(presenter == null)
+                        presenter = new ScenePresenter(this);
+                    if(type == 1)
+                        presenter.getSceneList(this);
+                    else
+                        presenter.getGroupControlList(this);
+                }
+                break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }
